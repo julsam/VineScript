@@ -55,7 +55,6 @@
     <Compile Include="Core\Functions.cs" />
     <Compile Include="Core\FunctionsCollection.cs" />
     <Compile Include="Core\StdLibrary.cs" />
-    <Compile Include="Core\Vars.cs" />
     <Compile Include="Core\VineStory.cs" />
     <Compile Include="Interpreter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
