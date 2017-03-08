@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VineScript", "VineScript\VineScript.csproj", "{9FEE07D0-B2BE-469D-BD16-32407CFE9668}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VineScriptLib", "VineScriptLib\VineScriptLib.csproj", "{316AC8C7-FE14-4429-9F24-BEA336C0E87A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VineScriptLib.Test", "VineScriptLib.Test\VineScriptLib.Test.csproj", "{2A0E7C30-D413-4B75-B486-F856841B3AFF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9FEE07D0-B2BE-469D-BD16-32407CFE9668}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FEE07D0-B2BE-469D-BD16-32407CFE9668}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FEE07D0-B2BE-469D-BD16-32407CFE9668}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FEE07D0-B2BE-469D-BD16-32407CFE9668}.Release|Any CPU.Build.0 = Release|Any CPU
+		{316AC8C7-FE14-4429-9F24-BEA336C0E87A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{316AC8C7-FE14-4429-9F24-BEA336C0E87A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{316AC8C7-FE14-4429-9F24-BEA336C0E87A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{316AC8C7-FE14-4429-9F24-BEA336C0E87A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A0E7C30-D413-4B75-B486-F856841B3AFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A0E7C30-D413-4B75-B486-F856841B3AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A0E7C30-D413-4B75-B486-F856841B3AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A0E7C30-D413-4B75-B486-F856841B3AFF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

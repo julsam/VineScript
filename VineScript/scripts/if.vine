@@ -1,0 +1,10 @@
+﻿{# 
+	multi
+	line
+	comment 
+#}
+One
+{% if 1 > 0  %}
+	Two {# comment 2#}
+{% end %}
+Three

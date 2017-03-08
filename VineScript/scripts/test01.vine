@@ -1,0 +1,16 @@
+﻿{this is not a code}
+Hello World!
+{{ variable }}
+
+FooBar
+
+{{ foo }}
+	print true
+
+{{ bar }}
+	print false
+{{ 
+	UserName 
+}}
+
+{{ DB.Table.User }}

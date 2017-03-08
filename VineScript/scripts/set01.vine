@@ -1,0 +1,9 @@
+﻿{% set $var1 to 42 %}
+{% set $var2 to "FortyTwo" %}
+{% set $var3 to $var1 + " " + $var2 %}
+{% set $var4 to 0 %}
+var 1 = {{ $var1 }} ;
+var 2 = {{ $var2 }}
+
+var 3 = {{ $var3 }}
+{{ $var1 }} {{ $var2 }} {{ $var3 }} {{ $var4 }}

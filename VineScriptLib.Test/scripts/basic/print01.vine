@@ -1,0 +1,15 @@
+﻿{{ "One" }}
+{{ 2 }}
+{{ true }}
+{{ "One" + 1 }}
+{{ 2 + 4.5 }}
+{{ "Two" + "Four" }}
+{{ 2 + 4 }}
+{{ true or false }}
+{{ true and false }}
+{{ true == false }}
+{{ true == true }}
+{{ 3^2 }}
+{{ ((1 + 2) * 6) ^ 2}}
+{{ 1 + 2 + "ABC" }}
+{{ "ABC" + 1 + 2 }}

@@ -1,0 +1,23 @@
+﻿{# Comment. #}{# Comment. #}
+
+{# {# {#### {}{}}{{{ #}
+
+{# Comment
+on 3
+		lines
+#}
+
+{% set $a = 42 %} {# Inline comment #}
+
+{% set $b = {# Inline comment in-between #} 23 %}
+
+{# Comment code {% set $abc = 42 %}\n{{ if $abc }}{#}
+
+{##}
+
+{{ if {# comment in code }} #} true }}
+	7
+{{ end }}
+
+
+{# #Comment into comment {# Comment 2. #} 

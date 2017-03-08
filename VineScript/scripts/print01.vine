@@ -1,0 +1,5 @@
+﻿{% if ($hello_world == "Hello, World!" || 1 > 2) and (0 < 1) && $my_int >= 42 && $my_int != "42" %}
+	{{ $hello_world }} {{ $my_int }}
+{% else %}
+	Boo!
+{% end %}

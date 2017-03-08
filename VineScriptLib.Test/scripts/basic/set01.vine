@@ -1,0 +1,6 @@
+﻿{% set $varStr to "Foo bar" %}
+{% set $varInt = 42 %}
+{% set $varNumber to 4.669 %}
+{% set $varBool = true %}
+{% set $varNull to null %}
+'{{ $varStr }}', '{{ $varInt }}', '{{ $varNumber }}', '{{ $varBool }}', '{{ $varNull }}'

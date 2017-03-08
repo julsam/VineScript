@@ -1,0 +1,2 @@
+﻿
+{% if true %}{% set $var to "foo" %}var='{{ $var }}'{% end %}

@@ -1,0 +1,10 @@
+﻿{% set $var = "Foo bar" %}
+'{{ $var }}'
+{% set $var to 42 %}
+'{{ $var }}'
+{% set $var = 4.669 %}
+'{{ $var }}'
+{% set $var to true %}
+'{{ $var }}'
+{% set $var = null %}
+'{{ $var }}'
