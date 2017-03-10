@@ -115,7 +115,6 @@ stmtBlock
 
 /**
  * Output a variable (shortcut for {% print $var %})
- * Tags only are allowed. E.g: {{ $var|upper }}
  **/
 outputVariable: '{{' expr (END_OUTPUT|END_OUTPUT_WS) ;
 
@@ -138,7 +137,7 @@ elseStmt:   '{%' 'else' '%}' block* ;
 endIfStmt:  '{%' 'end' '%}' ;    
 
 /*
-// TODO should be in the expr rule!
+// TODO delete
 boolExpr:   expr op=('=='|'!='|'<'|'>'|'<='|'>=') expr    # exprComparison
         |   boolExpr op=('=='|'!=') boolExpr            # boolComparison
         |   boolExpr op=('and'|'or'|'&&'|'||') boolExpr    # boolExprCombination
@@ -187,7 +186,7 @@ variable:   ID                      # variableValue
         ;
 
 postfixExpression
-    :   atom
+    :   atom //should be ID (and maybe allow STRING too)
     |   postfixExpression '[' expr ']'
     |   postfixExpression '(' argumentExpressionList? ')'
     |   postfixExpression '.' ID                            # attributeLookup 
