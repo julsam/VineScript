@@ -157,6 +157,17 @@ namespace VineScriptLib.Test
             Assert.AreEqual(cmp.ReadToEnd(), output);
         }
 
+        [TestMethod]
+        public void FileComments01()
+        {
+            VineStory story = new VineStory();
+
+            story.RunPassage(File.OpenText("scripts/basic/comments01.vine"));
+
+            // TODO checks syntax error when implemented
+            // If there's not error reading this file, we're good.
+        }
+
         #region Additional test attributes
         //
         // You can use the following additional attributes as you write your tests:

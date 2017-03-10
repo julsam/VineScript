@@ -36,5 +36,11 @@ namespace VineScriptLib.Test
         {
             Utils.CompareFile("scripts/formatting/line_ending05.vine");
         }
+
+        [TestMethod]
+        public void Comments01()
+        {
+            Utils.CompareFile("scripts/formatting/comments01.vine");
+        }
     }
 }
