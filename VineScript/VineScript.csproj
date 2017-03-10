@@ -69,6 +69,9 @@
     <None Include="scripts\if.vine">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="scripts\line_ending02.vine">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="scripts\print02.vine">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

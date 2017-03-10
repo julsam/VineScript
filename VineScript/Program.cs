@@ -22,8 +22,9 @@ namespace VineScript
                 //string inputFile = "scripts/set01.vine";
                 //string inputFile = "scripts/print02.vine";
                 //string inputFile = "scripts/if02.vine";
-                string inputFile = "scripts/lang_chars.vine";
+                //string inputFile = "scripts/lang_chars.vine";
                 //string inputFile = "scripts/line_ending01.vine";
+                string inputFile = "scripts/line_ending02.vine";
                 //string inputFile = "scripts/comments1.vine";
                 //string inputFile = "scripts/comments2.vine";
                 StreamReader istream = File.OpenText(inputFile);

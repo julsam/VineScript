@@ -22,7 +22,15 @@ inline
     :   varPrint (inline|block)*
     |   block+ (varPrint|text)+ block*
     |   text (inline|block)* 
+    |   inline inline
     ;
+
+//inline
+//    :   varPrint
+//    |   text
+//    |   block
+//    |   inline inline
+//    ;
 
 varPrint
     :   OUTPUT
