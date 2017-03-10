@@ -47,11 +47,17 @@ STMT:           '{%' .*? '%}' ;
 //LINE_COMMENT:   '#' ~('#')*? NL ;
 BLOCK_COMMENT:  '{#' .*? '#}' ;
 
-NL:         '\r'? '\n' ;
-WS:         [ \t]+ -> skip ;
-TXT:        ('{'? ~('{'|'%'|'#'|'?'|'\r'|'\n'))+ ;
-/*
-TXT:        (   ('{' ~('{'|'%'|'#'|'?'|'\r'|'\n'))
-            |   ~('{') .
-            )+ ;
-*/
+NL:     '\r'? '\n' ;
+WS:     [ \t]+ -> skip ;
+
+// A text is either :
+//  1. anything that's not {, \r, \n
+//  2. or it is { but then it's not followed by {, %, #. ?
+// TODO: should allow escaping tags
+TXT :   (       ~('{'|'\r'|'\n')
+            |   '{' ~('{'|'%'|'#'|'?')
+        )+ 
+    |  '{' ~('{'|'%'|'#'|'?')*? // special case when { is not followed by anything (EOF)
+    ;
+
+ANY:    . ;

@@ -48,6 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="scripts\lang_chars.vine">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="scripts\cmd01.vine">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

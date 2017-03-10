@@ -18,15 +18,25 @@ BLOCK_COMMENT:  '{#' .*? '#}' ;
 // This includes all forms of Unicode 6 whitespace except \n, \r, and Ogham space mark.
 //WS:                    [ \f\t\v\u00a0\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+ -> skip ;
 //WS:         [ \t]+ ;
-WS:         [ \t]+ -> channel(HIDDEN) ;
-NL:         '\r'? '\n' ;
+WS:     [ \t]+ -> channel(HIDDEN) ;
+NL:     '\r'? '\n' ;
 
-TXT:        ('{'? ~('{'|'%'|'#'|'?'|'\r'|'\n'))+ ;
-/*
-TXT:        (   ('{' ~('{'|'%'|'#'|'?'|'\r'|'\n'))
-            |   ~('{') .
-            )+ ;
-*/
+// A text is either :
+//  1. anything that's not {, \r, \n
+//  2. or it is { but then it's not followed by {, %, #. ?
+// TODO: should allow escaping tags
+TXT :   (       ~('{'|'\r'|'\n')
+            |   '{' ~('{'|'%'|'#'|'?')
+        )+ 
+    |  '{' ~('{'|'%'|'#'|'?')*? // special case when { is not followed by anything (EOF)
+    ;
+
+//TXT:      ('{'? ~('{'|'%'|'#'|'?'|'\r'|'\n'))+ ;
+//TXT:    (   '{' ~('{'|'%'|'#'|'?')
+//        |   {_input.La(-1) != '{'}? ~('{'|'\r'|'\n')
+//        )+ ;
+
+ANY:    . ;
 
 // ----------------------------------------------------------
 //mode MODE_COMMENT;

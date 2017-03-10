@@ -145,6 +145,18 @@ namespace VineScriptLib.Test
             Assert.AreEqual("var is a bool", story.vars["result"]);
         }
 
+        [TestMethod]
+        public void CmpFileLangChars01()
+        {
+            StreamReader input = File.OpenText("scripts/basic/lang_chars01.vine");
+            StreamReader cmp = File.OpenText("scripts/basic/lang_chars01.cmp");
+
+            VineStory story = new VineStory();
+            string output = story.RunPassage(input);
+
+            Assert.AreEqual(cmp.ReadToEnd(), output);
+        }
+
         #region Additional test attributes
         //
         // You can use the following additional attributes as you write your tests:
