@@ -9,7 +9,7 @@ compileUnit
     ;
 
 line
-    :   NL EOF                      # consumeLn
+    :   NL EOF                      # printLn
     |   inline NL block+ EOF        # consumeLn
     |   inline NL (block NL?)+ EOF  # consumeLn
     |   block+ (NL|EOF)             # consumeLn
