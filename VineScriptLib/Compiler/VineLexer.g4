@@ -26,16 +26,21 @@ BLOCK_COMMENT:  '{#' .*? '#}' ;
 WS:     [ \t]+ -> channel(HIDDEN) ;
 NL:     '\r'? '\n' ;
 
+TXT_LBRACE
+	:	'{' -> type(TXT)
+    ;
+TXT :   ~[{\r\n]+
+    ;
+
 // A text is either :
 //  1. anything that's not {, \r, \n
 //  2. or it is { but then it's not followed by {, %, #. ?
 // TODO: should allow escaping tags
-TXT :   (       ~('{'|'\r'|'\n')
-            |   '{' ~('{'|'%'|'#'|'?')
-        )+ 
-    |  '{' ~('{'|'%'|'#'|'?')*? // special case when { is not followed by anything (EOF)
-    ;
-
+//TXT :   (       ~('{'|'\r'|'\n')
+//            |   '{' ~('{'|'%'|'#'|'?')
+//        )+ 
+//    |  '{' ~('{'|'%'|'#'|'?')*? // special case when { is not followed by anything (EOF)
+//    ;
 //TXT:      ('{'? ~('{'|'%'|'#'|'?'|'\r'|'\n'))+ ;
 //TXT:    (   '{' ~('{'|'%'|'#'|'?')
 //        |   {_input.La(-1) != '{'}? ~('{'|'\r'|'\n')
