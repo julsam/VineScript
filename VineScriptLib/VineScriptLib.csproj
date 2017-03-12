@@ -47,9 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compiler\ParserErrorListener.cs" />
     <Compile Include="Compiler\LinesFormatterVisitor.cs" />
     <Compile Include="Compiler\WhiteSpaceVisitor.cs" />
-    <Compile Include="Compiler\InterpreterErrorHandler.cs" />
+    <Compile Include="Compiler\LexerErrorListener.cs" />
     <Compile Include="Core\Filters.cs" />
     <Compile Include="Core\FiltersOld.cs" />
     <Compile Include="Core\Functions.cs" />

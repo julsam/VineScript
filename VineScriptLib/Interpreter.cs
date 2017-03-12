@@ -123,10 +123,13 @@ namespace VineScriptLib
             
             var inputStream = new AntlrInputStream(wsRemoved);
             var lexer = new VineLexer(inputStream);
-            //lexer.RemoveErrorListeners();
-            //lexer.AddErrorListener(new InterpreterErrorHandler());
             var tokens = new CommonTokenStream(lexer);
             var parser = new VineParser(tokens);
+
+            var errorListener = new ParserErrorListener();
+            parser.RemoveErrorListeners();
+            parser.AddErrorListener(errorListener);
+
             var tree = parser.passage();
 
             //Console.WriteLine(tree.ToStringTree(parser));

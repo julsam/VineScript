@@ -68,4 +68,4 @@ TXT :   (       ~('{'|'\r'|'\n')
     |  '{' ~('{'|'%'|'#'|'?')*? // special case when { is not followed by anything (EOF)
     ;
 
-ANY:    . ;
+ErrorChar:  . ;

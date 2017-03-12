@@ -36,8 +36,6 @@ TXT :   (       ~('{'|'\r'|'\n')
 //        |   {_input.La(-1) != '{'}? ~('{'|'\r'|'\n')
 //        )+ ;
 
-ANY:    . ;
-
 // ----------------------------------------------------------
 //mode MODE_COMMENT;
 
@@ -103,6 +101,8 @@ FLOAT:      DIGIT+ '.' DIGIT+ ;
 //WS:                    [ \f\t\v\u00a0\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+ -> skip ;
 WS_CODE:        [ \t]+ -> channel(HIDDEN) ;
 //NL:         '\r'? '\n' -> channel(HIDDEN) ;
+
+ERROR_CHAR: . ;
 
 // fragments
 fragment ESC:           '\\"' | '\\\\' ; // 2-char sequences \" and \\
