@@ -1,16 +1,21 @@
 lexer grammar VineLexer;
 
-tokens { TYPE_STMT_END }
+@members{
+    // Allow printing for debug in the lexer {print("foo")}?
+    public bool print(string msg) { 
+        System.Console.WriteLine(msg); 
+        return true; 
+    }
+}
+
 /*
  * Lexer Rules
  */
 
-//channels { WSCHANNEL, MYHIDDEN }
+// Default "mode" (text mode) : Everything that is outside of tags '{{ .. }}', '{% .. %}' or '{# .. #}'
 
-// Default "mode": Everything that is outside of tags '{{ .. }}', '{% .. %}' or '{# .. #}'
-
-OUTPUT:         '{{' -> pushMode(MODE_CODE) ;
-STMT:           '{%' -> pushMode(MODE_CODE) ;
+OUTPUT:         '{{' -> pushMode(VineCode) ;
+STMT:           '{%' -> pushMode(VineCode) ;
 //LINE_COMMENT:   '#' ~('#')*? NL -> channel(HIDDEN);
 BLOCK_COMMENT:  '{#' .*? '#}' ;
 
@@ -37,31 +42,30 @@ TXT :   (       ~('{'|'\r'|'\n')
 //        )+ ;
 
 // ----------------------------------------------------------
-//mode MODE_COMMENT;
-
-// ----------------------------------------------------------
-mode MODE_CODE;
+mode VineCode;
 END_OUTPUT_WS:  '}}' WS -> popMode ; 
 END_OUTPUT:     '}}' -> popMode ; 
 END_STMT:       '%}' -> popMode ; 
 
-IF:             'if ' ;
-ELSE:           'elif ' ;
-ELIF:           'else' ;
-END:            'end' ;
-TRUE:           'true' ;
-FALSE:          'false' ;
-NULL:           'null' ;
-AND:            '&&' ;
-OR:             '||' ;
-AND2:           ' and ' ;
-OR2:            ' or ' ;
-DOT:            '.' ;
-COMMA:          ',' ;
-LeftParen:      '(' ;
-RightParen:     ')' ;
-LeftBracket:    '[' ;
-RightBracket:   ']' ;
+// Keywords
+IF:         'if ' ;
+ELSE:       'elif ' ;
+ELIF:       'else' ;
+END:        'end' ;
+TRUE:       'true' ;
+FALSE:      'false' ;
+NULL:       'null' ;
+AND2:       ' and ' ;
+OR2:        ' or ' ;
+
+AND:        '&&' ;
+OR:         '||' ;
+DOT:        '.' ;
+COMMA:      ',' ;
+LPAREN:     '(' ;
+RPAREN:     ')' ;
+LBRACK:     '[' ;
+RBRACK:     ']' ;
 
 // unary op
 MINUS:  '-' ;
@@ -98,14 +102,12 @@ FLOAT:      DIGIT+ '.' DIGIT+ ;
 
 // From Harlowe:
 // This includes all forms of Unicode 6 whitespace except \n, \r, and Ogham space mark.
-//WS:                    [ \f\t\v\u00a0\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+ -> skip ;
-WS_CODE:        [ \t]+ -> channel(HIDDEN) ;
-//NL:         '\r'? '\n' -> channel(HIDDEN) ;
+//WS_CODE:    [ \f\t\v\u00a0\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+ -> skip ;
+WS_CODE:    [ \t]+ -> channel(HIDDEN) ;
 
 ERROR_CHAR: . ;
 
 // fragments
-fragment ESC:           '\\"' | '\\\\' ; // 2-char sequences \" and \\
-//fragment ESC:           '\\' [trn"\\] ; // \t \r \n \" and \\
-fragment DIGIT:         [0-9] ;
-fragment ID_LETTER:     [A-Za-z\u0080-\uFFFF_] ; // goes from 41 ('A') to z then 128 to 65535 (unicode)
+fragment ESC:       '\\"' | '\\\\' ; // 2-char sequences \" and \\
+fragment DIGIT:     [0-9] ;
+fragment ID_LETTER: [A-Za-z\u0080-\uFFFF_] ; // goes from 41 ('A') to z then 128 to 65535 (unicode)
