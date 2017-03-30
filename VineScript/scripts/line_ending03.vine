@@ -1,0 +1,7 @@
+﻿a
+b
+foo {# comment #}
+{{ "foo" }}
+{% set $var to "foo" %}
+{% set $var to "foo" %}
+{% set $var to "foo" %}
