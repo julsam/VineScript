@@ -46,6 +46,8 @@ TXT :   ~[{\r\n]+
 //        |   {_input.La(-1) != '{'}? ~('{'|'\r'|'\n')
 //        )+ ;
 
+ERROR_CHAR: . ;
+
 // ----------------------------------------------------------
 mode VineCode;
 END_OUTPUT_WS:  '}}' WS -> popMode ; 
@@ -110,7 +112,7 @@ FLOAT:      DIGIT+ '.' DIGIT+ ;
 //WS_CODE:    [ \f\t\v\u00a0\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+ -> skip ;
 WS_CODE:    [ \t]+ -> channel(HIDDEN) ;
 
-ERROR_CHAR: . ;
+VineCode_ERROR_CHAR: ERROR_CHAR -> type(ERROR_CHAR) ;
 
 // fragments
 fragment ESC:       '\\"' | '\\\\' ; // 2-char sequences \" and \\
