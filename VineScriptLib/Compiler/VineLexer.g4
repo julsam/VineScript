@@ -23,7 +23,7 @@ BLOCK_COMMENT:  '{#' .*? '#}' ;
 // This includes all forms of Unicode 6 whitespace except \n, \r, and Ogham space mark.
 //WS:                    [ \f\t\v\u00a0\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+ -> skip ;
 //WS:         [ \t]+ ;
-WS:     [ \t]+ -> channel(HIDDEN) ;
+//WS:     [ \t]+ -> channel(HIDDEN) ; // disabled, whitespace is considered as text
 NL:     '\r'? '\n' ;
 
 TXT_LBRACE
@@ -50,7 +50,7 @@ ERROR_CHAR: . ;
 
 // ----------------------------------------------------------
 mode VineCode;
-END_OUTPUT_WS:  '}}' WS -> popMode ; 
+//END_OUTPUT_WS:  '}}' WS -> popMode ; 
 END_OUTPUT:     '}}' -> popMode ; 
 END_STMT:       '%}' -> popMode ; 
 

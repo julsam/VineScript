@@ -82,8 +82,8 @@ namespace VineScriptLib
             object value = Visit(context.expr());
             Console.WriteLine("> VAR: " + context.expr().GetText() + " = " + value);
             output += value;
-            if (context.END_OUTPUT_WS() != null)
-                output += " ";
+            //if (context.END_OUTPUT_WS() != null)
+            //    output += " ";
             return value as VineValue;
         }
 

@@ -116,7 +116,7 @@ stmtBlock
 /**
  * Output a variable (shortcut for {% print $var %})
  **/
-outputVariable: '{{' expr (END_OUTPUT|END_OUTPUT_WS) ;
+outputVariable: '{{' expr '}}' ;
 
 command
     :   '{%' 'set' ID ('to'|'=') expr '%}'  # assignCmd
