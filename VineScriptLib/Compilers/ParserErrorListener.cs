@@ -1,9 +1,9 @@
 ﻿using System;
 using Antlr4.Runtime;
 
-namespace VineScriptLib
+namespace VineScriptLib.Compilers
 {
-    public class ParserErrorListener : BaseErrorListener
+    class ParserErrorListener : BaseErrorListener
     {
         public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string desc, RecognitionException e)
         {

@@ -66,7 +66,7 @@ namespace VineScriptLib.Test
             input += " {{ $varNull }}";
 
             string output = story.RunPassage(input);
-            Assert.AreEqual("Foo bar 42 4.669 True ", output);
+            Assert.AreEqual("Foo bar 42 4.669 True", output);
         }
 
         [TestMethod]

@@ -1,7 +1,7 @@
 ﻿using System;
 using Antlr4.Runtime;
 
-namespace VineScriptLib
+namespace VineScriptLib.Compilers
 {
     class LexerErrorListener : BaseErrorListener, IAntlrErrorListener<int>
     {

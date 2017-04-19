@@ -3,10 +3,9 @@ using System.Linq;
 using Antlr4.Runtime.Tree;
 using System.Collections.Generic;
 using VineScriptLib.Core;
-using VineScriptLib.Compiler;
 using System.Globalization;
 
-namespace VineScriptLib
+namespace VineScriptLib.Compilers.Vine
 {
     class VineVisitor : VineParserBaseVisitor<VineValue> 
     {
