@@ -109,26 +109,30 @@ stmt:   outputVariable
 stmtBlock
     :   controlStmt
     |   command
+    |   '{%' funcCall '%}'
     //|   LINE_COMMENT
     |   BLOCK_COMMENT
     ;
 
 /**
- * Output a variable (shortcut for {% print $var %})
+ * Output something (variable, expression, function return, ...)
  **/
 outputVariable: '{{' expr '}}' ;
 
 command
-    :   '{%' 'set' ID ('to'|'=') expr '%}'  # assignCmd
+    :   '{%' 'set' VAR ('='|'to') expr '%}' # assignStmt
     |   '{%' COMMAND expressionList? '%}'   # langCmd
-    |   '{%' ID expressionList? '%}'        # userCmd
+    ;
+
+funcCall
+    :   ID '(' expressionList? ')'   //# userCmd
     ;
 
 // if, elif, else, for, end
 controlStmt
     :   ifStmt (elifStmt)* (elseStmt)? endIfStmt 
     //|    '{%' 'for' ID 'in' expr '%}'
-    ;    
+    ;
 
 ifStmt:   '{%' 'if ' expr '%}' block* ;
 elifStmt:   '{%' 'elif ' expr '%}' block* ;
@@ -164,6 +168,7 @@ expr:   <assoc=right> left=expr '^' right=expr      # powExpr
     |   left=expr op=(' and '|'&&') right=expr      # andExpr
     |   left=expr op=(' or '|'||') right=expr       # orExpr
     |   '(' expr ')'                                # parensExpr
+    |   funcCall                                    # funcCallExpr
     |   atom                                        # atomExpr
     ;
 
@@ -174,7 +179,7 @@ expressionList
 atom:   INT             # intAtom
     |   FLOAT           # floatAtom
     |   (TRUE | FALSE)  # boolAtom
-    |   ID              # idAtom
+    |   VAR             # varAtom
     |   STRING          # stringAtom
     |   NULL            # nullAtom
     ;

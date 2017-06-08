@@ -33,10 +33,10 @@ namespace VineScriptLib.Compilers.Vine
             return VisitChildren(context);
         }
 
-	    //public override VineValue VisitBlock(VineParser.BlockContext context)
-     //   {
-     //       return VisitChildren(context);
-     //   }
+        //public override VineValue VisitBlock(VineParser.BlockContext context)
+        //{
+        //    return VisitChildren(context);
+        //}
 
         public override VineValue VisitText(VineParser.TextContext context)
         {
@@ -88,16 +88,35 @@ namespace VineScriptLib.Compilers.Vine
 
         #region Commands
 
-        public override VineValue VisitAssignCmd(VineParser.AssignCmdContext context)
+        public override VineValue VisitAssignStmt(VineParser.AssignStmtContext context)
         {
-            // '{%' 'set' ID 'to' expr END_STMT
-            var id = context.ID().GetText().Remove(0, 1); // Remove '$'
+            // '{%' 'set' ID 'to' expr '%}'
+            var id = context.VAR().GetText().Remove(0, 1); // Remove '$'
             VineValue value = Visit(context.expr());
-            Console.WriteLine("CMD SET " + id + " TO " + value);
+            Console.WriteLine("STMT SET " + id + " TO " + value);
             if (story.vars.ContainsKey(id)) { 
                 Console.WriteLine(string.Format("[!!] Warning, the variable '{0}' is already defined! Its value '{1}' will be overridden.", id, value));
             }
             story.vars[id] = value;
+            return value as VineValue;
+        }
+
+        public override VineValue VisitFuncCall(VineParser.FuncCallContext context)
+        {
+            // ID '(' expressionList? ')'
+            var funcName = context.ID().GetText();
+            Console.WriteLine("> FUNCALL: " + funcName);
+            List<VineValue> list = new List<VineValue>();
+            if (context.expressionList() != null)
+            {
+                for (int i = 0; i < context.expressionList().expr().Length; i++)
+                {
+                    var el = Visit(context.expressionList().expr(i));
+                    list.Add(el);
+                }
+            }
+            VineValue value = story.CallFunction(funcName, list.ToArray());
+           
             return value as VineValue;
         }
 
@@ -304,9 +323,9 @@ namespace VineScriptLib.Compilers.Vine
             return bool.Parse(context.GetText());
         }
 
-        public override VineValue VisitIdAtom(VineParser.IdAtomContext context)
+        public override VineValue VisitVarAtom(VineParser.VarAtomContext context)
         {
-            var id = context.ID().GetText().Remove(0, 1); // Remove '$'
+            var id = context.VAR().GetText().Remove(0, 1); // Remove '$'
             object value = story.vars.ContainsKey(id) ? story.vars[id] : VineValue.NULL;
             Console.WriteLine("VariableValue: " + id + " = \"" + value + "\"");
             return value as VineValue;

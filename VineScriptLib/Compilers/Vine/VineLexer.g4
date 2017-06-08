@@ -103,7 +103,8 @@ TO:         'to' ;
 ASSIGN:     '=' ;
 
 STRING:     '"' (ESC|.)*? '"' ;
-ID:         '$' ID_LETTER (ID_LETTER | DIGIT)* ;
+VAR:        '$' ID ;
+ID:         ID_LETTER (ID_LETTER | DIGIT)* ;
 INT:        DIGIT+ ;
 FLOAT:      DIGIT+ '.' DIGIT+ ;
 
