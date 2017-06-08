@@ -9,6 +9,7 @@ namespace VineScript
     {
         static void Main(string[] args)
         {
+            //VineValue.strictMode = true;
             VineStory story = new VineStory();
             try {
                 //string inputFile = "expressions/test01.expr";
@@ -22,7 +23,9 @@ namespace VineScript
                 //string inputFile = "scripts/set01.vine";
                 //string inputFile = "scripts/print02.vine";
                 //string inputFile = "scripts/if02.vine";
-                string inputFile = "scripts/syntax_error01.vine";
+                //string inputFile = "scripts/syntax_error01.vine";
+                string inputFile = "scripts/user_cmd01.vine";
+                //string inputFile = "scripts/check_types01.vine";
                 //string inputFile = "scripts/lang_chars.vine";
                 //string inputFile = "scripts/line_ending01.vine";
                 //string inputFile = "scripts/line_ending02.vine";

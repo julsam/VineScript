@@ -1,0 +1,6 @@
+﻿{{ Upper("foo") }}
+{% set $a = 10 %}
+{{ Add($a, 4) }}
+{% set $c = Add($a, 4) %}
+{{ $c }}
+{{ Hello() }}

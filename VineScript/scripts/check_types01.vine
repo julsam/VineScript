@@ -1,0 +1,13 @@
+﻿Should all be true:
+{{ IsBool(true) }}
+{{ IsInt(42) }}
+{{ IsDouble(0.232) }}
+{{ IsString("foo") }}
+{{ IsNull(null) }}
+
+Should all be false:
+{{ IsBool("true") }}
+{{ IsInt(42.2) }}
+{{ IsDouble(10) }}
+{{ IsString(10) }}
+{{ IsNull("") }}
