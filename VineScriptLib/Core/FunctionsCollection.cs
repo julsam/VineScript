@@ -55,11 +55,47 @@ namespace VineScriptLib.Core
                     combinedArgs[0] = context;
                     combinedArgs[1] = args;
                 } else {
-                    // if the parameters accepts multiple or zero args
+                    // if the parameters accepts multiple or zero args (not counting context)
                     combinedArgs = new object[1 + args.Length];
                     combinedArgs[0] = context;
                     if (args.Length > 0) {
                         args.CopyTo(combinedArgs, 1);
+                    }
+                }
+
+                // Arguments are usually of type VineValue, but "normal" types are authorized.
+                // This part try to convert arguments to the expected type by the function.
+                // If VineValue is expected, do nothing. Else, converts to bool, int, float,
+                // double, string.
+                // (skip the first argument because it's the context)
+                for (int i = 1; i < parameters.Length; i++) {
+                    if (parameters[i].ParameterType != typeof(VineValue)) {
+                        if (typeof(bool) == parameters[i].ParameterType) {
+                            combinedArgs[i] = ((VineValue)combinedArgs[i]).AsBool;
+                        }
+                        else if (typeof(string) == parameters[i].ParameterType) {
+                            combinedArgs[i] = ((VineValue)combinedArgs[i]).AsString;
+                        }
+                        else if (typeof(int) == parameters[i].ParameterType) {
+                            combinedArgs[i] = ((VineValue)combinedArgs[i]).AsInt;
+                        }
+                        else if (   typeof(double) == parameters[i].ParameterType 
+                                ||  typeof(float) == parameters[i].ParameterType
+                        ) {
+                            combinedArgs[i] = ((VineValue)combinedArgs[i]).AsNumber;
+                        }
+                        else {
+                            // TODO: should throw a custom exception
+                            // TODO: we should do this check on library loading and inform the 
+                            //       user right away.
+                            //       Doing this while the script is running is not the best time. 
+                            //       Plus, this error has nothing to do with the script, it's the
+                            //       function definition that should be fixed.
+                            throw new Exception("Error calling function \"" + name + "\""
+                                + "\nThe argument type \"" + parameters[i].ParameterType.Name + "\" "
+                                + "is not a recognized type by VineScript."
+                                + "\nExpected types are: VineValue, string, int, float, double, string");
+                        }
                     }
                 }
                 
