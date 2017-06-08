@@ -410,10 +410,14 @@ namespace VineScriptLib.Core
 			// string + string
 			// bool + string
 			// null + string
+
+            // we're headed for string town!
 			if (a.type == Type.String || b.type == Type.String) {
-				// we're headed for string town!
+				// automatically becomes a string, even if only 1 of the 2 args is a string
 				return new VineValue(a.AsString + b.AsString);
 			}
+
+            // strings are out of the way, now each cases are treated individually
 
             // Can't add bools
             if (a.type == Type.Bool || b.type == Type.Bool) {
