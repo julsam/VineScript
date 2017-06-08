@@ -117,7 +117,7 @@ namespace VineScriptLib.Core
                             try {
                                 return double.Parse(stringValue, CultureInfo.InvariantCulture);
                             } catch (FormatException) {
-                                return 0;
+                                return 0.0;
                             }
                         } else {
                             throw new VineConversionException(type, Type.Number);
