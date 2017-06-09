@@ -91,10 +91,10 @@ namespace VineScriptLib.Core
                             //       Doing this while the script is running is not the best time. 
                             //       Plus, this error has nothing to do with the script, it's the
                             //       function definition that should be fixed.
-                            throw new Exception("Error calling function \"" + name + "\""
-                                + "\nThe argument type \"" + parameters[i].ParameterType.Name + "\" "
-                                + "is not a recognized type by VineScript."
-                                + "\nExpected types are: VineValue, string, int, float, double, string");
+                            throw new Exception(string.Format("Error calling function \"{0}\""
+                                + "\nThe argument type \"{1}\" is not a recognized type by VineScript."
+                                + "\nExpected types are: VineValue, bool, int, float, double, string",
+                                name, parameters[i].ParameterType.Name));
                         }
                     }
                 }

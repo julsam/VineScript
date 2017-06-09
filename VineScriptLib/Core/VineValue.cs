@@ -663,22 +663,22 @@ namespace VineScriptLib.Core
 
         //public static implicit operator bool(VineValue val)
         //{
-        // return val.AsBool;
+        //    return val.AsBool;
         //}
 
         //public static implicit operator int(VineValue val)
         //{
-        // return val.AsInt;
+        //    return val.AsInt;
         //}
 
         //public static implicit operator double(VineValue val)
         //{
-        // return val.AsNumber;
+        //    return val.AsNumber;
         //}
 
         //public static implicit operator string(VineValue val)
         //{
-        // return val.AsString;
+        //    return val.AsString;
         //}
     }
 }

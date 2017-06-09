@@ -121,7 +121,7 @@ outputVariable: '{{' expr '}}' ;
 
 command
     :   '{%' 'set' VAR ('='|'to') expr '%}' # assignStmt
-    |   '{%' COMMAND expressionList? '%}'   # langCmd
+    |   '{%' COMMAND expressionList? '%}'   # langCmd // {% formatted on %}, {% br %}, ...
     ;
 
 funcCall
