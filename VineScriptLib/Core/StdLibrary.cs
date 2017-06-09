@@ -33,7 +33,7 @@ namespace VineScriptLib.Core
             functions.Register("IsString", typeof(StdLibrary));
             functions.Register("IsBool", typeof(StdLibrary));
             functions.Register("IsInt", typeof(StdLibrary));
-            functions.Register("IsDouble", typeof(StdLibrary));
+            functions.Register("IsNumber", typeof(StdLibrary));
             functions.Register("IsNull", typeof(StdLibrary));
         }
 
@@ -67,7 +67,7 @@ namespace VineScriptLib.Core
             return value.IsInt();
         }
 
-        public static bool IsDouble(object context, VineValue value)
+        public static bool IsNumber(object context, VineValue value)
         {
             return value.IsNumber();
         }
