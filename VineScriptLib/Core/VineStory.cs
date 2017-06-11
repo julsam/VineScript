@@ -119,16 +119,16 @@ namespace VineScriptLib.Core
         //public void reflectionTest()
         //{
         //    // Name of the method we want to call.
-	       // string name = "Inform";
+           // string name = "Inform";
 
-	       // // Call it with each of these parameters.
+           // // Call it with each of these parameters.
 
-	       // // Get MethodInfo.
-	       // Type type = typeof(Methods);
-	       // MethodInfo info = type.GetMethod(name);
+           // // Get MethodInfo.
+           // Type type = typeof(Methods);
+           // MethodInfo info = type.GetMethod(name);
             
-	       // object[] parameters = { "Sam", 22, 42.42 };
-	       // info.Invoke(null, parameters);
+           // object[] parameters = { "Sam", 22, 42.42 };
+           // info.Invoke(null, parameters);
         //}
 
         public void test2()

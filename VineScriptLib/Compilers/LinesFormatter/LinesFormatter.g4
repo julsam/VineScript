@@ -59,7 +59,7 @@ NL:     '\r'? '\n' ;
 WS:     [ \t]+ -> skip ;
 
 TXT_LBRACE
-	:	'{' -> type(TXT)
+    :   '{' -> type(TXT)
     ;
 TXT :   ~[{\r\n]+
     ;

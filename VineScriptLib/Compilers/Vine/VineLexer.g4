@@ -27,7 +27,7 @@ BLOCK_COMMENT:  '{#' .*? '#}' ;
 NL:     '\r'? '\n' ;
 
 TXT_LBRACE
-	:	'{' -> type(TXT)
+    :   '{' -> type(TXT)
     ;
 TXT :   ~[{\r\n]+
     ;
