@@ -63,10 +63,11 @@ namespace VineScriptLib.Core
         
 		public Type type { get; internal set; }
         
-		private bool boolValue;
-        private int intValue;
-		private double numberValue;
-		private string stringValue;
+        // Immutables inner values
+		private readonly bool boolValue;
+        private readonly int intValue;
+		private readonly double numberValue;
+		private readonly string stringValue;
         
         public bool IsBool()    { return type == Type.Bool;     }
         public bool IsInt()     { return type == Type.Int;      }
