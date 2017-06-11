@@ -57,7 +57,7 @@ namespace VineScriptLib.Test
             story.vars["varInt"] = 42;
             story.vars["varNumber"] = 4.669;
             story.vars["varBool"] = true;
-            story.vars["varNull"] = null;
+            story.vars["varNull"] = VineValue.NULL;
 
             string input = "{{ $varStr }}";
             input += " {{ $varInt }}";
