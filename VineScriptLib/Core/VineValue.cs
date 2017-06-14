@@ -97,7 +97,7 @@ namespace VineScriptLib.Core
             Null,       // null
             Array,      // List<VineValue>
             Dict,       // Dictionnary<string, VineValue>
-            //Dataset // should be an Hashset*/
+            //Dataset     // should be an Hashset<VineValue>
         }
         
         public Type type { get; internal set; }
