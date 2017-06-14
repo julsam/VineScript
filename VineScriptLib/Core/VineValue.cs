@@ -285,18 +285,7 @@ namespace VineScriptLib.Core
 
         public override int GetHashCode()
         {
-            // see http://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-an-overridden-system-object-gethashcode
-
-            unchecked // Overflow is fine, just wrap
-            {
-                int hash = (int)2166136261;
-                // Suitable nullity checks etc, of course :)
-                hash = (hash * 16777619) ^ intValue.GetHashCode();
-                hash = (hash * 16777619) ^ numberValue.GetHashCode();
-                hash = (hash * 16777619) ^ stringValue.GetHashCode();
-                hash = (hash * 16777619) ^ boolValue.GetHashCode();
-                return hash;
-            }
+            return this.AsObject?.GetHashCode() ?? 0;
         }
 
         public int CompareTo(VineValue other)
