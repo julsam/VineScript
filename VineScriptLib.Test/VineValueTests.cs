@@ -721,6 +721,138 @@ namespace VineScriptLib.Test
             Assert.AreEqual(input, str_val);
         }
 
+        [TestMethod]
+        public void ArrayValues()
+        {
+            VineValue arr = new List<VineValue> { 1, 2, VineValue.NULL, "foo", true, 42.2 };
+            Assert.AreEqual(1, arr[0]);
+            arr[0] = 22;
+            Assert.AreEqual(22, arr[0]);
+            Assert.AreEqual(2, arr[1]);
+            Assert.AreEqual(VineValue.NULL, arr[2]);
+            Assert.AreEqual("foo", arr[3]);
+            Assert.AreEqual(true, arr[4]);
+            Assert.AreEqual(42.2, arr[5]);
+        }
+
+        [TestMethod]
+        public void ArrayPrint()
+        {
+            VineValue arr = new List<VineValue> { 1, 2, VineValue.NULL, "foo", true, 42.2 };
+            Assert.AreEqual("[1, 2, , \"foo\", True, 42.2]", arr.ToString());
+        }
+
+        [TestMethod]
+        public void ArrayEquality()
+        {
+            VineValue arr1 = new List<VineValue> { 1, 2, 3 };
+            VineValue arr2 = new List<VineValue> { 1, 2, 3 };
+            VineValue arr3 = new List<VineValue> { 2, 3, 1 };
+            Assert.AreEqual(arr1, arr2);
+            Assert.AreNotEqual(arr1, arr3);
+        }
+
+        [TestMethod]
+        public void ArrayAddition()
+        {
+            VineValue arr1 = new List<VineValue> { 1, 2, 3 };
+            VineValue arr2 = new List<VineValue> { 4, 5, 6 };
+            VineValue arr3 = arr1 + arr2;
+            Assert.AreEqual(1, arr3[0]);
+            Assert.AreEqual(2, arr3[1]);
+            Assert.AreEqual(3, arr3[2]);
+            Assert.AreEqual(4, arr3[3]);
+            Assert.AreEqual(5, arr3[4]);
+            Assert.AreEqual(6, arr3[5]);
+        }
+
+        [TestMethod]
+        public void Array2D()
+        {
+            VineValue arr1 = new List<VineValue> { 1, 2, 3 };
+            VineValue arr2 = new List<VineValue> { 4, 5, 6 };
+            VineValue arr3 = new List<VineValue> { 7, 8, 9 };
+            VineValue array2d = new List<VineValue> { arr1, arr2, arr3 };
+
+            Console.WriteLine(array2d);
+            
+            Assert.AreEqual(1, array2d[0][0]);
+            Assert.AreEqual(2, array2d[0][1]);
+            Assert.AreEqual(3, array2d[0][2]);
+
+            Assert.AreEqual(4, array2d[1][0]);
+            Assert.AreEqual(5, array2d[1][1]);
+            Assert.AreEqual(6, array2d[1][2]);
+
+            Assert.AreEqual(7, array2d[2][0]);
+            Assert.AreEqual(8, array2d[2][1]);
+            Assert.AreEqual(9, array2d[2][2]);
+        }
+
+        [TestMethod]
+        public void DictValues()
+        {
+            Dictionary<string, VineValue> dictlst = new Dictionary<string, VineValue>();
+            dictlst.Add("k1", "foo");
+            dictlst.Add("k2", 32);
+            dictlst.Add("k3", 0.43);
+            dictlst.Add("k4", true);
+            VineValue dict = new VineValue(dictlst);
+            Assert.AreEqual("foo", dict["k1"]);
+            dict["k1"] = "bar";
+            Assert.AreEqual("bar", dict["k1"]);
+            Assert.AreEqual(32, dict["k2"]);
+            Assert.AreEqual(0.43, dict["k3"]);
+            Assert.AreEqual(true, dict["k4"]);
+        }
+
+        [TestMethod]
+        public void DictPrint()
+        {
+            Dictionary<string, VineValue> dictlst = new Dictionary<string, VineValue>();
+            dictlst.Add("k1", "foo");
+            dictlst.Add("k2", 32);
+            dictlst.Add("k3", 0.43);
+            dictlst.Add("k4", true);
+            VineValue dict = new VineValue(dictlst);
+            Assert.AreEqual(
+                "{\"k1\": \"foo\", \"k2\": 32, \"k3\": 0.43, \"k4\": True}",
+                dict.ToString()
+            );
+        }
+
+        [TestMethod]
+        public void DictEquality()
+        {
+            Dictionary<string, VineValue> dictlst1 = new Dictionary<string, VineValue>();
+            dictlst1.Add("k1", 1);
+            dictlst1.Add("k2", 2);
+            dictlst1.Add("k3", 3);
+            VineValue dict1 = new VineValue(dictlst1);
+            Dictionary<string, VineValue> dictlst2 = new Dictionary<string, VineValue>();
+            dictlst2.Add("k1", 1);
+            dictlst2.Add("k3", 3);
+            dictlst2.Add("k2", 2);
+            VineValue dict2 = new VineValue(dictlst2);
+            
+            // Values and keys are the same
+            Assert.AreEqual(dict1, dict2);
+
+            VineValue dict3 = VineValue.newDict;
+            dict3.AsDict.Add("k1", 1);
+            dict3.AsDict.Add("k2", 2);
+            dict3.AsDict.Add("k3.2", 3);
+            VineValue dict4 = VineValue.newDict;
+            dict4.AsDict.Add("k1", 1);
+            dict4.AsDict.Add("k2", 2);
+            dict4.AsDict.Add("k3", 4);
+
+            // Values are the same but one key is different
+            Assert.AreNotEqual(dict1, dict3);
+            // Keys are the same but one value is different
+            Assert.AreNotEqual(dict1, dict4);
+        }
+
         #region Additional test attributes
         //
         // You can use the following additional attributes as you write your tests:
