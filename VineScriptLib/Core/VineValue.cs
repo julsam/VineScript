@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace VineScriptLib.Core
 {
@@ -44,21 +46,58 @@ namespace VineScriptLib.Core
             : base(string.Format("Cannot convert type '{0}' to '{1}'", from.type, to.type)) { }
     }
 
+    /// <summary>
+    /// VineScript's main variable. Can be an int, a double, a bool, a string,
+    /// an array or a dictionnary.
+    /// </summary>
     public class VineValue : IComparable, IComparable<VineValue>
     {
         public static bool strictMode = false;
 
 		public static readonly VineValue NULL = new VineValue();
+        //public static VineValue newInt {
+        //    get {
+        //        return new VineValue(0);
+        //    }
+        //}
+        //public static VineValue newNumber {
+        //    get {
+        //        return new VineValue(0.0);
+        //    }
+        //}
+        //public static VineValue newString {
+        //    get {
+        //        return new VineValue("");
+        //    }
+        //}
+        //public static VineValue newBool {
+        //    get {
+        //        return new VineValue(false);
+        //    }
+        //}
+        public static VineValue newArray {
+            get {
+                return new VineValue(new List<VineValue>());
+            }
+        }
+        public static VineValue newDict {
+            get {
+                return new VineValue(new Dictionary<string, VineValue>());
+            }
+        }
         
         // used to compare floating point numbers
         public static readonly double SMALL_VALUE = 0.00000000001;
 
         public enum Type {
-            Bool,
-            Int,
-            Number,
-            String,
-            Null
+            Bool,       // bool
+            Int,        // int
+            Number,     // double
+            String,     // string
+            Null,       // null
+            Array,      // List<VineValue>
+            Dict,       // Dictionnary<string, VineValue>
+            //Dataset // should be an Hashset*/
         }
         
 		public Type type { get; internal set; }
@@ -68,12 +107,16 @@ namespace VineScriptLib.Core
         private readonly int intValue;
 		private readonly double numberValue;
 		private readonly string stringValue;
+		private readonly List<VineValue> arrayValue;
+		private readonly Dictionary<string, VineValue> dictValue;
         
         public bool IsBool()    { return type == Type.Bool;     }
         public bool IsInt()     { return type == Type.Int;      }
         public bool IsNumber()  { return type == Type.Number;   }
         public bool IsString()  { return type == Type.String;   }
         public bool IsNull()    { return type == Type.Null;     }
+        public bool IsArray()   { return type == Type.Array;    }
+        public bool IsDict()    { return type == Type.Dict;     }
 
 		public int AsInt {
 			get {
@@ -188,6 +231,36 @@ namespace VineScriptLib.Core
 					    return boolValue.ToString();
 				    case Type.Null:
 					    return null;
+                    case Type.Array:
+                        string arr_str = "[";
+                        for (int i = 0; i < arrayValue.Count; i++) {
+                            if (arrayValue[i].IsString()) {
+                                arr_str += string.Format("\"{0}\"", arrayValue[i].ToString());
+                            } else {
+                                arr_str += arrayValue[i].ToString();
+                            }
+                            if (i < arrayValue.Count - 1) {
+                                arr_str += ", ";
+                            }
+                        }
+                        arr_str += "]";
+                        return arr_str;
+                    case Type.Dict:
+                        string dm_str = "{";
+                        for (int i = 0; i < dictValue.Count; i++) {
+                            var el = dictValue.ElementAt(i);
+                            dm_str += string.Format("\"{0}\": ", el.Key);
+                            if (el.Value.IsString()) {
+                                dm_str += string.Format("\"{0}\"", el.Value.ToString());
+                            } else {
+                                dm_str += el.Value.ToString();
+                            }
+                            if (i < dictValue.Count - 1) {
+                                dm_str += ", ";
+                            }
+                        }
+                        dm_str += "}";
+                        return dm_str;
 				    default:
 					    throw new VineConversionException(type, Type.String);
 				}
@@ -207,15 +280,62 @@ namespace VineScriptLib.Core
 					    return boolValue;
 				    case Type.Null:
 					    return null;
+                    case Type.Array:
+                        return arrayValue;
+                    case Type.Dict:
+                        return dictValue;
 				    default:
 					    throw new VineConversionException();
 				}
 			}
 		}
 
+		public List<VineValue> AsArray {
+			get {
+				switch (type) {
+                    case Type.Array:
+                        return arrayValue;
+				    default:
+                        // not sure what's the best way to handle this with strictMode
+                        if (!strictMode) {
+                            return null;
+                        } else {
+					        throw new VineConversionException(type, Type.Array);
+                        }
+				}
+			}
+		}
+
+		public Dictionary<string, VineValue> AsDict {
+			get {
+				switch (type) {
+                    case Type.Dict:
+                        return dictValue;
+				    default:
+                        // not sure what's the best way to handle this with strictMode
+                        if (!strictMode) {
+                            return null;
+                        } else {
+					        throw new VineConversionException(type, Type.Dict);
+                        }
+				}
+			}
+		}
+        
+        public VineValue this[int index]
+        {
+            get { return arrayValue[index]; }
+            set { arrayValue[index] = value; }
+        }
+        
+        public VineValue this[string key]
+        {
+            get { return dictValue[key]; }
+            set { dictValue[key] = value; }
+        }
+
         public override string ToString()
 		{
-			//return string.Format ("[Value: type={0}, AsNumber={1}, AsBool={2}, AsString={3}]", type, AsNumber, AsBool, AsString);
             return AsString;
 		}
 
@@ -243,6 +363,12 @@ namespace VineScriptLib.Core
 					    boolValue = otherValue.boolValue;
 					    break;
 				    case Type.Null:
+					    break;
+				    case Type.Array:
+					    arrayValue = new List<VineValue>(otherValue.arrayValue);
+					    break;
+				    case Type.Dict:
+					    dictValue = new Dictionary<string, VineValue>(otherValue.dictValue);
 					    break;
 				    default:
 					    throw new ArgumentOutOfRangeException ();
@@ -276,6 +402,16 @@ namespace VineScriptLib.Core
 			if (value.GetType() == typeof(bool)) {
 				type = Type.Bool;
 				boolValue = (bool)value;
+				return;
+			}
+			if (value.GetType() == typeof(List<VineValue>)) {
+				type = Type.Array;
+				arrayValue = (List<VineValue>)value;
+				return;
+			}
+			if (value.GetType() == typeof(Dictionary<string, VineValue>)) {
+				type = Type.Dict;
+				dictValue = (Dictionary<string, VineValue>)value;
 				return;
 			}
 			var error = string.Format("Attempted to create a Value using a {0}; currently, " +
@@ -384,6 +520,16 @@ namespace VineScriptLib.Core
                 return false;
             }
 
+            if (IsArray() && other.IsArray()) {
+                return arrayValue.SequenceEqual(other.arrayValue);
+            }
+
+            if (IsDict() && other.IsDict()) {
+                return dictValue.OrderBy(pair => pair.Key, StringComparer.Ordinal)
+                    .SequenceEqual(other.dictValue.OrderBy(
+                        pair => pair.Key, StringComparer.Ordinal));
+            }
+
             // Finally, all other cases:
             if (VineValue.strictMode) {
                 throw new VineComparisonException(this, other);
@@ -423,6 +569,11 @@ namespace VineScriptLib.Core
             // Now that doubles are out of the way, check for integers
 			if ((a.type == Type.Int || b.type == Type.Int)) {
 				return new VineValue(a.AsInt + b.AsInt);
+			}
+
+            // Adding 2 arrays together is allowed: [a, b] + [c, d] = [a, b, c, d]
+			if ((a.type == Type.Array && b.type == Type.Array)) {
+				return new VineValue(a.AsArray.Concat(b.AsArray).ToList());
 			}
 
             // Should not happen, right?
@@ -647,6 +798,16 @@ namespace VineScriptLib.Core
         }
 
         public static implicit operator VineValue(string val)
+        {
+	        return new VineValue(val);
+        }
+
+        public static implicit operator VineValue(List<VineValue> val)
+        {
+	        return new VineValue(val);
+        }
+
+        public static implicit operator VineValue(Dictionary<string, VineValue> val)
         {
 	        return new VineValue(val);
         }
