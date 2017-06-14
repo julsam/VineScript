@@ -722,6 +722,28 @@ namespace VineScriptLib.Test
         }
 
         [TestMethod]
+        public void VineValueHashCode()
+        {
+            // Quick test to make sure VineValue.GetHashCode() is working
+            // An exception will be thrown if it isn't.
+            HashSet<VineValue> set = new HashSet<VineValue>();
+            set.Add(new VineValue(0));
+            set.Add(new VineValue(0.0));
+            set.Add(new VineValue(false));
+            set.Add(new VineValue(""));
+            set.Add(VineValue.NULL);
+            set.Add(VineValue.newArray);
+            VineValue arr = new List<VineValue> { 1, 2, VineValue.NULL, "foo", true, 42.2 };
+            set.Add(new VineValue(arr));
+            set.Add(VineValue.newDict);
+            foreach (var el in set) {
+                Console.WriteLine(
+                    string.Format("{0}: {1}", el.GetHashCode(), el)
+                );
+            }
+        }
+
+        [TestMethod]
         public void ArrayValues()
         {
             VineValue arr = new List<VineValue> { 1, 2, VineValue.NULL, "foo", true, 42.2 };
