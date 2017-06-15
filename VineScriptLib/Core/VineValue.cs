@@ -90,11 +90,11 @@ namespace VineScriptLib.Core
         public static readonly double SMALL_VALUE = 0.00000000001;
 
         public enum Type {
+            Null,       // null
             Bool,       // bool
             Int,        // int
             Number,     // double
             String,     // string
-            Null,       // null
             Array,      // List<VineValue>
             Dict,       // Dictionnary<string, VineValue>
             //Dataset     // should be an Hashset<VineValue>
