@@ -54,9 +54,6 @@
     <Compile Include="Compilers\ParserErrorListener.cs" />
     <Compile Include="Compilers\Utils.cs" />
     <Compile Include="Compilers\Vine\VineVisitor.cs" />
-    <Compile Include="Core\Filters.cs" />
-    <Compile Include="Core\FiltersOld.cs" />
-    <Compile Include="Core\Functions.cs" />
     <Compile Include="Core\FunctionsCollection.cs" />
     <Compile Include="Core\StdLibrary.cs" />
     <Compile Include="Core\VineStory.cs" />
