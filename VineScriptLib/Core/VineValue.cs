@@ -494,16 +494,10 @@ namespace VineScriptLib.Core
                 return false;
             }
 
-            //if (    (IsNumber() && (other.IsNumber() || other.IsInt()))
-            //    ||  (other.IsNumber() && (IsNumber() || IsInt()))
-            //) {
-            //    return AsNumber == other.AsNumber;
-            //}
-
-            if (    (type == Type.Number && (other.type == Type.Number || other.type == Type.Int))
-                ||  (other.type == Type.Number && (type == Type.Number || type == Type.Int))
+            if ((IsNumber() && (other.IsNumber() || other.IsInt()))
+                || (other.IsNumber() && (IsNumber() || IsInt()))
             ) {
-                // try using SMALL_VALUE: Math.Abs(numberValue - other.numberValue) < SMALL_VALUE
+                // TODO use SMALL_VALUE: Math.Abs(numberValue - other.numberValue) < SMALL_VALUE
                 // if implemented here, should also be implemented in comparison  < > <= >=
                 return AsNumber == other.AsNumber;
             }
