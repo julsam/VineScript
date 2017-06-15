@@ -812,6 +812,31 @@ namespace VineScriptLib.Test
         }
 
         [TestMethod]
+        public void ArrayClone()
+        {
+            VineValue inner1 = new List<VineValue> { 1, 2, 3 };
+            VineValue inner2 = new List<VineValue> { 4, 5, 6 };
+            VineValue inner3 = new List<VineValue> { 7, 8, 9 };
+            VineValue array = new List<VineValue> { inner1, inner2, inner3 };
+            
+            VineValue refcopy = array;
+            VineValue clone = array.Clone();
+
+            array[0] = 42;
+            array[1][0] = 99;
+            
+            // Share the same reference, should point to the same thing
+            Assert.AreSame(array, refcopy);
+            Assert.AreSame(array[0], refcopy[0]);
+            Assert.AreSame(array[1], refcopy[1]);
+
+            // Deep copy, the data should be completly cloned and independant
+            Assert.AreNotSame(array, clone);
+            Assert.AreNotSame(array[0], clone[0]);
+            Assert.AreNotSame(array[1], clone[1]);
+        }
+
+        [TestMethod]
         public void DictValues()
         {
             Dictionary<string, VineValue> dictlst = new Dictionary<string, VineValue>();
@@ -873,6 +898,34 @@ namespace VineScriptLib.Test
             Assert.AreNotEqual(dict1, dict3);
             // Keys are the same but one value is different
             Assert.AreNotEqual(dict1, dict4);
+        }
+
+        [TestMethod]
+        public void DictClone()
+        {
+            VineValue dict = VineValue.newDict;
+            dict.AsDict.Add("a", new Dictionary<string, VineValue>() {
+                { "a.a", 1 }, { "a.b", "foo" }, { "a.c", true }
+            });
+            dict.AsDict.Add("b", VineValue.newDict);
+
+            dict.AsDict["b"].AsDict.Add("b.a", VineValue.NULL);
+            
+            VineValue refcopy = dict;
+            VineValue clone = dict.Clone();
+
+            dict["a"]["a.a"] += 100;
+            dict["b"]["b.b"] = 0.0;
+            
+            // Share the same reference, should point to the same thing
+            Assert.AreSame(dict, refcopy);
+            Assert.AreSame(dict["a"], refcopy["a"]);
+            Assert.AreSame(dict["b"], refcopy["b"]);
+
+            // Deep copy, the data should be completly cloned and independant
+            Assert.AreNotSame(dict, clone);
+            Assert.AreNotSame(dict["a"], clone["a"]);
+            Assert.AreNotSame(dict["b"], clone["b"]);
         }
 
         #region Additional test attributes

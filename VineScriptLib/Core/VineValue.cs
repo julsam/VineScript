@@ -365,13 +365,18 @@ namespace VineScriptLib.Core
                     case Type.Null:
                         break;
                     case Type.Array:
-                        arrayValue = new List<VineValue>(otherValue.arrayValue);
+                        //arrayValue = new List<VineValue>(otherValue.arrayValue);
+                        arrayValue = otherValue.arrayValue.ConvertAll(val => val.Clone());
                         break;
                     case Type.Dict:
-                        dictValue = new Dictionary<string, VineValue>(otherValue.dictValue);
+                        //dictValue = new Dictionary<string, VineValue>(otherValue.dictValue);
+                        dictValue = otherValue.AsDict.ToDictionary(
+                            entry => entry.Key,
+                            entry => entry.Value.Clone()
+                        );
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException ();
+                        throw new ArgumentOutOfRangeException();
                 }
                 return;
             }
@@ -417,6 +422,11 @@ namespace VineScriptLib.Core
             var error = string.Format("Attempted to create a Value using a {0}; currently, " +
                 "Values can only be ints, numbers, strings, bools or null.", value.GetType().Name);
             throw new Exception(error);
+        }
+
+        public VineValue Clone()
+        {
+            return new VineValue(this);
         }
 
         public override int GetHashCode()
