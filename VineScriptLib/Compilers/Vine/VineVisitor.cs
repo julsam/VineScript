@@ -117,7 +117,7 @@ namespace VineScriptLib.Compilers.Vine
             }
             VineValue value = story.CallFunction(funcName, list.ToArray());
            
-            return value as VineValue;
+            return value;
         }
 
         #endregion Commands
