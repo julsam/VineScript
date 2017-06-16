@@ -580,21 +580,13 @@ namespace VineScriptLib.Core
                 return new VineValue(a?.AsString + b?.AsString);
             }
 
-            // strings are out of the way, now each cases are treated individually
+            // strings are out of the way,
+            // starting from here each cases are treated individually
             
-            // If one of the two operands is null, the result is always null
-            if (    object.ReferenceEquals(a, null) || a.IsNull()
-                ||  object.ReferenceEquals(b, null) || b.IsNull()
-                ) {
-                if (VineValue.strictMode) {
-                    throw new VineArithmeticException(
-                        "+", 
-                        a?.type.ToString() ?? "<null>", 
-                        b?.type.ToString() ?? "<null>"
-                    );
-                } else {
-                    return VineValue.NULL; // or should it be `null`...?
-                }
+            // Catches null and throw an exception if 1 operands is null
+            Exception e = null;
+            if (!VineVarUtils.CheckNullOp("+", a, b, out e)) {
+                throw e;
             }
 
             // Can't add bools
@@ -624,13 +616,8 @@ namespace VineScriptLib.Core
         {
             // Checks for null/Null operands
             Exception e = null;
-            VineValue @return = null;
-            if (!VineVarUtils.CheckNullOp("-", a, b, out e, out @return)) {
-                if (e != null) {
-                    throw e;
-                } else {
-                    return @return;
-                }
+            if (!VineVarUtils.CheckNullOp("-", a, b, out e)) {
+                throw e;
             }
 
             // First checks for Numbers, Ints and Nulls
@@ -654,13 +641,8 @@ namespace VineScriptLib.Core
         {
             // Checks for null/Null operands
             Exception e = null;
-            VineValue @return = null;
-            if (!VineVarUtils.CheckNullOp("*", a, b, out e, out @return)) {
-                if (e != null) {
-                    throw e;
-                } else {
-                    return @return;
-                }
+            if (!VineVarUtils.CheckNullOp("*", a, b, out e)) {
+                throw e;
             }
 
             // First checks for Numbers, Ints and Nulls
@@ -684,13 +666,8 @@ namespace VineScriptLib.Core
         {
             // Checks for null/Null operands
             Exception e = null;
-            VineValue @return = null;
-            if (!VineVarUtils.CheckNullOp("/", a, b, out e, out @return)) {
-                if (e != null) {
-                    throw e;
-                } else {
-                    return @return;
-                }
+            if (!VineVarUtils.CheckNullOp("/", a, b, out e)) {
+                throw e;
             }
 
             // First checks for Numbers, Ints and Nulls
@@ -714,13 +691,8 @@ namespace VineScriptLib.Core
         {
             // Checks for null/Null operands
             Exception e = null;
-            VineValue @return = null;
-            if (!VineVarUtils.CheckNullOp("%", a, b, out e, out @return)) {
-                if (e != null) {
-                    throw e;
-                } else {
-                    return @return;
-                }
+            if (!VineVarUtils.CheckNullOp("%", a, b, out e)) {
+                throw e;
             }
 
             // First checks for Numbers, Ints and Nulls
@@ -744,13 +716,8 @@ namespace VineScriptLib.Core
         {
             // Checks for null/Null operands
             Exception e = null;
-            VineValue @return = null;
-            if (!VineVarUtils.CheckNullOp("^", a, b, out e, out @return)) {
-                if (e != null) {
-                    throw e;
-                } else {
-                    return @return;
-                }
+            if (!VineVarUtils.CheckNullOp("^", a, b, out e)) {
+                throw e;
             }
 
             // First checks for Numbers, Ints and Nulls

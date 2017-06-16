@@ -38,15 +38,6 @@ namespace VineScriptLib.Test
 
         [TestMethod]
         [ExpectedException(typeof(VineArithmeticException))]
-        public void BoolAdditionFails2()
-        {
-            VineValue a = new VineValue(true);
-            VineValue b = VineValue.NULL;
-            var r = a + b;
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(VineArithmeticException))]
         public void BoolSubFails0()
         {
             VineValue a = new VineValue(true);
@@ -61,6 +52,143 @@ namespace VineScriptLib.Test
             VineValue a = new VineValue(true);
             VineValue b = new VineValue(1);
             var r = a - b;
+        }
+
+        [TestMethod]
+        public void NullArithmetic()
+        {
+            VineValue @null = null;
+            VineValue NULL = VineValue.NULL;
+            VineValue str = "foo";
+            VineValue @int = 42;
+            VineValue number = 16.66;
+            VineValue @bool = true;
+            VineValue array = VineValue.newArray;
+            VineValue dict = VineValue.newDict;
+            
+            /**
+             * Fails:
+             **/
+
+            // +
+            try {
+                var r = @null + @null;
+                Assert.Fail();
+            } catch (VineArithmeticException) { /* Valid */ }
+
+            try {
+                var r = NULL + NULL;
+                Assert.Fail();
+            } catch (VineArithmeticException) { /* Valid */ }
+
+            try {
+                var r = @null + NULL;
+                Assert.Fail();
+            } catch (VineArithmeticException) { /* Valid */ }
+
+            try {
+                var r = @null + @int;
+                Assert.Fail();
+            } catch (VineArithmeticException) { /* Valid */ }
+
+            try {
+                var r = @null + number;
+                Assert.Fail();
+            } catch (VineArithmeticException) { /* Valid */ }
+
+            try {
+                var r = @null + array;
+                Assert.Fail();
+            } catch (VineArithmeticException) { /* Valid */ }
+
+            try {
+                var r = @null + dict;
+                Assert.Fail();
+            } catch (VineArithmeticException) { /* Valid */ }
+
+            // -
+            try {
+                var r = str - @null;
+                Assert.Fail();
+            } catch (VineArithmeticException) { /* Valid */ }
+
+            try {
+                var r = @int - @null;
+                Assert.Fail();
+            } catch (VineArithmeticException) { /* Valid */ }
+
+            // *
+            try {
+                var r = @null * @null;
+                Assert.Fail();
+            } catch (VineArithmeticException) { /* Valid */ }
+
+            try {
+                var r = @int * @null;
+                Assert.Fail();
+            } catch (VineArithmeticException) { /* Valid */ }
+
+            // /
+            try {
+                var r = @int / @null;
+                Assert.Fail();
+            } catch (VineArithmeticException) { /* Valid */ }
+
+            // unary
+            try {
+                var r = -@null;
+                Assert.Fail();
+            } catch (VineArithmeticException) { /* Valid */ }
+            try {
+                var r = !@null;
+                Assert.Fail();
+            } catch (VineArithmeticException) { /* Valid */ }
+            
+            /**
+             * Succeeds:
+             **/
+            Assert.AreEqual((VineValue)"foo", str + @null);
+            Assert.AreEqual((VineValue)"foo", str + NULL);
+        }
+
+        [TestMethod]
+        public void NullGtEqLt()
+        {
+            VineValue @null = null;
+            VineValue NULL = VineValue.NULL;
+            VineValue str = "foo";
+            VineValue @int = 42;
+            VineValue number = 16.66;
+            VineValue @bool = true;
+            VineValue array = VineValue.newArray;
+            VineValue dict = VineValue.newDict;
+
+            if (VineValue.strictMode) {
+                try {
+                    var r = @int > @null;
+                    Assert.Fail();
+                } catch (VineComparisonException) { /* Valid */ }
+
+                try {
+                    var r = NULL < @null;
+                    Assert.Fail();
+                } catch (VineComparisonException) { /* Valid */ }
+
+                try {
+                    var r = NULL >= @null;
+                    Assert.Fail();
+                } catch (VineComparisonException) { /* Valid */ }
+
+                try {
+                    var r = NULL <= @null;
+                    Assert.Fail();
+                } catch (VineComparisonException) { /* Valid */ }
+            } else {
+                Assert.AreEqual(false, @null > NULL);
+                Assert.AreEqual(false, @null < @int);
+                Assert.AreEqual(false, @null >= number);
+                Assert.AreEqual(false, @null <= array);
+            }
         }
 
         [TestMethod]
