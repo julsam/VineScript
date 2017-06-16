@@ -16,9 +16,17 @@ namespace VineScriptLib.Core
             : base(string.Format("Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'",
                 op, a.type, b.type)) { }
 
+        public VineArithmeticException(string op, string a, string b) 
+            : base(string.Format("Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'",
+                op, a, b)) { }
+
         public VineArithmeticException(string op, VineValue a) 
             : base(string.Format("Unary operator '{0}' cannot be applied to operand of type '{1}' ",
                 op, a.type)) { }
+
+        public VineArithmeticException(string op, string a) 
+            : base(string.Format("Unary operator '{0}' cannot be applied to operand of type '{1}' ",
+                op, a)) { }
     }
 
     public class VineComparisonException : Exception
@@ -46,6 +54,7 @@ namespace VineScriptLib.Core
             : base(string.Format("Cannot convert type '{0}' to '{1}'", from.type, to.type)) { }
     }
 
+
     /// <summary>
     /// VineScript's main variable. Can be an int, a double, a bool, a string,
     /// an array or a dictionnary.
@@ -54,7 +63,7 @@ namespace VineScriptLib.Core
     {
         public static bool strictMode = false;
 
-        public static readonly VineValue NULL = new VineValue();
+        public static readonly VineValue NULL = new VineValue(null);
         //public static VineValue newInt {
         //    get {
         //        return new VineValue(0);
@@ -517,6 +526,7 @@ namespace VineScriptLib.Core
             if (IsBool() && other.IsBool()) {
                 return AsBool == other.AsBool;
             }
+
             if (IsNull() && other.IsNull()) {
                 return true;
             }
@@ -544,24 +554,52 @@ namespace VineScriptLib.Core
 
         public static VineValue operator + (VineValue a, VineValue b)
         {
-            // catches:
+            // Here's how additions with null are handled:
+            // null + null => error
+            // null + string => string
+            // null + anything else => null
+            
+            // First, if both operands are null/Null => error
+            if (    (object.ReferenceEquals(a, null) || a.IsNull())
+                &&  (object.ReferenceEquals(b, null) || b.IsNull())
+                ) {
+                throw new VineArithmeticException(
+                    "+", 
+                    a?.type.ToString() ?? "<null>", 
+                    b?.type.ToString() ?? "<null>"
+                );
+            }
+
+            // String catches:
             // undefined + string
             // number + string
             // string + string
             // bool + string
             // null + string
-
-            // we're headed for string town!
-            if (a.type == Type.String || b.type == Type.String) {
+            if (a?.type == Type.String || b?.type == Type.String) {
                 // automatically becomes a string, even if only 1 of the 2 args is a string
-                return new VineValue(a.AsString + b.AsString);
+                return new VineValue(a?.AsString + b?.AsString);
             }
 
             // strings are out of the way, now each cases are treated individually
+            
+            // If one of the two operands is null, the result is always null
+            if (    object.ReferenceEquals(a, null) || a.IsNull()
+                ||  object.ReferenceEquals(b, null) || b.IsNull()
+                ) {
+                if (VineValue.strictMode) {
+                    throw new VineArithmeticException(
+                        "+", 
+                        a?.type.ToString() ?? "<null>", 
+                        b?.type.ToString() ?? "<null>"
+                    );
+                } else {
+                    return VineValue.NULL; // or should it be `null`...?
+                }
+            }
 
             // Can't add bools
             if (a.type == Type.Bool || b.type == Type.Bool) {
-                //throw new ArgumentException(string.Format("Cannot add types {0} and {1}.", a.type, b.type));
                 throw new VineArithmeticException("+", a, b);
             }
 
@@ -580,13 +618,22 @@ namespace VineScriptLib.Core
                 return new VineValue(a.AsArray.Concat(b.AsArray).ToList());
             }
 
-            // Should not happen, right?
-            //throw new ArgumentException(string.Format("Cannot add types {0} and {1}.", a.type, b.type));
             throw new VineArithmeticException("+", a, b);
         }
 
         public static VineValue operator - (VineValue a, VineValue b)
         {
+            // Checks for null/Null operands
+            Exception e = null;
+            VineValue @return = null;
+            if (!VineVarUtils.CheckNullOp("-", a, b, out e, out @return)) {
+                if (e != null) {
+                    throw e;
+                } else {
+                    return @return;
+                }
+            }
+
             // First checks for Numbers, Ints and Nulls
             if (    (a.type == Type.Number && (b.type == Type.Number || b.type == Type.Null || b.type == Type.Int))
                 ||  (b.type == Type.Number && (a.type == Type.Number || a.type == Type.Null || a.type == Type.Int))
@@ -600,13 +647,23 @@ namespace VineScriptLib.Core
             ) {
                 return new VineValue(a.AsInt - b.AsInt);
             }
-
-            //throw new ArgumentException(string.Format("Cannot subtract types {0} and {1}.", a.type, b.type));
+            
             throw new VineArithmeticException("-", a, b);
         }
 
         public static VineValue operator * (VineValue a, VineValue b)
         {
+            // Checks for null/Null operands
+            Exception e = null;
+            VineValue @return = null;
+            if (!VineVarUtils.CheckNullOp("*", a, b, out e, out @return)) {
+                if (e != null) {
+                    throw e;
+                } else {
+                    return @return;
+                }
+            }
+
             // First checks for Numbers, Ints and Nulls
             if (    (a.type == Type.Number && (b.type == Type.Number || b.type == Type.Null || b.type == Type.Int))
                 ||  (b.type == Type.Number && (a.type == Type.Number || a.type == Type.Null || a.type == Type.Int))
@@ -620,13 +677,23 @@ namespace VineScriptLib.Core
             ) {
                 return new VineValue(a.AsInt * b.AsInt);
             }
-
-            //throw new ArgumentException(string.Format("Cannot multiply types {0} and {1}.", a.type, b.type));
+            
             throw new VineArithmeticException("*", a, b);
         }
 
         public static VineValue operator / (VineValue a, VineValue b)
         {
+            // Checks for null/Null operands
+            Exception e = null;
+            VineValue @return = null;
+            if (!VineVarUtils.CheckNullOp("/", a, b, out e, out @return)) {
+                if (e != null) {
+                    throw e;
+                } else {
+                    return @return;
+                }
+            }
+
             // First checks for Numbers, Ints and Nulls
             if (    (a.type == Type.Number && (b.type == Type.Number || b.type == Type.Null || b.type == Type.Int))
                 ||  (b.type == Type.Number && (a.type == Type.Number || a.type == Type.Null || a.type == Type.Int))
@@ -641,12 +708,22 @@ namespace VineScriptLib.Core
                 return new VineValue(a.AsInt / b.AsInt);
             }
 
-            //throw new ArgumentException(string.Format("Cannot divide types {0} and {1}.", a.type, b.type));
             throw new VineArithmeticException("/", a, b);
         }
 
         public static VineValue operator % (VineValue a, VineValue b)
         {
+            // Checks for null/Null operands
+            Exception e = null;
+            VineValue @return = null;
+            if (!VineVarUtils.CheckNullOp("%", a, b, out e, out @return)) {
+                if (e != null) {
+                    throw e;
+                } else {
+                    return @return;
+                }
+            }
+
             // First checks for Numbers, Ints and Nulls
             if (    (a.type == Type.Number && (b.type == Type.Number || b.type == Type.Null || b.type == Type.Int))
                 ||  (b.type == Type.Number && (a.type == Type.Number || a.type == Type.Null || a.type == Type.Int))
@@ -666,6 +743,17 @@ namespace VineScriptLib.Core
 
         public static VineValue operator ^ (VineValue a, VineValue b)
         {
+            // Checks for null/Null operands
+            Exception e = null;
+            VineValue @return = null;
+            if (!VineVarUtils.CheckNullOp("^", a, b, out e, out @return)) {
+                if (e != null) {
+                    throw e;
+                } else {
+                    return @return;
+                }
+            }
+
             // First checks for Numbers, Ints and Nulls
             if (    (a.type == Type.Number && (b.type == Type.Number || b.type == Type.Null || b.type == Type.Int))
                 ||  (b.type == Type.Number && (a.type == Type.Number || a.type == Type.Null || a.type == Type.Int))
@@ -685,6 +773,12 @@ namespace VineScriptLib.Core
 
         public static VineValue operator - (VineValue a)
         {
+            // Checks for null/Null operand
+            Exception e = null;
+            if (!VineVarUtils.CheckNullOp("-", a, out e)) {
+                throw e;
+            }
+
             if (a.type == Type.Number) {
                 return new VineValue(-a.AsNumber);
             }
@@ -694,12 +788,17 @@ namespace VineScriptLib.Core
             if (a.type == Type.Null) {
                 return new VineValue(-0); // Not really sure with that...
             }
-            //throw new ArgumentException(string.Format("Cannot negate type {0}.", a.type));
             throw new VineArithmeticException("-", a);
         }
 
         public static VineValue operator ! (VineValue a)
         {
+            // Checks for null/Null operand
+            Exception e = null;
+            if (!VineVarUtils.CheckNullOp("!", a, out e)) {
+                throw e;
+            }
+
             if (a.type == Type.Bool) {
                 return new VineValue(!a.AsBool);
             }
@@ -709,21 +808,43 @@ namespace VineScriptLib.Core
         
         public static bool operator == (VineValue a, VineValue b)
         {
-            return a.Equals(b);
+            if (!object.ReferenceEquals(a, null)) {
+                return a.Equals(b);
+            }
+            if (!object.ReferenceEquals(b, null)) {
+                return b.Equals(a);
+            }
+            // they're both null
+            return true;
+
+            // Quicker but less readable way of doing the same thing:
+            //return (a?.Equals(b) ?? b?.Equals(a)) ?? true;
         }
 
         public static bool operator != (VineValue a, VineValue b)
         {
-            return !a.Equals(b);
+            if (!object.ReferenceEquals(a, null)) {
+                return !a.Equals(b);
+            }
+            if (!object.ReferenceEquals(b, null)) {
+                return !b.Equals(a);
+            }
+            // they're both null: they're not different
+            return false;
+
+            // Quicker but less readable way of doing the same thing:
+            //return (!a?.Equals(b) ?? !b?.Equals(a)) ?? false;
         }
 
         // Define the is greater than operator.
         public static bool operator > (VineValue a, VineValue b)
         {
-            if (    (a.type == Type.Int || a.type == Type.Number)
-                &&  (b.type == Type.Int || b.type == Type.Number)
-            ) {
-                return a.CompareTo(b) == 1;
+            if (!object.ReferenceEquals(a, null) && !object.ReferenceEquals(b, null)) { 
+                if (    (a.type == Type.Int || a.type == Type.Number)
+                    &&  (b.type == Type.Int || b.type == Type.Number)
+                ) {
+                    return a.CompareTo(b) == 1;
+                }
             }
 
             if (VineValue.strictMode) {
@@ -736,10 +857,12 @@ namespace VineScriptLib.Core
         // Define the is less than operator.
         public static bool operator < (VineValue a, VineValue b)
         {
-            if (    (a.type == Type.Int || a.type == Type.Number)
-                &&  (b.type == Type.Int || b.type == Type.Number)
-            ) {
-                return a.CompareTo(b) == -1;
+            if (!object.ReferenceEquals(a, null) && !object.ReferenceEquals(b, null)) { 
+                if (    (a.type == Type.Int || a.type == Type.Number)
+                    &&  (b.type == Type.Int || b.type == Type.Number)
+                ) {
+                    return a.CompareTo(b) == -1;
+                }
             }
             
             if (VineValue.strictMode) {
@@ -752,10 +875,12 @@ namespace VineScriptLib.Core
         // Define the is greater than or equal to operator.
         public static bool operator >= (VineValue a, VineValue b)
         {
-            if (    (a.type == Type.Int || a.type == Type.Number)
-                &&  (b.type == Type.Int || b.type == Type.Number)
-            ) {
-                return a.CompareTo(b) >= 0;
+            if (!object.ReferenceEquals(a, null) && !object.ReferenceEquals(b, null)) { 
+                if (    (a.type == Type.Int || a.type == Type.Number)
+                    &&  (b.type == Type.Int || b.type == Type.Number)
+                ) {
+                    return a.CompareTo(b) >= 0;
+                }
             }
             
             if (VineValue.strictMode) {
@@ -768,10 +893,12 @@ namespace VineScriptLib.Core
         // Define the is less than or equal to operator.
         public static bool operator <= (VineValue a, VineValue b)
         {
-            if (    (a.type == Type.Int || a.type == Type.Number)
-                &&  (b.type == Type.Int || b.type == Type.Number)
-            ) {
-                return a.CompareTo(b) <= 0;
+            if (!object.ReferenceEquals(a, null) && !object.ReferenceEquals(b, null)) { 
+                if (    (a.type == Type.Int || a.type == Type.Number)
+                    &&  (b.type == Type.Int || b.type == Type.Number)
+                ) {
+                    return a.CompareTo(b) <= 0;
+                }
             }
             
             if (VineValue.strictMode) {
