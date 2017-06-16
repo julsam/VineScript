@@ -101,26 +101,6 @@ namespace VineScriptLib.Core
         //    return value.ToUpper();
         //}
 
-        //public static bool IsBool(object context, bool value)
-        //{
-        //    return typeof(bool).IsInstanceOfType(value);
-        //}
-
-        //public static bool IsInt(object context, int value)
-        //{
-        //    return typeof(int).IsInstanceOfType(value);
-        //}
-
-        //public static bool IsDouble(object context, double value)
-        //{
-        //    return typeof(double).IsInstanceOfType(value);
-        //}
-
-        //public static bool IsString(object context, string value)
-        //{
-        //    return typeof(string).IsInstanceOfType(value);
-        //}
-
         //public static int DebugArgsInt(object context, int value)
         //{
         //    return value;
