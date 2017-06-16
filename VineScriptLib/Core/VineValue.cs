@@ -355,7 +355,7 @@ namespace VineScriptLib.Core
         public VineValue(object value)
         {
             // Copy an existing value
-            if (typeof(VineValue).IsInstanceOfType(value)) {
+            if (value is VineValue) {
                 var otherValue = value as VineValue;
                 type = otherValue.type;
                 switch (type) {
