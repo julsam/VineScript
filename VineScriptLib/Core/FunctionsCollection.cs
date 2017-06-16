@@ -70,17 +70,17 @@ namespace VineScriptLib.Core
                 // (skip the first argument because it's the context)
                 for (int i = 1; i < parameters.Length; i++) {
                     if (parameters[i].ParameterType != typeof(VineValue)) {
-                        if (typeof(bool) == parameters[i].ParameterType) {
+                        if (parameters[i].ParameterType == typeof(bool)) {
                             combinedArgs[i] = ((VineValue)combinedArgs[i]).AsBool;
                         }
-                        else if (typeof(string) == parameters[i].ParameterType) {
+                        else if (parameters[i].ParameterType == typeof(string)) {
                             combinedArgs[i] = ((VineValue)combinedArgs[i]).AsString;
                         }
-                        else if (typeof(int) == parameters[i].ParameterType) {
+                        else if (parameters[i].ParameterType == typeof(int)) {
                             combinedArgs[i] = ((VineValue)combinedArgs[i]).AsInt;
                         }
-                        else if (   typeof(double) == parameters[i].ParameterType 
-                                ||  typeof(float) == parameters[i].ParameterType
+                        else if (   parameters[i].ParameterType == typeof(double)
+                                ||  parameters[i].ParameterType == typeof(float)
                         ) {
                             combinedArgs[i] = ((VineValue)combinedArgs[i]).AsNumber;
                         }
