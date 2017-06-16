@@ -35,6 +35,8 @@ namespace VineScriptLib.Core
             functions.Register("IsInt", typeof(StdLibrary));
             functions.Register("IsNumber", typeof(StdLibrary));
             functions.Register("IsNull", typeof(StdLibrary));
+            functions.Register("IsArray", typeof(StdLibrary));
+            functions.Register("IsDict", typeof(StdLibrary));
         }
 
         public void RegisterFilters()
@@ -80,6 +82,16 @@ namespace VineScriptLib.Core
         public static bool IsNull(object context, VineValue value)
         {
             return value.IsNull();
+        }
+
+        public static bool IsArray(object context, VineValue value)
+        {
+            return value.IsArray();
+        }
+
+        public static bool IsDict(object context, VineValue value)
+        {
+            return value.IsDict();
         }
 
         // Using c# types instead of VineValue:
