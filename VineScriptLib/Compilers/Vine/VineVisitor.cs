@@ -106,13 +106,13 @@ namespace VineScriptLib.Compilers.Vine
             // ID '(' expressionList? ')'
             var funcName = context.ID().GetText();
             Console.WriteLine("> FUNCALL: " + funcName);
-            List<VineValue> list = new List<VineValue>();
+            List<object> list = new List<object>();
             if (context.expressionList() != null)
             {
                 for (int i = 0; i < context.expressionList().expr().Length; i++)
                 {
                     var el = Visit(context.expressionList().expr(i));
-                    list.Add(el);
+                    list.Add((object)el);
                 }
             }
             VineValue value = story.CallFunction(funcName, list.ToArray());
