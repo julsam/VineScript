@@ -374,11 +374,11 @@ namespace VineScriptLib.Core
                     case Type.Null:
                         break;
                     case Type.Array:
-                        //arrayValue = new List<VineValue>(otherValue.arrayValue);
+                        // deep copy
                         arrayValue = otherValue.arrayValue.ConvertAll(val => val.Clone());
                         break;
                     case Type.Dict:
-                        //dictValue = new Dictionary<string, VineValue>(otherValue.dictValue);
+                        // deep copy
                         dictValue = otherValue.AsDict.ToDictionary(
                             entry => entry.Key,
                             entry => entry.Value.Clone()
@@ -473,16 +473,15 @@ namespace VineScriptLib.Core
             if (obj == null) {
                 return 1;
             }
-
-            // soft, fast coercion
+            
             var other = obj as VineValue;
 
-            // not a value
+            // not a VineValue
             if (other == null) {
-                throw new ArgumentException("Object is not a Value");
+                throw new ArgumentException("Object is not of type VineValue");
             }
 
-            // it is a value!
+            // it's a VineValue
             return CompareTo(other);
         }
 
