@@ -78,12 +78,12 @@ namespace VineScriptLib.Compilers.Vine
         public override VineValue VisitDisplay(VineParser.DisplayContext context)
         {
             //var id = context.ID().GetText().Remove(0, 1); // Remove '$'
-            object value = Visit(context.expr());
+            VineValue value = Visit(context.expr());
             Console.WriteLine("> VAR: " + context.expr().GetText() + " = " + value);
-            output += value;
+            output += value.AsString;
             //if (context.END_OUTPUT_WS() != null)
             //    output += " ";
-            return value as VineValue;
+            return value;
         }
 
         #region Commands
@@ -326,7 +326,7 @@ namespace VineScriptLib.Compilers.Vine
         public override VineValue VisitVarAtom(VineParser.VarAtomContext context)
         {
             var id = context.VAR().GetText().Remove(0, 1); // Remove '$'
-            object value = story.vars.ContainsKey(id) ? story.vars[id] : VineValue.NULL;
+            VineValue value = story.vars.ContainsKey(id) ? story.vars[id] : VineValue.NULL;
             Console.WriteLine("VariableValue: " + id + " = \"" + value + "\"");
             return value as VineValue;
         }
