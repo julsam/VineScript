@@ -102,7 +102,7 @@ block
 text:   TXT
     ;
 
-stmt:   outputVariable
+stmt:   display
     |   stmtBlock
     ;
 
@@ -115,9 +115,9 @@ stmtBlock
     ;
 
 /**
- * Output something (variable, expression, function return, ...)
+ * Display something in the text (variable, expression, function return, ...)
  **/
-outputVariable: '{{' expr '}}' ;
+display: '{{' expr '}}' ;
 
 command
     :   '{%' 'set' VAR ('='|'to') expr '%}' # assignStmt

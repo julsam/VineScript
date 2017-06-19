@@ -75,7 +75,7 @@ namespace VineScriptLib.Compilers.Vine
         //    return null;
         //}
 
-        public override VineValue VisitOutputVariable(VineParser.OutputVariableContext context)
+        public override VineValue VisitDisplay(VineParser.DisplayContext context)
         {
             //var id = context.ID().GetText().Remove(0, 1); // Remove '$'
             object value = Visit(context.expr());
