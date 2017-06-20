@@ -91,7 +91,7 @@ namespace VineScriptLib.Compilers.Vine
         public override VineValue VisitAssignStmt(VineParser.AssignStmtContext context)
         {
             // '{%' 'set' ID 'to' expr '%}'
-            var id = context.variable().GetText().Remove(0, 1); // Remove '$'
+            string id = context.variable().GetText().Replace("$", ""); // Remove optional '$'
             VineValue value = Visit(context.expr());
             Console.WriteLine("STMT SET " + id + " TO " + value);
             if (story.vars.ContainsKey(id)) { 
@@ -341,7 +341,7 @@ namespace VineScriptLib.Compilers.Vine
 
         public override VineValue VisitSimpleVar(VineParser.SimpleVarContext context)
         {
-            var id = context.GetText().Remove(0, 1); // Remove '$'
+            string id = context.GetText().Replace("$", ""); // Remove optional '$'
             VineValue value = story.vars.ContainsKey(id) ? story.vars[id] : VineValue.NULL;
             Console.WriteLine("SimpleVar: " + id + " = \"" + value + "\"");
             return value as VineValue;
