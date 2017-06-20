@@ -77,7 +77,6 @@ namespace VineScriptLib.Compilers.Vine
 
         public override VineValue VisitDisplay(VineParser.DisplayContext context)
         {
-            //var id = context.ID().GetText().Remove(0, 1); // Remove '$'
             VineValue value = Visit(context.expr());
             Console.WriteLine("> VAR: " + context.expr().GetText() + " = " + value);
             output += value.AsString;
@@ -129,12 +128,6 @@ namespace VineScriptLib.Compilers.Vine
             Console.WriteLine("CONTROL STATEMENT");
             bool ifvalue = Visit(context.ifStmt()).AsBool;
             if (!ifvalue) {
-                //for (int i = 0; i < context.stat().Count; i++) {
-                //    Console.WriteLine(">>> " + context.stat(i).GetText());
-                //    var value = Visit(context.stat(i));
-                //    Console.WriteLine(">>> " + value);
-                //    Console.WriteLine("\r\n-------------\r\n");
-                //}
                 bool elifvalue = false;
                 for (int i = 0; i < context.elifStmt().Length; i++) {
                     elifvalue = Visit(context.elifStmt(i)).AsBool;
@@ -213,9 +206,6 @@ namespace VineScriptLib.Compilers.Vine
             VineValue right = Visit(context.right);
             return (left ^ right);
         }
-
-        // expr op=('*' | '/'/* | '%'*/) expr		# mulDivExpr
-        // expr op=('+'|'-') expr					# addSubExpr
 
         public override VineValue VisitMulDivModExpr(VineParser.MulDivModExprContext context)
         {
@@ -351,15 +341,6 @@ namespace VineScriptLib.Compilers.Vine
         {
             Console.WriteLine(" Visit Symbol={0}", node.Symbol.Text);
         }
-        
-        // test
-        //public override VineValue VisitAaa(VineParser.AaaContext context)
-        //{
-        //    Console.WriteLine("Output Variable " + context.outputVariable().GetText());
-        //    VineValue value = Visit(context.outputVariable());
-
-        //    return value;
-        //}
     }
     
 }

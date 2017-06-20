@@ -140,26 +140,7 @@ ifStmt:   '{%' 'if ' expr '%}' block* ;
 elifStmt:   '{%' 'elif ' expr '%}' block* ;
 elseStmt:   '{%' 'else' '%}' block* ;
 
-endIfStmt:  '{%' 'end' '%}' ;    
-
-/*
-// TODO delete
-boolExpr:   expr op=('=='|'!='|'<'|'>'|'<='|'>=') expr    # exprComparison
-        |   boolExpr op=('=='|'!=') boolExpr            # boolComparison
-        |   boolExpr op=('and'|'or'|'&&'|'||') boolExpr    # boolExprCombination
-        |   '(' boolExpr ')'                            # boolExprParen
-        |   ('true'|'false')                            # atomBoolValue
-        ;
-
-expr:   op=(MINUS|NOT) expr            # unaryExpr // try with NEG kw
-    |   expr op=('*'|'/') expr        # mulDivExpr
-    |   expr op=('+'|MINUS) expr    # addSubExpr
-    |   INT                            # intExpr
-    |   variable                    # variableExpr
-    |   STRING                        # stringExpr
-    |   '(' expr ')'                # parensExpr
-    ;
-*/
+endIfStmt:  '{%' 'end' '%}' ;
 
 expr:   <assoc=right> left=expr '^' right=expr      # powExpr
     |   op=(MINUS|NOT) expr                         # unaryExpr 
@@ -206,9 +187,4 @@ postfixExpression
     |   postfixExpression '++'
     |   postfixExpression '--'
     ;
-
-argumentExpressionList
-    :   expr (',' expr)*
-    ;
-    
 */
