@@ -91,7 +91,7 @@ namespace VineScriptLib.Compilers.Vine
         public override VineValue VisitAssignStmt(VineParser.AssignStmtContext context)
         {
             // '{%' 'set' ID 'to' expr '%}'
-            var id = context.VAR().GetText().Remove(0, 1); // Remove '$'
+            var id = context.variable().GetText().Remove(0, 1); // Remove '$'
             VineValue value = Visit(context.expr());
             Console.WriteLine("STMT SET " + id + " TO " + value);
             if (story.vars.ContainsKey(id)) { 
@@ -323,14 +323,6 @@ namespace VineScriptLib.Compilers.Vine
             return bool.Parse(context.GetText());
         }
 
-        public override VineValue VisitVarAtom(VineParser.VarAtomContext context)
-        {
-            var id = context.VAR().GetText().Remove(0, 1); // Remove '$'
-            VineValue value = story.vars.ContainsKey(id) ? story.vars[id] : VineValue.NULL;
-            Console.WriteLine("VariableValue: " + id + " = \"" + value + "\"");
-            return value as VineValue;
-        }
-
         public override VineValue VisitStringAtom(VineParser.StringAtomContext context)
         {
             Console.WriteLine("ATOM STRING " + context.STRING().GetText());
@@ -346,6 +338,14 @@ namespace VineScriptLib.Compilers.Vine
         }
 
         #endregion Atom
+
+        public override VineValue VisitSimpleVar(VineParser.SimpleVarContext context)
+        {
+            var id = context.GetText().Remove(0, 1); // Remove '$'
+            VineValue value = story.vars.ContainsKey(id) ? story.vars[id] : VineValue.NULL;
+            Console.WriteLine("SimpleVar: " + id + " = \"" + value + "\"");
+            return value as VineValue;
+        }
 
         private void Visit(TerminalNodeImpl node)
         {

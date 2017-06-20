@@ -120,7 +120,7 @@ stmtBlock
 display: '{{' expr '}}' ;
 
 command
-    :   '{%' 'set' VAR ('='|'to') expr '%}' # assignStmt
+    :   '{%' 'set' variable ('='|'to') expr '%}' # assignStmt
     |   '{%' COMMAND expressionList? '%}'   # langCmd // {% formatted on %}, {% br %}, ...
     ;
 
@@ -172,6 +172,7 @@ expr:   <assoc=right> left=expr '^' right=expr      # powExpr
     |   '(' expr ')'                                # parensExpr
     |   funcCall                                    # funcCallExpr
     |   atom                                        # atomExpr
+    |   variable                                    # varExpr
     ;
 
 expressionList
@@ -181,9 +182,13 @@ expressionList
 atom:   INT             # intAtom
     |   FLOAT           # floatAtom
     |   (TRUE | FALSE)  # boolAtom
-    |   VAR             # varAtom
     |   STRING          # stringAtom
     |   NULL            # nullAtom
+    ;
+
+variable
+    :   '$' ID ('.' ID)*            # simpleVar
+//    |   variable ('[' expr ']')+    # collectionVar
     ;
 
 /*
