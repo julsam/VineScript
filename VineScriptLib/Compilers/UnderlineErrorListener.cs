@@ -10,8 +10,8 @@ namespace VineScriptLib.Compilers
         {
             var underline = UnderlineError(recognizer, offendingSymbol, line, charPositionInLine);
             var errmsg = string.Format(
-                "[Parser] Invalid Expression at {0}:{1}:\n{2}\n{3}", 
-                line, charPositionInLine, underline, msg
+                "[Parser] Invalid Expression '{0}' at {1}:{2}:\n{3}\n{4}", 
+                offendingSymbol.Text, line, charPositionInLine, underline, msg
             );
             throw new Exception(errmsg, e);
         }
