@@ -38,7 +38,7 @@ varPrint
 
 block
     :   STMT
-    |   LINE_COMMENT
+//    |   LINE_COMMENT
     |   BLOCK_COMMENT
     ;
 
