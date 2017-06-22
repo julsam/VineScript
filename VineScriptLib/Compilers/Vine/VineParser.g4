@@ -169,7 +169,7 @@ atom:   INT             # intAtom
 
 // Variable access. The '$' prefix is optional
 variable
-    :   '$'? ID ('.' ID)*            # simpleVar
+    :   '$'? ID ('.' ID)*           # simpleVar
 //    |   variable ('[' expr ']')+    # collectionVar
     ;
 
