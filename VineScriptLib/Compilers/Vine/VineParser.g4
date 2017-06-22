@@ -126,8 +126,8 @@ command
 
 funcCall
     :   ID '(' expressionList? ')'
-    |   ID '(' expressionList? ')' ')'  { NotifyErrorListeners("Too many parentheses"); }
-    |   ID '(' expressionList?          { NotifyErrorListeners("Missing closing ')'"); }
+    |   ID '(' expressionList? ')' { NotifyErrorListeners("Too many parentheses"); } ')'
+    |   ID '(' expressionList?     { NotifyErrorListeners("Missing closing ')'"); }
     ;
 
 // if, elif, else, for, end
