@@ -158,6 +158,8 @@ expr:   <assoc=right> left=expr '^' right=expr      # powExpr
 
 expressionList
     :   expr (',' expr)*
+    |   expr (','        { NotifyErrorListeners("Too many comma separators"); } ','+ expr)+
+    |   expr (',' expr)* { NotifyErrorListeners("Too many comma separators"); } ',' 
     ;
 
 atom:   INT             # intAtom
