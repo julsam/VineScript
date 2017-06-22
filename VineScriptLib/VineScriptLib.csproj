@@ -61,7 +61,7 @@
     <Compile Include="Interpreter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\VineValue.cs" />
-    <Compile Include="UnderlineErrorListener.cs" />
+    <Compile Include="Compilers\UnderlineErrorListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <Antlr4 Include="Compilers\LinesFormatter\LinesFormatter.g4">
