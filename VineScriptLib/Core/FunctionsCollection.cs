@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Linq;
 
 namespace VineScriptLib.Core
 {
@@ -48,18 +49,16 @@ namespace VineScriptLib.Core
                 ParameterInfo[] parameters = method.GetParameters();
                 
                 // context and args must be combined in an array: combinedArgs = [context, args];
-                object[] combinedArgs;
+                List<object> combinedArgs = new List<object>();
                 if (parameters.Length == 2 && parameters[1].ParameterType == typeof(Object[])) {
                     // if the parameters accepts only 1 argument (not counting context) and it's of type Object[]
-                    combinedArgs = new object[2];
-                    combinedArgs[0] = context;
-                    combinedArgs[1] = args;
+                    combinedArgs.Add(context);
+                    combinedArgs.Add(args);
                 } else {
                     // if the parameters accepts multiple or zero args (not counting context)
-                    combinedArgs = new object[1 + args.Length];
-                    combinedArgs[0] = context;
+                    combinedArgs.Add(context);
                     if (args.Length > 0) {
-                        args.CopyTo(combinedArgs, 1);
+                        combinedArgs.AddRange(args);
                     }
                 }
 
@@ -98,9 +97,9 @@ namespace VineScriptLib.Core
                         }
                     }
                 }
-                
+
                 // calling the static method by name
-                result = new VineValue(method.Invoke(null /*null for static methods*/, combinedArgs));
+                result = new VineValue(method.Invoke(null /*null for static methods*/, combinedArgs.ToArray()));
                 return true;
             } else {
                 result = VineValue.NULL;
