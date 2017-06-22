@@ -40,10 +40,15 @@ BLOCK_COMMENT:  '{#' .*? '#}' ;
 //WS:     [ \t]+ -> channel(HIDDEN) ; // disabled, whitespace is considered as text
 NL:     '\r'? '\n' ;
 
+// Reserved/illegal characters:
+//  * '\u000B': \v vertical tabulation, marks '\n' in strings returned by a function
+//              and then used by LinesFormatter to keep those '\n' in place
+RESERVED_CHARS: [\u000B]+ ;
+
 TXT_LBRACE
     :   '{' -> type(TXT)
     ;
-TXT :   ~[{\r\n]+
+TXT :   ~[{\r\n\u000B]+
     ;
 
 // A text is either :
@@ -115,7 +120,12 @@ SET:        'set' ;
 TO:         'to' ;
 ASSIGN:     '=' ;
 
-STRING:     '"' (ESC|.)*? '"' ;
+
+STRING:         '"' (ESC | ~('\u000B'))*? '"' ;
+
+// catches string containing '\u000B':
+ILLEGAL_STRING: '"' (ESC | .)*? '"' ;
+
 //tokens { STRING }
 //DOUBLE : '"' .*? '"'   -> type(STRING) ;
 //SINGLE : '\'' .*? '\'' -> type(STRING) ;

@@ -61,7 +61,7 @@ WS:     [ \t]+ -> skip ;
 TXT_LBRACE
     :   '{' -> type(TXT)
     ;
-TXT :   ~[{\r\n]+
+TXT :   ~[{\r\n\u000B]+
     ;
 
 // A text is either :

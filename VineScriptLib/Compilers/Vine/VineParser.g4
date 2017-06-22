@@ -78,7 +78,10 @@ stmt:    conditionStmt
 
 '{%' 'set' ID ('='|'to') expr '%}'
 */
-
+@members{
+    private static readonly string reserved_char =
+        "'\u000B' (vertical tabulation) is a reserved character and is not allowed to be used!";
+}
 options { tokenVocab=VineLexer; }
 
 /*
@@ -86,6 +89,8 @@ options { tokenVocab=VineLexer; }
  */
 passage
     :   block* NL? EOF
+    |   { NotifyErrorListeners(reserved_char); } RESERVED_CHARS 
+    //|   { NotifyErrorListeners("Error char"); } ERROR_CHAR
     ;
 
 block
@@ -167,6 +172,8 @@ atom:   INT             # intAtom
     |   (TRUE | FALSE)  # boolAtom
     |   STRING          # stringAtom
     |   NULL            # nullAtom
+    |   { NotifyErrorListeners(reserved_char); }
+        ILLEGAL_STRING  # errorAtom
     ;
 
 // Variable access. The '$' prefix is optional

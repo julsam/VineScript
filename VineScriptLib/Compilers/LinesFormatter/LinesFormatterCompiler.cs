@@ -37,22 +37,25 @@ namespace VineScriptLib.Compilers.LinesFormatter
         }
 
         /// <summary>
-        /// Removes '\n' in lines marked by LinesFormatter.
-        /// Those lines corresponds to blocks of code that are now empty lines
-        /// and shouldn't be displayed in the final output.
+        /// Removes '\n' in lines corresponding to blocks of code 
+        /// that are now empty lines and shouldn't be displayed 
+        /// in the final output.
         /// </summary>
-        /// <param name="originText">User input to evaluate</param>
-        /// <param name="vineParsedText">Interpreted input, only text should remains</param>
-        /// <returns></returns>
-        public string FormatLines(string originText, string vineInterpreted)
+        /// <param name="source">Original and unterpreted source code</param>
+        /// <param name="interpreted_code">Interpreted source, only text
+        /// should remains, the code has already been interpreted</param>
+        /// <returns>Text without the empty lines</returns>
+        public string FormatLines(string source, string interpreted_code)
         {
-            Parse(originText);
+            // First, parse source code to mark lines to keep
+            Parse(source);
 
+            // Get the lines to keep
             HashSet<int> markedLines = visitor.linesToKeep;
 
             string output = "";
-            if (vineInterpreted.Length > 0) {
-                string[] tmp = vineInterpreted.Replace("\r", "").Split(new char[] { '\n' });
+            if (interpreted_code.Length > 0) {
+                string[] tmp = interpreted_code.Replace("\r", "").Split(new char[] { '\n' });
                 for (int i = 0; i< tmp.Length; i++) {
                     output += tmp[i];
                     if (markedLines.Contains(i) && i < tmp.Length - 1) {
@@ -60,6 +63,16 @@ namespace VineScriptLib.Compilers.LinesFormatter
                     }
                 }
             }
+
+            // In VineVisitor.VisitDisplay, user generated '\n' were replaced
+            // by the character control '\u000B' in order to distinguish
+            // between line returns presents originally in the source code
+            // and the one added by displaying the return of a function
+            // returning '\n'.
+            // Formatting is done, now we can add back those user generated
+            // line returns by replacing '\u000B' with '\n'
+            output = output.Replace('\u000B', '\n');
+
             return output;
         }
     }

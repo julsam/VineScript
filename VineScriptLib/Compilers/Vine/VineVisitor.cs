@@ -79,9 +79,25 @@ namespace VineScriptLib.Compilers.Vine
         {
             VineValue value = Visit(context.expr());
             Console.WriteLine("> VAR: " + context.expr().GetText() + " = " + value);
-            output += value.AsString;
-            //if (context.END_OUTPUT_WS() != null)
-            //    output += " ";
+
+            // Get every lines in an array
+            string[] outputLines = value.AsString.Split('\n');
+            for (int i = 0; i < outputLines.Length; i++) {
+                //  add the line to the output
+                output += outputLines[i];
+
+                // if not the last line
+                if (i < outputLines.Length - 1) {
+                    // control character '\u000B' that replace '\n' 
+                    // and will be used in LineFormatter to distinguish
+                    // between line returns that are in the source code
+                    // and line returns added by displaying the return value
+                    // of a function containing '\n'
+                    output += '\u000B';
+                }
+            }
+
+            // value does not contain '\u000B', it shouldn't be needed
             return value;
         }
 
