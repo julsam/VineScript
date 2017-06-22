@@ -239,7 +239,7 @@ namespace VineScriptLib.Core
                     case Type.Bool:
                         return boolValue.ToString();
                     case Type.Null:
-                        return null;
+                        return "";
                     case Type.Array:
                         string arr_str = "[";
                         for (int i = 0; i < arrayValue.Count; i++) {

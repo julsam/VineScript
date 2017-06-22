@@ -278,7 +278,7 @@ namespace VineScriptLib.Test
             Assert.AreEqual(0, val.AsInt);
             Assert.AreEqual(0.0, val.AsNumber);
             Assert.AreEqual(false, val.AsBool);
-            Assert.AreEqual(null, val.AsString);
+            Assert.AreEqual("", val.AsString);
             Assert.AreEqual(val, val2);
 
             Assert.AreEqual(new VineValue(0), val.AsInt);
