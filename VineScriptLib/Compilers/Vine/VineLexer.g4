@@ -73,7 +73,7 @@ END_STMT:       '%}' -> popMode ;
 IF:         'if ' ;
 ELSE:       'elif ' ;
 ELIF:       'else' ;
-END:        'end' ;
+ENDIF:      'endif' ;
 TRUE:       'true' ;
 FALSE:      'false' ;
 NULL:       'null' ;

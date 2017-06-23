@@ -158,7 +158,7 @@ ifStmt:   '{%' 'if ' expr '%}' block* ;
 elifStmt:   '{%' 'elif ' expr '%}' block* ;
 elseStmt:   '{%' 'else' '%}' block* ;
 
-endIfStmt:  '{%' 'end' '%}' ;
+endIfStmt:  '{%' 'endif' '%}' ;
 
 expr:   <assoc=right> left=expr '^' right=expr      # powExpr
     |   op=(MINUS|NOT) expr                         # unaryExpr 

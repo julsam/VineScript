@@ -1,5 +1,5 @@
 ﻿{# comment #}
 {% if true %}
 	{% set $var to "foo" %}
-	'{{ $var }}'{% end %}
+	'{{ $var }}'{% endif %}
 bar

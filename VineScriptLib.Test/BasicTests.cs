@@ -111,7 +111,7 @@ namespace VineScriptLib.Test
         {
             VineStory story = new VineStory();
             story.vars["var"] = 42;
-            string input = "{% if $var == 0 %}Zero{% elif $var == 42%}Forty Two{% else %}Other{% end %}";
+            string input = "{% if $var == 0 %}Zero{% elif $var == 42%}Forty Two{% else %}Other{% endif %}";
             string output = story.RunPassage(input);
             Assert.AreEqual("Forty Two", output);
         }
