@@ -79,6 +79,14 @@ stmt:    conditionStmt
 '{%' 'set' ID ('='|'to') expr '%}'
 */
 @members{
+    public enum EVineParseMode {
+        FULL,
+        EXPR
+    }
+
+    // by default, parse as a passage (full mode)
+    public EVineParseMode ParseMode = EVineParseMode.FULL;
+
     private static readonly string reserved_char =
         "'\u000B' (vertical tabulation) is a reserved character and is not allowed to be used!";
 }
@@ -88,9 +96,14 @@ options { tokenVocab=VineLexer; }
  * Parser Rules
  */
 passage
-    :   block* NL? EOF
+    :   {ParseMode == EVineParseMode.EXPR}? evalExprMode NL? EOF // active only if we're expr parse mode
+    |   block* NL? EOF
     |   { NotifyErrorListeners(reserved_char); } RESERVED_CHARS 
     //|   { NotifyErrorListeners("Error char"); } ERROR_CHAR
+    ;
+
+evalExprMode
+    :   expr
     ;
 
 block

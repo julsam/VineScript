@@ -40,12 +40,22 @@ namespace VineScriptLib.Core
 
         public string RunPassage(StreamReader istream)
         {
-            return interpreter.Evaluate(istream);
+            return interpreter.Execute(istream);
         }
 
         public string RunPassage(string text)
         {
-            return interpreter.Evaluate(text);
+            return interpreter.Execute(text);
+        }
+
+        public string Eval(StreamReader istream)
+        {
+            return interpreter.Eval(istream);
+        }
+
+        public string Eval(string expr)
+        {
+            return interpreter.Eval(expr);
         }
 
         public void Register(IVineLibrary lib)

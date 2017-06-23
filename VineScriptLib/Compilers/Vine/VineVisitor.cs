@@ -378,6 +378,18 @@ namespace VineScriptLib.Compilers.Vine
         {
             Console.WriteLine(" Visit Symbol={0}", node.Symbol.Text);
         }
+
+        /// <summary>
+        /// Eval expr mode.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public override VineValue VisitEvalExprMode(VineParser.EvalExprModeContext context)
+        {
+            VineValue value = Visit(context.expr());
+            output += value.AsString;
+            return value;
+        }
     }
     
 }
