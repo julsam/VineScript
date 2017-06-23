@@ -153,8 +153,8 @@ expr:   <assoc=right> left=expr '^' right=expr      # powExpr
     |   left=expr op=('+'|'-') right=expr           # addSubExpr
     |   left=expr op=('<'|'>'|'<='|'>=') right=expr # relationalExpr
     |   left=expr op=('=='|'!=') right=expr         # equalityExpr
-    |   left=expr op=(' and '|'&&') right=expr      # andExpr
-    |   left=expr op=(' or '|'||') right=expr       # orExpr
+    |   left=expr '&&' right=expr                   # andExpr
+    |   left=expr '||' right=expr                   # orExpr
     |   '(' expr ')'                                # parensExpr
     |   funcCall                                    # funcCallExpr
     |   atom                                        # atomExpr

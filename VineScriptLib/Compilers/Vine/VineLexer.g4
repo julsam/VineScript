@@ -80,8 +80,8 @@ END:        'end' ;
 TRUE:       'true' ;
 FALSE:      'false' ;
 NULL:       'null' ;
-AND2:       ' and ' ;
-OR2:        ' or ' ;
+AND2:       ' and ' -> type(AND) ;
+OR2:        ' or ' -> type(OR) ;
 
 AND:        '&&' ;
 OR:         '||' ;
