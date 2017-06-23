@@ -731,7 +731,7 @@ namespace VineScriptLib.Core
             if (    a.type == Type.Int && (b.type == Type.Int || b.type == Type.Null) 
                 ||  b.type == Type.Int && (a.type == Type.Int || a.type == Type.Null)
             ) {
-                return new VineValue(Math.Pow(a.AsInt, b.AsInt));
+                return new VineValue((int)Math.Pow(a.AsInt, b.AsInt));
             }
             
             throw new VineArithmeticException("^", a, b);
