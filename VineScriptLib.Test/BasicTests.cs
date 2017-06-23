@@ -168,6 +168,27 @@ namespace VineScriptLib.Test
             // If there's not error reading this file, we're good.
         }
 
+        [TestMethod]
+        public void DisplayAdditionPriority()
+        {
+            VineStory story = new VineStory();
+            story.vars["varInt1"] = 1;
+            story.vars["varInt2"] = 2;
+            story.vars["varStr"] = "Foo";
+
+            string input = "{{ \"Foo\" + 1 + 2 }}";
+            input += " {{ 1 + 2 + \"Foo\" }}";
+            input += " {{ varStr + varInt1 + varInt2 }}";
+            input += " {{ varInt1 + varInt2 + varStr}}";
+            input += " {{ \"Foo\" + 1.0 + 2.0 }}";
+            input += " {{ 1.0 + 2.0 + \"Foo\" }}";
+            input += " {{ \"Foo\" + 1.5 + 2.5 }}";
+            input += " {{ 1.5 + 2.5 + \"Foo\" }}";
+
+            string output = story.RunPassage(input);
+            Assert.AreEqual("Foo12 3Foo Foo12 3Foo Foo1.02.0 3.0Foo Foo1.52.5 4.0Foo", output);
+        }
+
         #region Additional test attributes
         //
         // You can use the following additional attributes as you write your tests:
