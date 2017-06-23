@@ -66,24 +66,9 @@ ERROR_CHAR: . ;
 
 // ----------------------------------------------------------
 mode VineCode;
-END_OUTPUT:     '}}' -> popMode ; 
-END_STMT:       '%}' -> popMode ; 
+END_OUTPUT:     '}}' -> popMode ;
+END_STMT:       '%}' -> popMode ;
 
-// Keywords
-IF:         'if ' ;
-ELSE:       'elif ' ;
-ELIF:       'else' ;
-ENDIF:      'endif' ;
-TRUE:       'true' ;
-FALSE:      'false' ;
-NULL:       'null' ;
-AND2:       ' and ' -> type(AND) ;
-OR2:        ' or ' -> type(OR) ;
-
-AND:        '&&' ;
-OR:         '||' ;
-DOT:        '.' ;
-COMMA:      ',' ;
 LPAREN:     '(' ;
 RPAREN:     ')' ;
 LBRACK:     '[' ;
@@ -91,14 +76,17 @@ RBRACK:     ']' ;
 
 //LeftBrace : '{';
 //RightBrace : '}';
+// Separators
+DOT:            '.' ;
+COMMA:          ',' ;
 
-// unary op
+// Unary op
 MINUS:  '-' ;
 NOT:    '!' ;
 NOT2:   'not ' -> type(NOT) ;
 POW:    '^' ; // right assoc
 
-// tern op
+// Arithmetic op
 MUL:    '*' ;
 DIV:    '/' ;
 ADD:    '+' ;
@@ -110,17 +98,34 @@ NEQ:    '!=' ;
 IS_EQ:  ' is ' -> type(EQ) ;
 IS_NEQ: ' is not ' -> type(NEQ) ;
 
+// Bool op
+AND:    '&&' ;
+OR:     '||' ;
+AND2:   ' and ' -> type(AND) ;
+OR2:    ' or ' -> type(OR) ;
+
 // Comparison op
 LT:     '<' ;
 GT:     '>' ;
 LTE:    '<=' ;
 GTE:    '>=' ;
 
+// Keywords
+IF:         'if ' ;
+ELSE:       'elif ' ;
+ELIF:       'else' ;
+ENDIF:      'endif' ;
+TRUE:       'true' ;
+FALSE:      'false' ;
+NULL:       'null' ;
+
+// Assign
+TO:         'to' ;
+ASSIGN:     '=' ;
+
 // TODO complete list. Commands are built-in functions
 COMMAND:    'array' | 'TODO' ;
 SET:        'set' ;
-TO:         'to' ;
-ASSIGN:     '=' ;
 
 
 STRING:         '"' (ESC | ~('\u000B'))*? '"' ;
