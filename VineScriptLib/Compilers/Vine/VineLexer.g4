@@ -95,6 +95,7 @@ RBRACK:     ']' ;
 // unary op
 MINUS:  '-' ;
 NOT:    '!' ;
+NOT2:   'not ' -> type(NOT) ;
 POW:    '^' ; // right assoc
 
 // tern op
@@ -103,9 +104,13 @@ DIV:    '/' ;
 ADD:    '+' ;
 MOD:    '%' ;
 
-// Comparison
+// Equality op
 EQ:     '==' ;
 NEQ:    '!=' ;
+IS_EQ:  ' is ' -> type(EQ) ;
+IS_NEQ: ' is not ' -> type(NEQ) ;
+
+// Comparison op
 LT:     '<' ;
 GT:     '>' ;
 LTE:    '<=' ;
