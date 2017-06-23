@@ -596,7 +596,7 @@ namespace VineScriptLib.Test
             // AsNumber
             Assert.AreEqual(17.0, num_val.AsNumber);
             // AsString
-            Assert.AreEqual("17", num_val.AsString);
+            Assert.AreEqual("17.0", num_val.AsString);
 
             // AsBool
             try {

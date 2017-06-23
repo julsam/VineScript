@@ -233,7 +233,13 @@ namespace VineScriptLib.Core
                         if (double.IsNaN(numberValue)) {
                             return "NaN";
                         }
-                        return numberValue.ToString(CultureInfo.InvariantCulture);
+
+                        // VineScript is made to write stories, 
+                        // and my (maybe bad) assumption is that writers don't care
+                        // about bigs floating point numbers.
+                        // The number is converted to string with an arbitrary number of 
+                        // optional decimal digits (should it be expanded or reduced?)
+                        return numberValue.ToString("0.0#########", CultureInfo.InvariantCulture);
                     case Type.String:
                         return stringValue;
                     case Type.Bool:
