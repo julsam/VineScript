@@ -1,12 +1,9 @@
 lexer grammar VineLexer;
 
+@header {
+using System;
+}
 @members{
-    // Allow printing for debug in the lexer {print("foo")}?
-    public bool print(string msg) { 
-        System.Console.WriteLine(msg); 
-        return true; 
-    }
-    
     //public override IToken Emit(){
     //    switch (_type) {
     //        case RESERVED_CHARS:
