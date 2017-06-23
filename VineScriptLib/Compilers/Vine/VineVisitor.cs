@@ -293,6 +293,11 @@ namespace VineScriptLib.Compilers.Vine
         {
             Console.WriteLine("AND EXPR " + context.GetText());
             VineValue left = Visit(context.left);
+            // Short-circuit evaluation (minimal evaluation)
+            if (left.AsBool == false) {
+                // stop here, 'left' is false, we don't need to check 'right'
+                return false;
+            }
             VineValue right = Visit(context.right);
             return (left.AsBool && right.AsBool);
         }
@@ -301,8 +306,14 @@ namespace VineScriptLib.Compilers.Vine
         {
             Console.WriteLine("OR EXPR " + context.GetText());
             VineValue left = Visit(context.left);
+            // Short-circuit evaluation (minimal evaluation)
+            if (left.AsBool == true) {
+                // stop here, 'left' is true, we don't need to check 'right'
+                return true;
+            }
+            // 'left' is false, we need to check 'right'
             VineValue right = Visit(context.right);
-            return (left.AsBool || right.AsBool);
+            return right.AsBool;
         }
 
         public override VineValue VisitParensExpr(VineParser.ParensExprContext context)
