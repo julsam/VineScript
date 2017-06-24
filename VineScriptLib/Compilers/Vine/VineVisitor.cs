@@ -375,6 +375,43 @@ namespace VineScriptLib.Compilers.Vine
             return value as VineValue;
         }
 
+        public override VineValue VisitNewArray(VineParser.NewArrayContext context)
+        {
+            // '[' expressionList? ']'
+            Console.WriteLine("> NEW ARRAY: ");
+
+            VineValue vineArray = VineValue.newArray;
+            if (context.expressionList() != null)
+            {
+                for (int i = 0; i < context.expressionList().expr().Length; i++)
+                {
+                    var el = Visit(context.expressionList().expr(i));
+                    vineArray.AsArray.Add(el);
+                }
+            }
+           
+            return vineArray;
+        }
+
+        public override VineValue VisitNewDict(VineParser.NewDictContext context)
+        {
+            // '{' keyValueList? '}'
+            Console.WriteLine("> NEW DICT: ");
+
+            VineValue vineDict = VineValue.newDict;
+            if (context.keyValueList() != null && context.keyValueList().keyValue() != null)
+            {
+                for (int i = 0; i < context.keyValueList().keyValue().Length; i++)
+                {
+                    var key = Visit(context.keyValueList().keyValue(i).stringLiteral());
+                    var value = Visit(context.keyValueList().keyValue(i).expr());
+                    vineDict.AsDict.Add(key.AsString, value);
+                }
+            }
+           
+            return vineDict;
+        }
+
         private void Visit(TerminalNodeImpl node)
         {
             Console.WriteLine(" Visit Symbol={0}", node.Symbol.Text);

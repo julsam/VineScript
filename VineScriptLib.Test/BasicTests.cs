@@ -189,6 +189,42 @@ namespace VineScriptLib.Test
             Assert.AreEqual("Foo12 3Foo Foo12 3Foo Foo1.02.0 3.0Foo Foo1.52.5 4.0Foo", output);
         }
 
+        [TestMethod]
+        public void ArrayCreation01()
+        {
+            VineStory story = new VineStory();
+
+            string input = "{% set $arr = [1, 2.0, \"Three\", false, null] %}";
+
+            string output = story.RunPassage(input);
+            
+            Assert.IsNotNull(story.vars["arr"]);
+            Assert.IsTrue(story.vars["arr"].IsArray());
+            Assert.AreEqual(1, story.vars["arr"][0]);
+            Assert.AreEqual(2.0, story.vars["arr"][1]);
+            Assert.AreEqual("Three", story.vars["arr"][2]);
+            Assert.AreEqual(false, story.vars["arr"][3]);
+            Assert.AreEqual(VineValue.NULL, story.vars["arr"][4]);
+        }
+
+        [TestMethod]
+        public void DictCreation01()
+        {
+            VineStory story = new VineStory();
+
+            string input = "{% set $dict = { \"a\": 1, \"b\": 2.0, \"c\": \"Three\", \"d\": false, \"e\": null } %}";
+
+            string output = story.RunPassage(input);
+            
+            Assert.IsNotNull(story.vars["dict"]);
+            Assert.IsTrue(story.vars["dict"].IsDict());
+            Assert.AreEqual(1, story.vars["dict"]["a"]);
+            Assert.AreEqual(2.0, story.vars["dict"]["b"]);
+            Assert.AreEqual("Three", story.vars["dict"]["c"]);
+            Assert.AreEqual(false, story.vars["dict"]["d"]);
+            Assert.AreEqual(VineValue.NULL, story.vars["dict"]["e"]);
+        }
+
         #region Additional test attributes
         //
         // You can use the following additional attributes as you write your tests:

@@ -148,6 +148,17 @@ funcCall
     |   ID '(' expressionList?     { NotifyErrorListeners("Missing closing ')'"); }
     ;
 
+newCollection
+    :   '[' expressionList? ']'     # newArray
+    |   LBRACE keyValueList? RBRACE  # newDict
+    // array errors:
+    |   '[' expressionList? ']' { NotifyErrorListeners("Too many brackets"); } ']' # newArrayError
+    |   '[' expressionList?     { NotifyErrorListeners("Missing closing ']'"); }   # newArrayError
+    // dict errors:
+    |   LBRACE keyValueList? RBRACE { NotifyErrorListeners("Too many braces"); } ']' # newDictError
+    |   LBRACE keyValueList?        { NotifyErrorListeners("Missing closing '}'"); } # newDictError
+    ;
+
 // if, elif, else, for, end
 controlStmt
     :   ifStmt (elifStmt)* (elseStmt)? endIfStmt 
@@ -169,15 +180,28 @@ expr:   <assoc=right> left=expr '^' right=expr      # powExpr
     |   left=expr '&&' right=expr                   # andExpr
     |   left=expr '||' right=expr                   # orExpr
     |   '(' expr ')'                                # parensExpr
+    |   newCollection                               # collectionExpr
     |   funcCall                                    # funcCallExpr
     |   atom                                        # atomExpr
     |   variable                                    # varExpr
+    |   { NotifyErrorListeners("Invalid expression"); } . # errorExpr
     ;
 
 expressionList
     :   expr (',' expr)*
     |   expr (','        { NotifyErrorListeners("Too many comma separators"); } ','+ expr)+
-    |   expr (',' expr)* { NotifyErrorListeners("Too many comma separators"); } ',' 
+    |   expr (',' expr)* { NotifyErrorListeners("Too many comma separators"); } ','
+    ;
+
+keyValue
+    :   stringLiteral ':' expr
+    |   { NotifyErrorListeners("Invalid key value: it should look like this: '\"key\": value'"); } .
+    ;
+
+keyValueList
+    :   keyValue (',' keyValue)*
+    |   keyValue (',' { NotifyErrorListeners("Too many comma separators"); } ','+ keyValue)+
+    |   keyValue (',' keyValue)* { NotifyErrorListeners("Too many comma separators"); } ','
     ;
 
 atom:   INT             # intAtom

@@ -68,12 +68,13 @@ LPAREN:     '(' ;
 RPAREN:     ')' ;
 LBRACK:     '[' ;
 RBRACK:     ']' ;
+LBRACE:     '{' ;
+RBRACE:     '}' ;
 
-//LeftBrace : '{';
-//RightBrace : '}';
 // Separators
 DOT:            '.' ;
 COMMA:          ',' ;
+COLON:           ':' ;
 
 // Unary op
 MINUS:  '-' ;
