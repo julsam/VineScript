@@ -345,14 +345,6 @@ namespace VineScriptLib.Compilers.Vine
             return bool.Parse(context.GetText());
         }
 
-        public override VineValue VisitStringAtom(VineParser.StringAtomContext context)
-        {
-            Console.WriteLine("ATOM STRING " + context.STRING().GetText());
-            string str = context.STRING().GetText();
-            str = str.Substring(1, str.Length - 2);
-            return str;
-        }
-
         public override VineValue VisitNullAtom(VineParser.NullAtomContext context)
         {
             Console.WriteLine("NULL STRING " + context.NULL().GetText());
@@ -360,6 +352,15 @@ namespace VineScriptLib.Compilers.Vine
         }
 
         #endregion Atom
+
+        public override VineValue VisitStringLiteral(VineParser.StringLiteralContext context)
+        {
+            Console.WriteLine("ATOM STRING " + context.STRING().GetText());
+            string str = context.STRING().GetText();
+            str = str.Substring(1, str.Length - 2);
+            // TODO: remove '\' in '\\n', '\\t' etc
+            return str;
+        }
 
         public override VineValue VisitSimpleVar(VineParser.SimpleVarContext context)
         {

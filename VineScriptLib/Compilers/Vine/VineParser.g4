@@ -183,10 +183,13 @@ expressionList
 atom:   INT             # intAtom
     |   FLOAT           # floatAtom
     |   (TRUE | FALSE)  # boolAtom
-    |   STRING          # stringAtom
+    |   stringLiteral   # stringAtom
     |   NULL            # nullAtom
-    |   { NotifyErrorListeners(reserved_char); }
-        ILLEGAL_STRING  # errorAtom
+    ;
+
+stringLiteral
+    :   STRING
+    |   { NotifyErrorListeners(reserved_char); } ILLEGAL_STRING
     ;
 
 // Variable access. The '$' prefix is optional
