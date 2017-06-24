@@ -30,11 +30,6 @@ STMT:           '{%' -> pushMode(VineCode) ;
 //LINE_COMMENT:   '#' ~('#')*? NL -> channel(HIDDEN);
 BLOCK_COMMENT:  '{#' .*? '#}' ;
 
-// From Harlowe:
-// This includes all forms of Unicode 6 whitespace except \n, \r, and Ogham space mark.
-//WS:                    [ \f\t\v\u00a0\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+ -> skip ;
-//WS:         [ \t]+ ;
-//WS:     [ \t]+ -> channel(HIDDEN) ; // disabled, whitespace is considered as text
 NL:     '\r'? '\n' ;
 
 // Reserved/illegal characters:
@@ -152,7 +147,7 @@ FLOAT:      DIGIT+ '.' DIGIT+ ;
 //WS_CODE:    [ \f\t\v\u00a0\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+ -> skip ;
 // Unicode whitespace https://github.com/antlr/antlr4/blob/master/doc/lexer-rules.md
 //UNICODE_WS : [\p{White_Space}] -> skip; // match all Unicode whitespace
-WS_CODE:    [ \t]+ -> channel(HIDDEN) ;
+WS_CODE:    [ \t\f]+ -> channel(HIDDEN) ;
 
 VineCode_ERROR_CHAR: ERROR_CHAR -> type(ERROR_CHAR) ;
 
