@@ -74,7 +74,7 @@ RBRACE:     '}' ;
 // Separators
 DOT:            '.' ;
 COMMA:          ',' ;
-COLON:           ':' ;
+COLON:          ':' ;
 
 // Unary op
 MINUS:  '-' ;
