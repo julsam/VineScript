@@ -215,7 +215,7 @@ namespace VineScriptLib.Compilers.Vine
 
         public override VineValue VisitUnaryExpr(VineParser.UnaryExprContext context)
         {
-            Console.WriteLine("OR EXPR " + context.GetText());
+            Console.WriteLine("UNARY EXPR " + context.GetText());
             VineValue left = Visit(context.expr());
             return context.op.Type == VineParser.MINUS ? -left : !left;
         }
@@ -255,7 +255,7 @@ namespace VineScriptLib.Compilers.Vine
 
         public override VineValue VisitEqualityExpr(VineParser.EqualityExprContext context)
         {
-            Console.WriteLine("Expr Comparison " + context.GetText());
+            Console.WriteLine("Expr Equality " + context.GetText());
             bool value = false;
             VineValue left = Visit(context.left);
             VineValue right = Visit(context.right);
