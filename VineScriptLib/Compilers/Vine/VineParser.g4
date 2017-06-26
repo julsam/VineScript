@@ -120,10 +120,12 @@ block
     |   stmt                        # noPrintBlock
     ;
 
-text:   TXT
+text
+    :   TXT
     ;
 
-stmt:   display
+stmt
+    :   display
     |   stmtBlock
     ;
 
@@ -138,11 +140,13 @@ stmtBlock
 /**
  * Display something in the text (variable, expression, function return, ...)
  **/
-display: '{{' expr '}}' ;
+display
+    : '{{' expr '}}'
+    ;
 
 command
-    :   '{%' 'set' variable ('='|'to') expr '%}' # assignStmt
-    |   '{%' COMMAND expressionList? '%}'   # langCmd // {% formatted on %}, {% br %}, ...
+    :   '{%' 'set' variable ('='|'to') expr '%}'    # assignStmt
+    |   '{%' COMMAND expressionList? '%}'           # langCmd // {% formatted on %}, {% br %}, ...
     ;
 
 funcCall
@@ -153,7 +157,7 @@ funcCall
 
 newCollection
     :   '[' expressionList? ']'     # newArray
-    |   LBRACE keyValueList? RBRACE  # newDict
+    |   LBRACE keyValueList? RBRACE # newDict
     // array errors:
     |   '[' expressionList? ']' { NotifyErrorListeners("Too many brackets"); } ']' # newArrayError
     |   '[' expressionList?     { NotifyErrorListeners("Missing closing ']'"); }   # newArrayError
@@ -184,8 +188,9 @@ endIfStmt
     :   '{%' 'endif' '%}'
     ;
 
-expr:   <assoc=right> left=expr '^' right=expr      # powExpr
-    |   op=(MINUS|NOT) expr                         # unaryExpr 
+expr
+    :   <assoc=right> left=expr '^' right=expr      # powExpr
+    |   op=('-'|'!') expr                           # unaryExpr 
     |   left=expr op=('*' | '/' | '%') right=expr   # mulDivModExpr
     |   left=expr op=('+'|'-') right=expr           # addSubExpr
     |   left=expr op=('<'|'>'|'<='|'>=') right=expr # relationalExpr
@@ -197,7 +202,6 @@ expr:   <assoc=right> left=expr '^' right=expr      # powExpr
     |   funcCall                                    # funcCallExpr
     |   atom                                        # atomExpr
     |   variable                                    # varExpr
-    |   { NotifyErrorListeners("Invalid expression"); } . # errorExpr
     ;
 
 expressionList
