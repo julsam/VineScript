@@ -79,7 +79,6 @@ COLON:          ':' ;
 // Unary op
 MINUS:  '-' ;
 NOT:    '!' ;
-NOT2:   'not ' -> type(NOT) ;
 POW:    '^' ; // right assoc
 
 // Arithmetic op
@@ -91,8 +90,6 @@ MOD:    '%' ;
 // Equality op
 EQ:     '==' ;
 NEQ:    '!=' ;
-IS_EQ:  ' is ' -> type(EQ) ;
-IS_NEQ: ' is not ' -> type(NEQ) ;
 
 // Bool op
 AND:    '&&' ;
