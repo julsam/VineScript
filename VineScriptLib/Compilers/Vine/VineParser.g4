@@ -233,6 +233,10 @@ stringLiteral
 variable
     :   '$'? ID ('.' ID)*           # simpleVar
 //    |   variable ('[' expr ']')+    # collectionVar
+    |   { NotifyErrorListeners(errVarDefReservedKw); }
+        reservedKeyword             # errVariable
+    ;
+
 
 // Call to force whitespace. Kind of hacky?
 ws
