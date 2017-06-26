@@ -87,7 +87,7 @@ stmt:    conditionStmt
     // by default, parse as a passage (full mode)
     public EVineParseMode ParseMode = EVineParseMode.FULL;
 
-    private static readonly string reserved_char =
+    private static readonly string errReservedChar =
         "'\u000B' (vertical tabulation) is a reserved character and is not allowed to be used!";
     
     private static readonly string errVarDefReservedKw =
@@ -101,7 +101,7 @@ options { tokenVocab=VineLexer; }
 passage
     :   {ParseMode == EVineParseMode.EXPR}? evalExprMode NL? EOF // active only if we're expr parse mode
     |   block* NL? EOF
-    |   { NotifyErrorListeners(reserved_char); } RESERVED_CHARS 
+    |   { NotifyErrorListeners(errReservedChar); } RESERVED_CHARS 
     //|   { NotifyErrorListeners("Error char"); } ERROR_CHAR
     ;
 
@@ -226,7 +226,7 @@ atom:   INT             # intAtom
 
 stringLiteral
     :   STRING
-    |   { NotifyErrorListeners(reserved_char); } ILLEGAL_STRING
+    |   { NotifyErrorListeners(errReservedChar); } ILLEGAL_STRING
     ;
 
 // Variable access. The '$' prefix is optional
