@@ -89,6 +89,9 @@ stmt:    conditionStmt
 
     private static readonly string reserved_char =
         "'\u000B' (vertical tabulation) is a reserved character and is not allowed to be used!";
+    
+    private static readonly string errVarDefReservedKw =
+        "Can't use a reserved keyword as a variable name!";
 }
 options { tokenVocab=VineLexer; }
 
@@ -165,11 +168,21 @@ controlStmt
     //|    '{%' 'for' ID 'in' expr '%}'
     ;
 
-ifStmt:   '{%' 'if ' expr '%}' block* ;
-elifStmt:   '{%' 'elif ' expr '%}' block* ;
-elseStmt:   '{%' 'else' '%}' block* ;
+ifStmt
+    :   '{%' 'if' ws expr '%}' block*
+    ;
 
-endIfStmt:  '{%' 'endif' '%}' ;
+elifStmt
+    :   '{%' 'elif' ws expr '%}' block*
+    ;
+
+elseStmt
+    :   '{%' 'else' '%}' block*
+    ;
+
+endIfStmt
+    :   '{%' 'endif' '%}'
+    ;
 
 expr:   <assoc=right> left=expr '^' right=expr      # powExpr
     |   op=(MINUS|NOT) expr                         # unaryExpr 
@@ -177,8 +190,8 @@ expr:   <assoc=right> left=expr '^' right=expr      # powExpr
     |   left=expr op=('+'|'-') right=expr           # addSubExpr
     |   left=expr op=('<'|'>'|'<='|'>=') right=expr # relationalExpr
     |   left=expr op=('=='|'!=') right=expr         # equalityExpr
-    |   left=expr '&&' right=expr                   # andExpr
-    |   left=expr '||' right=expr                   # orExpr
+    |   left=expr ('&&'|ws 'and' ws) right=expr     # andExpr
+    |   left=expr ('||'|ws 'or' ws) right=expr      # orExpr
     |   '(' expr ')'                                # parensExpr
     |   newCollection                               # collectionExpr
     |   funcCall                                    # funcCallExpr
@@ -220,6 +233,31 @@ stringLiteral
 variable
     :   '$'? ID ('.' ID)*           # simpleVar
 //    |   variable ('[' expr ']')+    # collectionVar
+
+// Call to force whitespace. Kind of hacky?
+ws
+   :    {
+        // If the current token is not a white space => error.
+        // We use semantic predicates here because WS is in a different
+        // channel that the parser can't access directly
+        if (_input.Get(_input.Index - 1).Type != WS) {
+            NotifyErrorListeners("Yo, you need to use a separation space here!");
+        }
+        }
+    ;
+
+reservedKeyword
+    :   IF
+    |   ELIF
+    |   ELSE
+    |   ENDIF
+    |   KW_AND
+    |   KW_OR
+    |   TO
+    |   SET
+    |   TRUE
+    |   FALSE
+    |   NULL
     ;
 
 /*

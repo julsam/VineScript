@@ -64,12 +64,23 @@ mode VineCode;
 END_OUTPUT:     '}}' -> popMode ;
 END_STMT:       '%}' -> popMode ;
 
+// Parentheses, square brackets, curly braces
 LPAREN:     '(' ;
 RPAREN:     ')' ;
 LBRACK:     '[' ;
 RBRACK:     ']' ;
 LBRACE:     '{' ;
 RBRACE:     '}' ;
+
+// Reserved keywords
+IF:     'if' ;
+ELIF:   'elif' ;
+ELSE:   'else' ;
+ENDIF:  'endif' ;
+KW_AND: 'and' ;
+KW_OR:  'or' ;
+TO:     'to' ;
+SET:    'set' ;
 
 // Separators
 DOT:            '.' ;
@@ -91,11 +102,9 @@ MOD:    '%' ;
 EQ:     '==' ;
 NEQ:    '!=' ;
 
-// Bool op
+// Logical op
 AND:    '&&' ;
 OR:     '||' ;
-AND2:   ' and ' -> type(AND) ;
-OR2:    ' or ' -> type(OR) ;
 
 // Comparison op
 LT:     '<' ;
@@ -103,22 +112,16 @@ GT:     '>' ;
 LTE:    '<=' ;
 GTE:    '>=' ;
 
-// Keywords
-IF:         'if ' ;
-ELIF:       'elif ' ;
-ELSE:       'else' ;
-ENDIF:      'endif' ;
-TRUE:       'true' ;
-FALSE:      'false' ;
-NULL:       'null' ;
-
 // Assign
-TO:         'to' ;
 ASSIGN:     '=' ;
 
 // TODO complete list. Commands are built-in functions
 COMMAND:    'array' | 'TODO' ;
-SET:        'set' ;
+
+// Atoms
+TRUE:       'true' ;
+FALSE:      'false' ;
+NULL:       'null' ;
 
 
 STRING:         '"' (ESC | ~('\u000B'))*? '"' ;
@@ -132,6 +135,13 @@ ILLEGAL_STRING: '"' (ESC | .)*? '"' ;
 //STRING_SQUOTE:    '\'' (ESC_SQUOTE|.)*? '\'' ;
 //STRING_DQUOTE:    '"' (ESC_DQUOTE|.)*? '"' ;
 
+// From Harlowe:
+// This includes all forms of Unicode 6 whitespace except \n, \r, and Ogham space mark.
+//WS_CODE:    [ \f\t\v\u00a0\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+ -> skip ;
+// Unicode whitespace https://github.com/antlr/antlr4/blob/master/doc/lexer-rules.md
+//UNICODE_WS : [\p{White_Space}] -> skip; // match all Unicode whitespace
+WS:     [ \t\f]+ -> channel(HIDDEN) ;
+
 VAR_PREFIX: '$' ;
 
 // Unicode ID https://github.com/antlr/antlr4/blob/master/doc/lexer-rules.md
@@ -139,13 +149,6 @@ VAR_PREFIX: '$' ;
 ID:         ID_LETTER (ID_LETTER | DIGIT)* ;
 INT:        DIGIT+ ;
 FLOAT:      DIGIT+ '.' DIGIT+ ;
-
-// From Harlowe:
-// This includes all forms of Unicode 6 whitespace except \n, \r, and Ogham space mark.
-//WS_CODE:    [ \f\t\v\u00a0\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+ -> skip ;
-// Unicode whitespace https://github.com/antlr/antlr4/blob/master/doc/lexer-rules.md
-//UNICODE_WS : [\p{White_Space}] -> skip; // match all Unicode whitespace
-WS_CODE:    [ \t\f]+ -> channel(HIDDEN) ;
 
 VineCode_ERROR_CHAR: ERROR_CHAR -> type(ERROR_CHAR) ;
 
