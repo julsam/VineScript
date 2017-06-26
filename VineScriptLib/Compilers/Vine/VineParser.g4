@@ -92,6 +92,9 @@ stmt:    conditionStmt
     
     private static readonly string errVarDefReservedKw =
         "Can't use a reserved keyword as a variable name!";
+        
+    private static readonly string errMissingSpaceBefore = "Missing space before ";
+    private static readonly string errMissingSpaceAfter = "Missing space after ";
 }
 options { tokenVocab=VineLexer; }
 
@@ -173,11 +176,11 @@ controlStmt
     ;
 
 ifStmt
-    :   '{%' 'if' ws expr '%}' block*
+    :   '{%' 'if' wsa expr '%}' block*
     ;
 
 elifStmt
-    :   '{%' 'elif' ws expr '%}' block*
+    :   '{%' 'elif' wsa expr '%}' block*
     ;
 
 elseStmt
@@ -195,8 +198,8 @@ expr
     |   left=expr op=('+'|'-') right=expr           # addSubExpr
     |   left=expr op=('<'|'>'|'<='|'>=') right=expr # relationalExpr
     |   left=expr op=('=='|'!=') right=expr         # equalityExpr
-    |   left=expr ('&&'|ws 'and' ws) right=expr     # andExpr
-    |   left=expr ('||'|ws 'or' ws) right=expr      # orExpr
+    |   left=expr ('&&'|wsb 'and' wsa) right=expr   # andExpr
+    |   left=expr ('||'|wsb 'or' wsa) right=expr    # orExpr
     |   '(' expr ')'                                # parensExpr
     |   newCollection                               # collectionExpr
     |   funcCall                                    # funcCallExpr
@@ -243,13 +246,22 @@ variable
 
 
 // Call to force whitespace. Kind of hacky?
-ws
-   :    {
-        // If the current token is not a white space => error.
-        // We use semantic predicates here because WS is in a different
-        // channel that the parser can't access directly
+// If the current token is not a white space => error.
+// We use semantic predicates here because WS is in a different
+// channel that the parser can't access directly
+wsb // before
+    :   {
         if (_input.Get(_input.Index - 1).Type != WS) {
-            NotifyErrorListeners("Yo, you need to use a separation space here!");
+            string offendingSymbol = _input.Get(_input.Index - 1).Text;
+            NotifyErrorListeners(errMissingSpaceBefore + "'" + offendingSymbol + "'");
+        }
+        }
+    ;
+wsa // after
+    :   {
+        if (_input.Get(_input.Index - 1).Type != WS) {
+            string offendingSymbol = _input.Get(_input.Index - 1).Text;
+            NotifyErrorListeners(errMissingSpaceAfter + "'" + offendingSymbol + "'");
         }
         }
     ;
