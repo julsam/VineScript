@@ -108,8 +108,8 @@ GTE:    '>=' ;
 
 // Keywords
 IF:         'if ' ;
-ELSE:       'elif ' ;
-ELIF:       'else' ;
+ELIF:       'elif ' ;
+ELSE:       'else' ;
 ENDIF:      'endif' ;
 TRUE:       'true' ;
 FALSE:      'false' ;
