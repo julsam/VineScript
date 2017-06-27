@@ -28,8 +28,8 @@ namespace VineScriptLib.Core
         {
             e = null;
 
-            if (    object.ReferenceEquals(a, null) || a.IsNull()
-                ||  object.ReferenceEquals(b, null) || b.IsNull()) 
+            if (    object.ReferenceEquals(a, null) || a.IsNull
+                ||  object.ReferenceEquals(b, null) || b.IsNull) 
             {
                 e = new VineArithmeticException(
                     op, 
@@ -59,7 +59,7 @@ namespace VineScriptLib.Core
         {
             e = null;
 
-            if ((object.ReferenceEquals(a, null) || a.IsNull())) 
+            if ((object.ReferenceEquals(a, null) || a.IsNull)) 
             {
                 // if both are null, throw an exception
                 e = new VineArithmeticException(

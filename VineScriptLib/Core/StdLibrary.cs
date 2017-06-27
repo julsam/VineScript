@@ -61,37 +61,37 @@ namespace VineScriptLib.Core
 
         public static bool IsBool(object context, VineValue value)
         {
-            return value.IsBool();
+            return value.IsBool;
         }
 
         public static bool IsInt(object context, VineValue value)
         {
-            return value.IsInt();
+            return value.IsInt;
         }
 
         public static bool IsNumber(object context, VineValue value)
         {
-            return value.IsNumber();
+            return value.IsNumber;
         }
 
         public static bool IsString(object context, VineValue value)
         {
-            return value.IsString();
+            return value.IsString;
         }
 
         public static bool IsNull(object context, VineValue value)
         {
-            return value.IsNull();
+            return value.IsNull;
         }
 
         public static bool IsArray(object context, VineValue value)
         {
-            return value.IsArray();
+            return value.IsArray;
         }
 
         public static bool IsDict(object context, VineValue value)
         {
-            return value.IsDict();
+            return value.IsDict;
         }
 
         // Using c# types instead of VineValue:

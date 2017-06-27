@@ -199,7 +199,7 @@ namespace VineScriptLib.Test
             string output = story.RunPassage(input);
             
             Assert.IsNotNull(story.vars["arr"]);
-            Assert.IsTrue(story.vars["arr"].IsArray());
+            Assert.IsTrue(story.vars["arr"].IsArray);
             Assert.AreEqual(1, story.vars["arr"][0]);
             Assert.AreEqual(2.0, story.vars["arr"][1]);
             Assert.AreEqual("Three", story.vars["arr"][2]);
@@ -217,7 +217,7 @@ namespace VineScriptLib.Test
             string output = story.RunPassage(input);
             
             Assert.IsNotNull(story.vars["dict"]);
-            Assert.IsTrue(story.vars["dict"].IsDict());
+            Assert.IsTrue(story.vars["dict"].IsDict);
             Assert.AreEqual(1, story.vars["dict"]["a"]);
             Assert.AreEqual(2.0, story.vars["dict"]["b"]);
             Assert.AreEqual("Three", story.vars["dict"]["c"]);

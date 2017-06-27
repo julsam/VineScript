@@ -119,13 +119,13 @@ namespace VineScriptLib.Core
         private readonly List<VineValue> arrayValue;
         private readonly Dictionary<string, VineValue> dictValue;
         
-        public bool IsBool()    { return type == Type.Bool;     }
-        public bool IsInt()     { return type == Type.Int;      }
-        public bool IsNumber()  { return type == Type.Number;   }
-        public bool IsString()  { return type == Type.String;   }
-        public bool IsNull()    { return type == Type.Null;     }
-        public bool IsArray()   { return type == Type.Array;    }
-        public bool IsDict()    { return type == Type.Dict;     }
+        public bool IsBool      { get { return type == Type.Bool;   } }
+        public bool IsInt       { get { return type == Type.Int;    } }
+        public bool IsNumber    { get { return type == Type.Number; } }
+        public bool IsString    { get { return type == Type.String; } }
+        public bool IsNull      { get { return type == Type.Null;   } }
+        public bool IsArray     { get { return type == Type.Array;  } }
+        public bool IsDict      { get { return type == Type.Dict;   } }
 
         public int AsInt {
             get {
@@ -249,7 +249,7 @@ namespace VineScriptLib.Core
                     case Type.Array:
                         string arr_str = "[";
                         for (int i = 0; i < arrayValue.Count; i++) {
-                            if (arrayValue[i].IsString()) {
+                            if (arrayValue[i].IsString) {
                                 arr_str += string.Format("\"{0}\"", arrayValue[i].ToString());
                             } else {
                                 arr_str += arrayValue[i].ToString();
@@ -265,7 +265,7 @@ namespace VineScriptLib.Core
                         for (int i = 0; i < dictValue.Count; i++) {
                             var el = dictValue.ElementAt(i);
                             dm_str += string.Format("\"{0}\": ", el.Key);
-                            if (el.Value.IsString()) {
+                            if (el.Value.IsString) {
                                 dm_str += string.Format("\"{0}\"", el.Value.ToString());
                             } else {
                                 dm_str += el.Value.ToString();
@@ -509,41 +509,41 @@ namespace VineScriptLib.Core
             // 7. null == (int | double | bool)
 
             // Both are strings
-            if (IsString() && other.IsString()) {
+            if (IsString && other.IsString) {
                 return AsString == other.AsString;
             }
 
             // They are not both strings, checks if at least one of them is:
-            if (!VineValue.strictMode && (IsString() || other.IsString())) {
+            if (!VineValue.strictMode && (this.IsString || other.IsString)) {
                 return false;
             }
 
-            if ((IsNumber() && (other.IsNumber() || other.IsInt()))
-                || (other.IsNumber() && (IsNumber() || IsInt()))
+            if ((this.IsNumber && (other.IsNumber || other.IsInt))
+                || (other.IsNumber && (this.IsNumber || this.IsInt))
             ) {
                 // TODO use SMALL_VALUE: Math.Abs(numberValue - other.numberValue) < SMALL_VALUE
                 // if implemented here, should also be implemented in comparison  < > <= >=
                 return AsNumber == other.AsNumber;
             }
-            if (IsInt() && other.IsInt()) {
+            if (this.IsInt && other.IsInt) {
                 return AsInt == other.AsInt;
             }
-            if (IsBool() && other.IsBool()) {
+            if (this.IsBool && other.IsBool) {
                 return AsBool == other.AsBool;
             }
 
-            if (IsNull() && other.IsNull()) {
+            if (this.IsNull && other.IsNull) {
                 return true;
             }
-            if (IsNull() || other.IsNull()) {
+            if (this.IsNull || other.IsNull) {
                 return false;
             }
 
-            if (IsArray() && other.IsArray()) {
+            if (this.IsArray && other.IsArray) {
                 return arrayValue.SequenceEqual(other.arrayValue);
             }
 
-            if (IsDict() && other.IsDict()) {
+            if (this.IsDict && other.IsDict) {
                 return dictValue.OrderBy(pair => pair.Key, StringComparer.Ordinal)
                     .SequenceEqual(other.dictValue.OrderBy(
                         pair => pair.Key, StringComparer.Ordinal));
@@ -565,8 +565,8 @@ namespace VineScriptLib.Core
             // null + anything else => null
             
             // First, if both operands are null/Null => error
-            if (    (object.ReferenceEquals(a, null) || a.IsNull())
-                &&  (object.ReferenceEquals(b, null) || b.IsNull())
+            if (    (object.ReferenceEquals(a, null) || a.IsNull)
+                &&  (object.ReferenceEquals(b, null) || b.IsNull)
                 ) {
                 throw new VineArithmeticException(
                     "+", 
