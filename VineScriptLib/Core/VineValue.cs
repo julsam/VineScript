@@ -110,6 +110,8 @@ namespace VineScriptLib.Core
         }
         
         public Type type { get; internal set; }
+
+        public string name { get; internal set; }
         
         // Immutables inner values
         private readonly bool boolValue;
@@ -364,6 +366,7 @@ namespace VineScriptLib.Core
             if (value is VineValue) {
                 var otherValue = value as VineValue;
                 type = otherValue.type;
+                name = otherValue.name;
                 switch (type) {
                     case Type.Int:
                         intValue = otherValue.intValue;
@@ -395,6 +398,9 @@ namespace VineScriptLib.Core
                 }
                 return;
             }
+
+            name = "";
+
             if (value == null) {
                 type = Type.Null;
                 return;

@@ -371,8 +371,9 @@ namespace VineScriptLib.Compilers.Vine
                 id = id.Remove(0, 1);
             }
             VineValue value = story.vars.ContainsKey(id) ? story.vars[id] : VineValue.NULL;
+            value.name = id;
             Console.WriteLine("SimpleVar: " + id + " = \"" + value + "\"");
-            return value as VineValue;
+            return value;
         }
 
         public override VineValue VisitNewArray(VineParser.NewArrayContext context)
