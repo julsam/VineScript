@@ -134,7 +134,7 @@ stmt
 
 stmtBlock
     :   controlStmt
-    |   command
+    |   assignStmt
     |   '{%' funcCall '%}'
     //|   LINE_COMMENT
     |   BLOCK_COMMENT
@@ -144,12 +144,12 @@ stmtBlock
  * Display something in the text (variable, expression, function return, ...)
  **/
 display
-    : '{{' expr '}}'
+    :   '{{' expr '}}'
     ;
 
-command
-    :   '{%' 'set' variable ('='|'to') expr '%}'    # assignStmt
-    |   '{%' COMMAND expressionList? '%}'           # langCmd // {% formatted on %}, {% br %}, ...
+assignStmt
+    :   '{%' 'set' variable (sequenceAccess)* ('='|'to') expr '%}'
+    //|   '{%' COMMAND expressionList? '%}'           # langCmd // {% formatted on %}, {% br %}, ...
     ;
 
 funcCall
@@ -158,7 +158,7 @@ funcCall
     |   ID '(' expressionList?     { NotifyErrorListeners("Missing closing ')'"); }
     ;
 
-newCollection
+newSequence
     :   '[' expressionList? ']'     # newArray
     |   LBRACE keyValueList? RBRACE # newDict
     // array errors:
@@ -201,10 +201,10 @@ expr
     |   left=expr ('&&'|wsb 'and' wsa) right=expr   # andExpr
     |   left=expr ('||'|wsb 'or' wsa) right=expr    # orExpr
     |   '(' expr ')'                                # parensExpr
-    |   newCollection                               # collectionExpr
+    |   newSequence                                 # sequenceExpr
     |   funcCall                                    # funcCallExpr
     |   atom                                        # atomExpr
-    |   variable                                    # varExpr
+    |   variable (sequenceAccess)*                  # varExpr
     ;
 
 expressionList
@@ -238,12 +238,14 @@ stringLiteral
 
 // Variable access. The '$' prefix is optional
 variable
-    :   '$'? ID ('.' ID)*           # simpleVar
-//    |   variable ('[' expr ']')+    # collectionVar
+    :   '$'? ID ('.' ID)*           
     |   { NotifyErrorListeners(errVarDefReservedKw); }
-        reservedKeyword             # errVariable
+        reservedKeyword
     ;
 
+sequenceAccess
+    :   '[' expr ']'
+    ;
 
 // Call to force whitespace. Kind of hacky?
 // If the current token is not a white space => error.

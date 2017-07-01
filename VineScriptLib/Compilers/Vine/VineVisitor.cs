@@ -15,8 +15,9 @@ namespace VineScriptLib.Compilers.Vine
         public void printOutput()
         {
             Console.WriteLine("### EVALUATE OUTPUT: ###");
-            if (output.Length > 0)
+            if (output.Length > 0) {
                 Console.WriteLine(output);
+            }
             Console.WriteLine("### END ###");
         }
 
@@ -106,19 +107,35 @@ namespace VineScriptLib.Compilers.Vine
         public override VineValue VisitAssignStmt(VineParser.AssignStmtContext context)
         {
             // '{%' 'set' ID 'to' expr '%}'
-            string id = context.variable().GetText();
-            
-            // Remove optional '$'
-            if (context.variable().GetToken(VineLexer.VAR_PREFIX, 0) != null) {
-                id = id.Remove(0, 1);
-            }
+            var variable = Visit(context.variable());
+            string id = variable.name;
             VineValue value = Visit(context.expr());
-            Console.WriteLine("STMT SET " + id + " TO " + value);
+
             if (story.vars.ContainsKey(id)) { 
-                Console.WriteLine(string.Format("[!!] Warning, the variable '{0}' is already defined! Its value '{1}' will be overridden.", id, value));
+                Console.WriteLine(string.Format(
+                    "[!!] Warning, the variable '{0}' is already defined!"
+                    + "Its value '{1}' will be overridden.", id, value
+                ));
             }
-            story.vars[id] = value;
-            return value as VineValue;
+
+            if (context.sequenceAccess() != null && context.sequenceAccess().Count() > 0)
+            {
+                // Debug
+                Console.Write("STMT SET " + id);
+                for (int i = 0; i < context.sequenceAccess().Count(); i++) {
+                    Console.Write(context.sequenceAccess(i).GetText());
+                }
+                Console.WriteLine(" TO " + value);
+
+                SetValueInSequence(story.vars[id], context.sequenceAccess(), value);
+            }
+            else
+            {
+                Console.WriteLine("STMT SET " + id + " TO " + value);
+                story.vars[id] = value;
+            }
+
+            return value;
         }
 
         public override VineValue VisitFuncCall(VineParser.FuncCallContext context)
@@ -322,6 +339,24 @@ namespace VineScriptLib.Compilers.Vine
             VineValue value = Visit(context.expr());
             return value;
         }
+
+        public override VineValue VisitVarExpr(VineParser.VarExprContext context)
+        {
+            Console.WriteLine("VAR EXPR " + context.GetText());
+
+            VineValue variable = Visit(context.variable());
+            string name = variable.name;
+            VineValue value = null;
+
+            if (context.sequenceAccess() != null && context.sequenceAccess().Count() > 0) {
+                value = GetValueInSequence(variable, context.sequenceAccess());
+            } else {
+                value = variable.Clone();
+            }
+
+            value.name = name;
+            return value;
+        }
         
         #endregion Expr
 
@@ -362,7 +397,7 @@ namespace VineScriptLib.Compilers.Vine
             return str;
         }
 
-        public override VineValue VisitSimpleVar(VineParser.SimpleVarContext context)
+        public override VineValue VisitVariable(VineParser.VariableContext context)
         {
             string id = context.GetText();
             
@@ -375,7 +410,7 @@ namespace VineScriptLib.Compilers.Vine
             Console.WriteLine("SimpleVar: " + id + " = \"" + value + "\"");
             return value;
         }
-
+        
         public override VineValue VisitNewArray(VineParser.NewArrayContext context)
         {
             // '[' expressionList? ']'
@@ -428,6 +463,130 @@ namespace VineScriptLib.Compilers.Vine
             VineValue value = Visit(context.expr());
             output += value.AsString;
             return value;
+        }
+
+        private VineValue GetValueInSequence(VineValue startingVar, 
+            VineParser.SequenceAccessContext[] sequences)
+        {
+            // Trying to get to the last sequence, which is n-1 in the list.
+            // It should be either an array, a dictionnary or a string.
+            // E.g.: myvar[3] ["abc"] [0] [42]
+            //       |        |       |   |   
+            //       n-3      n-2     |   n   
+            //                        n-1     
+            // ResolveSequencesAccess returns n-1:
+            VineValue lastSequence = ResolveSequencesAccess(startingVar, sequences);
+
+            // The last sequence (n-1) is now into lastSequence,
+            // we can access n using the last index
+
+            // Get the last index
+            var lastIndex = Visit(sequences[sequences.Count() - 1].expr());
+
+            // Finally get the content of [n], the value
+            VineValue value = null;
+            if (lastSequence.IsString) {
+                value = lastSequence.AsString.Substring(lastIndex.AsInt, 1);
+            } else if (lastSequence.IsArray) {
+                value = lastSequence[lastIndex.AsInt];
+            } else {
+                value = lastSequence[lastIndex.AsString];
+            }
+            return value;
+        }
+
+        private void SetValueInSequence(VineValue startingVar, 
+            VineParser.SequenceAccessContext[] sequences, VineValue value)
+        {
+            if (startingVar.IsString) {
+                // not allowed: string[0] = 'a'
+                throw new Exception("Strings don't support item assignment");
+            }
+            
+            // Trying to get to the last sequence, which is n-1 in the list.
+            // It should be either an array, a dictionnary or a string.
+            // E.g.: myvar[3] ["abc"] [0] [42]
+            //       |        |       |   |   
+            //       n-3      n-2     |   n   
+            //                        n-1     
+            // ResolveSequencesAccess returns n-1:
+            VineValue lastSequence = ResolveSequencesAccess(startingVar, sequences);
+
+            // The last sequence (n-1) is now into lastSequence,
+            // we can access n using the last index
+
+            // Get the last index
+            var lastIndex = Visit(sequences[sequences.Count() - 1].expr());
+
+            // Finally set the content of [n]
+            if (lastSequence.IsArray) {
+                lastSequence[lastIndex.AsInt] = value;
+            } else {
+                lastSequence[lastIndex.AsString] = value;
+            }
+        }
+
+        /// <summary>
+        /// Get to the last sequence in a list of sequences, which is n-1 in the list.
+        /// It should be either an array, a dictionnary or a string.
+        /// </summary>
+        /// <param name="startingVar">The left-most variable in the sequence access.</param>
+        /// <param name="sequences">Array of sequences (array, dictionnary or string)</param>
+        /// <returns>Return the [n-1] sequence</returns>
+        private VineValue ResolveSequencesAccess(VineValue startingVar, 
+            VineParser.SequenceAccessContext[] sequences)
+        {
+            VineValue lastSequence = startingVar;
+
+            // Trying to get to the n-1 element, aka the last sequence,
+            // which should be an array, a dictionnary or a string.
+            // E.g.: myvar[3] ["abc"] [0] [42]
+            //       |        |       |   |   
+            //       n-3      n-2     |   n   
+            //                        n-1     
+            for (int i = 0; i < sequences.Count() - 1; i++)
+            {
+                var indexExpr = Visit(sequences[i].expr());
+                if (lastSequence.IsArray || lastSequence.IsString) {
+                    if (!indexExpr.IsInt) {
+                        throw new Exception(
+                            "An array element can only be accessed by an integer"
+                        );
+                    }
+                    try {
+                        if (lastSequence.IsArray) {
+                            lastSequence = lastSequence[indexExpr.AsInt];
+                        } else {
+                            // it's a string
+                            // make sure we are in the n-1 sequence,
+                            // or else it's an error
+                            //if (i != sequences.Count() - 2) {
+                            //    throw new Exception(
+                            //        "Trying to access a string using [] too many times!"
+                            //    );
+                            //}
+                            break;
+                        }
+                    } catch (ArgumentOutOfRangeException) {
+                        throw new Exception(
+                            "Index was out of range. Must be non-negative and"
+                            + " less than the size of the array."
+                        );
+                    }
+                } else if (lastSequence.IsDict) {
+                    // no check on the expression type? not for now, 
+                    // as anything can be converted to a string, we'll see
+                    // if it's a problem or not.
+                    lastSequence = lastSequence[indexExpr.AsString];
+                } else {
+                    throw new Exception(
+                        "Can't access element with [] because the variable '"
+                        + lastSequence.name + "' is neither an array or a dictionnary "
+                        + " or a string"
+                    );
+                }
+            }
+            return lastSequence;
         }
     }
     
