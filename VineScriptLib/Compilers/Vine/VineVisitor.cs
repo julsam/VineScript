@@ -74,25 +74,12 @@ namespace VineScriptLib.Compilers.Vine
 
         public override VineValue VisitText(VineParser.TextContext context)
         {
-            string value;
-            //if (context.RuleIndex == VineParser.TXT) {
-                value = context.TXT().GetText();
-            //} else {
-            //    value = "\n";//context.NL().GetText();
-            //}
-            Console.WriteLine("> TEXT:");
-            Console.WriteLine(value);
             lastEnteredContext = context;
+            string value = context.TXT().GetText();
+            Console.WriteLine("> TEXT:\n" + value);
             output += value;
             return null;
         }
-
-        //public override VineValue VisitPrintBlock(VineParser.PrintBlockContext context)
-        //{
-        //    // Do nothing
-        //    VisitChildren(context);
-        //    return null;
-        //}
 
         public override VineValue VisitPrintBlockLn(VineParser.PrintBlockLnContext context)
         {
@@ -102,14 +89,6 @@ namespace VineScriptLib.Compilers.Vine
             output += Environment.NewLine;
             return null;
         }
-
-        //public override VineValue VisitPrintStmtWS(VineParser.PrintStmtWSContext context)
-        //{
-        //    VisitChildren(context);
-        //    if (context.ws() != null)
-        //        output += " ";
-        //    return null;
-        //}
 
         public override VineValue VisitDisplay(VineParser.DisplayContext context)
         {
@@ -151,7 +130,7 @@ namespace VineScriptLib.Compilers.Vine
             if (story.vars.ContainsKey(id)) { 
                 Console.WriteLine(string.Format(
                     "[!!] Warning, the variable '{0}' is already defined!"
-                    + "Its value '{1}' will be overridden.", id, value
+                    + " Its value '{1}' will be overridden.", id, value
                 ));
             }
 
@@ -163,7 +142,7 @@ namespace VineScriptLib.Compilers.Vine
                     Console.Write(context.sequenceAccess(i).GetText());
                 }
                 Console.WriteLine(" TO " + value);
-
+                
                 SetValueInSequence(story.vars[id], context.sequenceAccess(), value);
             }
             else
