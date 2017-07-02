@@ -5,12 +5,14 @@ using System.Linq;
 
 namespace VineScriptLib.Core
 {
-    // VineArithmeticException
     public class VineArithmeticException : Exception
     {
         public VineArithmeticException() : base("Not supported operation") { }
 
         public VineArithmeticException(string msg) : base(msg) { }
+
+        public VineArithmeticException(string msg, Exception innerException)
+            : base(msg, innerException) { }
 
         public VineArithmeticException(string op, VineValue a, VineValue b) 
             : base(string.Format("Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'",
@@ -33,6 +35,11 @@ namespace VineScriptLib.Core
     {
         public VineComparisonException() : base("Not supported comparison") { }
 
+        public VineComparisonException(string msg) : base(msg) { }
+
+        public VineComparisonException(string msg, Exception innerException)
+            : base(msg, innerException) { }
+
         public VineComparisonException(VineValue a, VineValue b) 
             : base(string.Format("Cannot compare equality between type '{0}' and '{1}'", a.type, b.type)) { }
 
@@ -46,6 +53,9 @@ namespace VineScriptLib.Core
         public VineConversionException() : base("Not supported cast") { }
 
         public VineConversionException(string msg) : base(msg) { }
+
+        public VineConversionException(string msg, Exception innerException)
+            : base(msg, innerException) { }
 
         public VineConversionException(VineValue.Type from, VineValue.Type to) 
             : base(string.Format("Cannot convert type '{0}' to '{1}'", from, to)) { }

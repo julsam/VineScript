@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compilers\ExceptionUtil.cs" />
     <Compile Include="Compilers\LinesFormatter\LinesFormatterCompiler.cs" />
     <Compile Include="Compilers\Vine\VineCompiler.cs" />
     <Compile Include="Compilers\LexerErrorListener.cs" />
