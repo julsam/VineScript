@@ -199,7 +199,7 @@ namespace VineScriptLib.Compilers.Vine
         }
         
 
-	    public override VineValue VisitIfStmt(VineParser.IfStmtContext context)
+        public override VineValue VisitIfStmt(VineParser.IfStmtContext context)
         {
             lastEnteredContext = context;
             Console.WriteLine("IF STATEMENT");
@@ -216,7 +216,7 @@ namespace VineScriptLib.Compilers.Vine
             return ifvalue;
         }
         
-	    public override VineValue VisitElifStmt(VineParser.ElifStmtContext context)
+        public override VineValue VisitElifStmt(VineParser.ElifStmtContext context)
         {
             lastEnteredContext = context;
             Console.WriteLine("ELIF STATEMENT");
@@ -233,7 +233,7 @@ namespace VineScriptLib.Compilers.Vine
             return elifvalue;
         }
         
-	    public override VineValue VisitElseStmt(VineParser.ElseStmtContext context)
+        public override VineValue VisitElseStmt(VineParser.ElseStmtContext context)
         {
             lastEnteredContext = context;
             Console.WriteLine("ELSE STATEMENT");
