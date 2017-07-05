@@ -1,0 +1,9 @@
+﻿{# comment #}
+{% for i in 0...10 %}
+	{% if i % 2 == 0 %}
+		{{i}} is even!
+	{% else %}
+		{{i}} is odd!
+	{% endif %}
+{% endfor %}
+{# comment #}

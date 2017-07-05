@@ -225,6 +225,66 @@ namespace VineScriptLib.Test
             Assert.AreEqual(VineValue.NULL, story.vars["dict"]["e"]);
         }
 
+        [TestMethod]
+        public void CmpFileFor01()
+        {
+            StreamReader input = File.OpenText("scripts/basic/for01.vine");
+            StreamReader cmp = File.OpenText("scripts/basic/for01.cmp");
+
+            VineStory story = new VineStory();
+            string output = story.RunPassage(input);
+
+            Assert.AreEqual(cmp.ReadToEnd(), output);
+        }
+
+        [TestMethod]
+        public void CmpFileFor02()
+        {
+            StreamReader input = File.OpenText("scripts/basic/for02.vine");
+            StreamReader cmp = File.OpenText("scripts/basic/for02.cmp");
+
+            VineStory story = new VineStory();
+            string output = story.RunPassage(input);
+
+            Assert.AreEqual(cmp.ReadToEnd(), output);
+        }
+
+        [TestMethod]
+        public void CmpFileFor03()
+        {
+            StreamReader input = File.OpenText("scripts/basic/for03.vine");
+            StreamReader cmp = File.OpenText("scripts/basic/for03.cmp");
+
+            VineStory story = new VineStory();
+            string output = story.RunPassage(input);
+
+            Assert.AreEqual(cmp.ReadToEnd(), output);
+        }
+
+        [TestMethod]
+        public void CmpFileFor04()
+        {
+            StreamReader input = File.OpenText("scripts/basic/for04.vine");
+            StreamReader cmp = File.OpenText("scripts/basic/for04.cmp");
+
+            VineStory story = new VineStory();
+            string output = story.RunPassage(input);
+
+            Assert.AreEqual(cmp.ReadToEnd(), output);
+        }
+
+        [TestMethod]
+        public void CmpFileInterval01()
+        {
+            StreamReader input = File.OpenText("scripts/basic/interval01.vine");
+            StreamReader cmp = File.OpenText("scripts/basic/interval01.cmp");
+
+            VineStory story = new VineStory();
+            string output = story.RunPassage(input);
+
+            Assert.AreEqual(cmp.ReadToEnd(), output);
+        }
+
         #region Additional test attributes
         //
         // You can use the following additional attributes as you write your tests:

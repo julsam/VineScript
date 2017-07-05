@@ -1,0 +1,7 @@
+﻿{% set arr = [0, 1, 2, 5, 11, 17, 23, 55, 64, 96] %}
+{% set index = 0 %}
+{% for item in arr %}
+	At position {{ index }}, {% if item % 2 == 0 %}{{item}} is even!{% else %}{{item}} is odd!{% endif %}
+	{% set index = index + 1 %}
+{% endfor %}
+{# comment #}
