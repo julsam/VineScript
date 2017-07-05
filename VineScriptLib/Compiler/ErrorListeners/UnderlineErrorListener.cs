@@ -11,7 +11,8 @@ namespace VineScriptLib.Compiler
             var underline = UnderlineError(recognizer, offendingSymbol, line, charPositionInLine);
             var errmsg = string.Format(
                 "[Parser] Invalid Expression '{0}' at {1}:{2}:\n{3}\n{4}", 
-                offendingSymbol.Text, line, charPositionInLine, underline, msg
+                Compiler.Util.ToLiteral(offendingSymbol.Text),
+                line, charPositionInLine, underline, msg
             );
             throw new Exception(errmsg, e);
         }

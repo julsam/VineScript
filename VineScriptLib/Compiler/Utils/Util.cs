@@ -48,5 +48,29 @@ namespace VineScriptLib.Compiler
             Console.WriteLine("--- ---");
             return wsRemoved;
         }
+
+        public static string ToLiteral(string input)
+        {
+            StringBuilder literal = new StringBuilder(input.Length);
+            foreach (var c in input)
+            {
+                switch (c)
+                {
+                    case '\'': literal.Append(@"\'"); break;
+                    case '\"': literal.Append(@"\"""); break;
+                    case '\\': literal.Append(@"\\"); break;
+                    case '\0': literal.Append(@"\0"); break;
+                    case '\a': literal.Append(@"\a"); break;
+                    case '\b': literal.Append(@"\b"); break;
+                    case '\f': literal.Append(@"\f"); break;
+                    case '\n': literal.Append(@"\n"); break;
+                    case '\r': literal.Append(@"\r"); break;
+                    case '\t': literal.Append(@"\t"); break;
+                    case '\v': literal.Append(@"\v"); break;
+                    default: literal.Append(c); break;
+                }
+            }
+            return literal.ToString();
+        }
     }
 }
