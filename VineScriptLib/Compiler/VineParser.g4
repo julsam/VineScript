@@ -112,32 +112,25 @@ evalExprMode
     :   expr
     ;
 
+// directOutput will add the text/code markups to the output.
+// The output will then be parsed by the formatter.
 block
-    :   /*stmtBlock+ NL (stmtBlock* NL+)  # noPrintBlock
-    |   stmtBlock+ NL                   # noPrintBlock
-    |   stmt text (stmt|text)* NL   # printBlockLn
-    |   text stmt (stmt|text)* NL   # printBlockLn
-    |   text NL                     # printBlockLn
-    |   */NL                          # printBlockLn
-    |   text                        # printBlock
-    |   stmt                        # noPrintBlock
+    :   NL              # directOutput
+    |   text            # directOutput  // foobar
+    |   display         # noOutput      // {{ foo }}
+    |   controlStmt     # noOutput      // {% if true %} something {% endif %}
+    |   simpleStmtBlock # directOutput  // {% set foo = 0 %}
+    //|   LINE_COMMENT
+    |   BLOCK_COMMENT   # directOutput  // {# comment #}
     ;
 
 text
     :   TXT
     ;
 
-stmt
-    :   display
-    |   stmtBlock
-    ;
-
-stmtBlock
-    :   controlStmt
-    |   assignStmt
+simpleStmtBlock
+    :   '{%' assignStmt '%}'
     |   '{%' funcCall '%}'
-    //|   LINE_COMMENT
-    |   BLOCK_COMMENT
     ;
 
 /**
@@ -148,8 +141,9 @@ display
     ;
 
 assignStmt
-    :   '{%' 'set' variable (sequenceAccess)* ('='|'to') expr '%}'
-    //|   '{%' COMMAND expressionList? '%}'           # langCmd // {% formatted on %}, {% br %}, ...
+    :   'set' variable (sequenceAccess)* ('='|'to') expr
+    //|   assignStmt (',' assignStmt)+
+    //|   COMMAND expressionList? '%}'           # langCmd // {% formatted on %}, {% br %}, ...
     ;
 
 funcCall
@@ -171,8 +165,8 @@ newSequence
 
 // if, elif, else, for, end
 controlStmt
-    :   ifStmt (elifStmt)* (elseStmt)? endIfStmt 
-    //|    '{%' 'for' ID 'in' expr '%}'
+    :   ifStmt (elifStmt)* (elseStmt)? endIfStmt    # ifCtrlStmt
+    |   forStmt endForStmt                          # forCtrlStmt
     ;
 
 ifStmt
@@ -189,6 +183,16 @@ elseStmt
 
 endIfStmt
     :   '{%' 'endif' '%}'
+    ;
+
+forStmt
+    :   '{%' 'for' wsa variable 'in' expr '%}' NL? block*
+    //|   '{%' 'for' wsa key=variable ',' val=variable 'in' expr '%}' NL? block*
+    |   '{%' 'for' wsa variable 'in' interval '%}' NL? block*
+    ;
+
+endForStmt
+    :   '{%' 'endfor' '%}'
     ;
 
 expr
@@ -245,6 +249,10 @@ variable
 
 sequenceAccess
     :   '[' expr ']'
+    ;
+
+interval
+    :   left=expr '...' right=expr
     ;
 
 // Call to force whitespace. Kind of hacky?

@@ -77,12 +77,16 @@ IF:     'if' ;
 ELIF:   'elif' ;
 ELSE:   'else' ;
 ENDIF:  'endif' ;
+FOR:    'for' ;
+IN:     'in' ;
+ENDFOR: 'endfor' ;
 KW_AND: 'and' ;
 KW_OR:  'or' ;
 TO:     'to' ;
 SET:    'set' ;
 
 // Separators
+INTERVAL_SEP:   '...' ;
 DOT:            '.' ;
 COMMA:          ',' ;
 COLON:          ':' ;

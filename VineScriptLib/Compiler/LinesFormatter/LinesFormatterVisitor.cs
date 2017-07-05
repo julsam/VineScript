@@ -5,8 +5,10 @@ using Antlr4.Runtime.Misc;
 namespace VineScriptLib.Compiler.LinesFormatter
 {
     /// <summary>
-    /// Visitor for LinesFormatter grammar. Removes unwanted new lines from blocks of code, but tries to keep everything else formatted.
+    /// Visitor for LinesFormatter grammar. Removes unwanted new lines
+    /// from blocks of code, but tries to keep everything else formatted.
     /// </summary>
+    [Obsolete]
     class LinesFormatterVisitor : LinesFormatterBaseVisitor<string> 
     {
         public string output { get; private set; }

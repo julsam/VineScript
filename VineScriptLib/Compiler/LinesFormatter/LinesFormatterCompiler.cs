@@ -6,6 +6,7 @@ using VineScriptLib.Core;
 
 namespace VineScriptLib.Compiler.LinesFormatter
 {
+    [Obsolete]
     public class LinesFormatterCompiler
     {
         private AntlrInputStream inputStream;
@@ -44,6 +45,7 @@ namespace VineScriptLib.Compiler.LinesFormatter
         /// <param name="interpreted_code">Interpreted source, only text
         /// should remains, the code has already been interpreted</param>
         /// <returns>Text without the empty lines</returns>
+        [Obsolete]
         public string FormatLines(string source, string interpreted_code)
         {
             // First, parse source code to mark lines to keep

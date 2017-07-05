@@ -3,6 +3,7 @@ using Antlr4.Runtime;
 using System;
 using System.Collections.Generic;
 using VineScriptLib.Core;
+using VineScriptLib.Compiler.Formatter;
 
 namespace VineScriptLib.Compiler
 {
@@ -36,8 +37,8 @@ namespace VineScriptLib.Compiler
             string parsed = vineCompiler.Parse(wsRemoved, story);
 
             // Formatting lines (removes empty lines containing Vine code)
-            var formatCompiler = new LinesFormatterCompiler();
-            string formatOutput = formatCompiler.FormatLines(wsRemoved, parsed);
+            var formatCompiler = new VineFormatterCompiler();
+            string formatOutput = formatCompiler.FormatLines(parsed);
             
             // Print before trimming whitespace
             Console.WriteLine(formatOutput);

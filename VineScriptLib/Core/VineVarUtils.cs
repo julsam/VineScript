@@ -70,5 +70,14 @@ namespace VineScriptLib.Core
 
             return true;
         }
+
+        public static List<VineValue> ConvertList<T>(List<T> list)
+        {
+            var converted = new List<VineValue>(list.Count);
+            foreach (var el in list) {
+                converted.Add(new VineValue(el));
+            }
+            return converted;
+        }
     }
 }

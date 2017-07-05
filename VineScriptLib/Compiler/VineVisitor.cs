@@ -27,7 +27,7 @@ namespace VineScriptLib.Compiler
     class VineVisitor : VineParserBaseVisitor<VineValue> 
     {
         private VineStory story;
-        public string output { get; private set; }
+        public string output { get; private set; } = "";
 
         private ParserRuleContext lastEnteredContext;
 
@@ -39,11 +39,30 @@ namespace VineScriptLib.Compiler
             }
             Console.WriteLine("### END ###");
         }
+        
+        public void AddToOutput(string text)
+        {
+            output += text;
+        }
 
         public VineVisitor(VineStory story)
         {
             this.story = story;
-            this.output = "";
+        }
+
+        /// <summary>
+        /// Expression Evaluation Mode. Different from normal mode, it
+        /// only accepts simples expressions (no text, no comments, no
+        /// code markups!)
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public override VineValue VisitEvalExprMode(VineParser.EvalExprModeContext context)
+        {
+            lastEnteredContext = context;
+            VineValue value = Visit(context.expr());
+            AddToOutput(value.AsString);
+            return value;
         }
 
         public override VineValue VisitPassage(VineParser.PassageContext context)
@@ -72,21 +91,11 @@ namespace VineScriptLib.Compiler
             // is happening in a called c# function?
         }
 
-        public override VineValue VisitText(VineParser.TextContext context)
+        public override VineValue VisitDirectOutput(VineParser.DirectOutputContext context)
         {
             lastEnteredContext = context;
-            string value = context.TXT().GetText();
-            Console.WriteLine("> TEXT:\n" + value);
-            output += value;
-            return null;
-        }
-
-        public override VineValue VisitPrintBlockLn(VineParser.PrintBlockLnContext context)
-        {
-            lastEnteredContext = context;
-            // Force a new line at the end
             VisitChildren(context);
-            output += Environment.NewLine;
+            AddToOutput(context.GetText());
             return null;
         }
 
@@ -100,7 +109,7 @@ namespace VineScriptLib.Compiler
             string[] outputLines = value.AsString.Split('\n');
             for (int i = 0; i < outputLines.Length; i++) {
                 //  add the line to the output
-                output += outputLines[i];
+                AddToOutput(outputLines[i]);
 
                 // if not the last line
                 if (i < outputLines.Length - 1) {
@@ -109,7 +118,7 @@ namespace VineScriptLib.Compiler
                     // between line returns that are in the source code
                     // and line returns added by displaying the return value
                     // of a function containing '\n'
-                    output += '\u000B';
+                    AddToOutput("\u000B");
                 }
             }
 
@@ -123,6 +132,8 @@ namespace VineScriptLib.Compiler
         {
             // '{%' 'set' ID 'to' expr '%}'
             lastEnteredContext = context;
+            AddToOutput("{% set %}");
+
             var variable = Visit(context.variable());
             string id = variable.name;
             VineValue value = Visit(context.expr());
@@ -178,37 +189,39 @@ namespace VineScriptLib.Compiler
 
         #region Control Statements
 
-        public override VineValue VisitControlStmt(VineParser.ControlStmtContext context)
+        public override VineValue VisitIfCtrlStmt(VineParser.IfCtrlStmtContext context)
         {
             lastEnteredContext = context;
-            Console.WriteLine("CONTROL STATEMENT");
+            Console.WriteLine("IF CONTROL STATEMENT");
+            AddToOutput("{% if %}");
+
             bool ifvalue = Visit(context.ifStmt()).AsBool;
             if (!ifvalue) {
                 bool elifvalue = false;
                 for (int i = 0; i < context.elifStmt().Length; i++) {
+                    AddToOutput("{% elif %}");
                     elifvalue = Visit(context.elifStmt(i)).AsBool;
                     if (elifvalue) {
                         break;
                     }
                 }
                 if (!elifvalue && context.elseStmt() != null) {
+                    AddToOutput("{% else %}");
                     Visit(context.elseStmt());
                 }
-            } 
+            }
+            AddToOutput("{% endif %}");
             return ifvalue;
         }
-        
 
         public override VineValue VisitIfStmt(VineParser.IfStmtContext context)
         {
             lastEnteredContext = context;
             Console.WriteLine("IF STATEMENT");
-            bool ifvalue = Visit(context.expr()).AsBool;
-            if (ifvalue) {
+            VineValue ifvalue = Visit(context.expr());
+            if (ifvalue.AsBool) {
                 for (int i = 0; i < context.block().Length; i++) {
                     Console.WriteLine(">>> " + context.block(i).GetText());
-                    //var value = Visit(context.block(i));
-                    //Console.WriteLine(">>> " + value);
                     Visit(context.block(i));
                     Console.WriteLine("\r\n-------------\r\n");
                 }
@@ -220,12 +233,10 @@ namespace VineScriptLib.Compiler
         {
             lastEnteredContext = context;
             Console.WriteLine("ELIF STATEMENT");
-            bool elifvalue = Visit(context.expr()).AsBool;
-            if (elifvalue) {
+            VineValue elifvalue = Visit(context.expr());
+            if (elifvalue.AsBool) {
                 for (int i = 0; i <  context.block().Length; i++) {
                     Console.WriteLine(">>> " + context.block(i).GetText());
-                    //var value = Visit(context.block(i));
-                    //Console.WriteLine(">>> " + value);
                     Visit(context.block(i));
                     Console.WriteLine("\r\n-------------\r\n");
                 }
@@ -239,12 +250,73 @@ namespace VineScriptLib.Compiler
             Console.WriteLine("ELSE STATEMENT");
             for (int i = 0; i <  context.block().Length; i++) {
                 Console.WriteLine(">>> " + context.block(i).GetText());
-                //object value = Visit(context.block(i));
-                //Console.WriteLine(">>> " + value);
                 Visit(context.block(i));
                 Console.WriteLine("\r\n-------------\r\n");
             }
-            return 0;
+            return null;
+        }
+
+        public override VineValue VisitForCtrlStmt(VineParser.ForCtrlStmtContext context)
+        {
+            lastEnteredContext = context;
+            Console.WriteLine("FOR CONTROL STATEMENT");
+            AddToOutput("{% for %}");
+            VineValue forvalue = Visit(context.forStmt());
+            AddToOutput("{% endfor %}");
+            return null;
+        }
+
+        public override VineValue VisitForStmt(VineParser.ForStmtContext context)
+        {
+            lastEnteredContext = context;
+            // TODO scope with temp vars
+            Console.WriteLine("FOR STATEMENT");
+
+            VineValue iterator = null;
+            if (context.expr() != null) {
+                iterator = Visit(context.expr());
+            } else {
+                iterator = Visit(context.interval());
+            }
+
+            if (iterator.IsArray || iterator.IsDict || iterator.IsString) {
+                var tempForVar = Visit(context.variable());
+                string id = tempForVar.name;
+                foreach (var item in iterator) {
+                    if (iterator.IsDict) {
+                        story.vars[id] =
+                            ((KeyValuePair<string, VineValue>)item).Value;
+                    } else {
+                        story.vars[id] = item as VineValue;
+                    }
+                    for (int i = 0; i < context.block().Length; i++) {
+                        Console.WriteLine(">>> " + context.block(i).GetText());
+                        Visit(context.block(i));
+                        Console.WriteLine("\r\n-------------\r\n");
+                    }
+                }
+            } else {
+                throw new VineRuntimeException(
+                    "'" + iterator.type + "' is not iterable", context
+                );
+            }
+
+            return null;
+        }
+
+        public override VineValue VisitInterval(VineParser.IntervalContext context)
+        {
+            lastEnteredContext = context;
+            Console.WriteLine("> INTERVAL");
+            VineValue left = Visit(context.left);
+            VineValue right = Visit(context.right);
+            if (!left.IsInt || !right.IsInt) {
+                throw new VineRuntimeException("Intervals must be integers values", context);
+            }
+            var interval = new VineValue(VineVarUtils.ConvertList(
+                VineScriptLib.Utils.Range(left.AsInt, right.AsInt)
+            ));
+            return interval;
         }
 
         #endregion Control Statements
@@ -491,19 +563,6 @@ namespace VineScriptLib.Compiler
         private void Visit(TerminalNodeImpl node)
         {
             Console.WriteLine(" Visit Symbol={0}", node.Symbol.Text);
-        }
-
-        /// <summary>
-        /// Eval expr mode.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public override VineValue VisitEvalExprMode(VineParser.EvalExprModeContext context)
-        {
-            lastEnteredContext = context;
-            VineValue value = Visit(context.expr());
-            output += value.AsString;
-            return value;
         }
 
         private VineValue GetValueInSequence(VineValue startingVar, 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -458,6 +459,31 @@ namespace VineScriptLib.Core
         public VineValue Clone()
         {
             return new VineValue(this);
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            switch (type) {
+                case Type.Array:
+                    foreach (var item in this.AsArray) {
+                        yield return item;
+                    }
+                    break;
+                case Type.Dict:
+                    foreach (var item in this.AsDict) {
+                        yield return item;
+                    }
+                    break;
+                case Type.String:
+                    for (int i = 0; i < this.AsString.Length; i++) {
+                        yield return (VineValue)this.AsString.Substring(i, 1);
+                    }
+                    break;
+                default:
+                    throw new VineConversionException(
+                        "'" + type + "' is not iterable"
+                    );
+            }
         }
 
         public override int GetHashCode()

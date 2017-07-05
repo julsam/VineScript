@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compiler\Utils\ExceptionUtil.cs" />
+    <Compile Include="Compiler\Formatter\VineFormatterCompiler.cs" />
+    <Compile Include="Compiler\Formatter\VineFormatterVisitor.cs" />
     <Compile Include="Compiler\LinesFormatter\LinesFormatterCompiler.cs" />
     <Compile Include="Compiler\VineCompiler.cs" />
     <Compile Include="Compiler\ErrorListeners\LexerErrorListener.cs" />
@@ -63,6 +65,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\VineValue.cs" />
     <Compile Include="Compiler\ErrorListeners\UnderlineErrorListener.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Antlr4 Include="Compiler\LinesFormatter\LinesFormatter.g4">
@@ -77,6 +80,9 @@
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>VineScriptLib.Compiler</CustomToolNamespace>
     </Antlr4>
+    <Antlr4 Include="Compiler\Formatter\VineFormatter.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>VineScriptLib.Compiler.Formatter</CustomToolNamespace>
     </Antlr4>
     <None Include="packages.config" />
   </ItemGroup>
