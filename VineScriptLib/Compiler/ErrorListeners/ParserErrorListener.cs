@@ -1,7 +1,7 @@
 ﻿using System;
 using Antlr4.Runtime;
 
-namespace VineScriptLib.Compilers
+namespace VineScriptLib.Compiler
 {
     class ParserErrorListener : BaseErrorListener
     {

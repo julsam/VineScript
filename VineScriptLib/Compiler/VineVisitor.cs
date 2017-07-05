@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 
-namespace VineScriptLib.Compilers.Vine
+namespace VineScriptLib.Compiler
 {
     internal class VineRuntimeException : Exception
     {

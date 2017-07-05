@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VineScriptLib.Compilers
+namespace VineScriptLib.Compiler
 {
-    public class Utils
+    public class Util
     {
-        static public string PrettyPrint(string stringTree)
+        public static string PrettyPrint(string stringTree)
         {
             string output = "";
             string str = stringTree.Replace(" (", "\n(");
@@ -30,7 +30,7 @@ namespace VineScriptLib.Compilers
             return output;
         }
 
-        static public string RemoveWhiteSpace(string text)
+        public static string RemoveWhiteSpace(string text)
         {
             Console.WriteLine("--- WS removed: ---");
             string wsRemoved = "";

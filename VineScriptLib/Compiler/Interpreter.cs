@@ -3,10 +3,8 @@ using Antlr4.Runtime;
 using System;
 using System.Collections.Generic;
 using VineScriptLib.Core;
-using VineScriptLib.Compilers.LinesFormatter;
-using VineScriptLib.Compilers.Vine;
 
-namespace VineScriptLib
+namespace VineScriptLib.Compiler
 {
     public class Interpreter
     {                
@@ -28,7 +26,7 @@ namespace VineScriptLib
             Console.WriteLine(vinecode);
 
             // Remove whitespace at the start & end of each lines
-            string wsRemoved = Compilers.Utils.RemoveWhiteSpace(vinecode);
+            string wsRemoved = Compiler.Util.RemoveWhiteSpace(vinecode);
 
             // Start timer
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -46,7 +44,7 @@ namespace VineScriptLib
 
             // Remove whitespace at the start & end of each lines (again)
             // TODO: keep only one space between words
-            string finalOutput = Compilers.Utils.RemoveWhiteSpace(formatOutput);
+            string finalOutput = Compiler.Util.RemoveWhiteSpace(formatOutput);
 
             // Stop timer
             watch.Stop();
@@ -75,7 +73,7 @@ namespace VineScriptLib
             Console.WriteLine(expr);
 
             // Remove whitespace at the start & end of each lines
-            string wsRemoved = Compilers.Utils.RemoveWhiteSpace(expr);
+            string wsRemoved = Compiler.Util.RemoveWhiteSpace(expr);
 
             // Start timer
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -86,7 +84,7 @@ namespace VineScriptLib
             
             // Remove whitespace at the start & end of each lines (again)
             // TODO: keep only one space between words
-            string finalOutput = Compilers.Utils.RemoveWhiteSpace(parsed);
+            string finalOutput = Compiler.Util.RemoveWhiteSpace(parsed);
 
             // Stop timer
             watch.Stop();

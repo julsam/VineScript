@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using VineScriptLib.Compiler;
 
 namespace VineScriptLib.Core
 {

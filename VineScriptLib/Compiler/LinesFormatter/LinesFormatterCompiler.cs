@@ -3,9 +3,8 @@ using Antlr4.Runtime;
 using System;
 using System.Collections.Generic;
 using VineScriptLib.Core;
-using VineScriptLib.Compilers.Vine;
 
-namespace VineScriptLib.Compilers.LinesFormatter
+namespace VineScriptLib.Compiler.LinesFormatter
 {
     public class LinesFormatterCompiler
     {
@@ -29,7 +28,7 @@ namespace VineScriptLib.Compilers.LinesFormatter
 
             var tree = parser.compileUnit();
             
-            Console.WriteLine(Utils.PrettyPrint(tree.ToStringTree(parser)));
+            Console.WriteLine(Util.PrettyPrint(tree.ToStringTree(parser)));
             
             visitor = new LinesFormatterVisitor();
             visitor.Visit(tree);

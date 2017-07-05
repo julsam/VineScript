@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Antlr4.Runtime.Misc;
 
-namespace VineScriptLib.Compilers.LinesFormatter
+namespace VineScriptLib.Compiler.LinesFormatter
 {
     /// <summary>
     /// Visitor for LinesFormatter grammar. Removes unwanted new lines from blocks of code, but tries to keep everything else formatted.

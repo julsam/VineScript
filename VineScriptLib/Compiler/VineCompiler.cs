@@ -3,10 +3,8 @@ using Antlr4.Runtime;
 using System;
 using System.Collections.Generic;
 using VineScriptLib.Core;
-using VineScriptLib.Compilers;
-using VineScriptLib.Compilers.Vine;
 
-namespace VineScriptLib.Compilers.Vine
+namespace VineScriptLib.Compiler
 {
     public class VineCompiler
     {
@@ -37,7 +35,7 @@ namespace VineScriptLib.Compilers.Vine
 
             var tree = parser.passage();
             
-            Console.WriteLine(Utils.PrettyPrint(tree.ToStringTree(parser)));
+            Console.WriteLine(Util.PrettyPrint(tree.ToStringTree(parser)));
             
             var eval = new VineVisitor(story);
             eval.Visit(tree);
@@ -59,7 +57,7 @@ namespace VineScriptLib.Compilers.Vine
 
             var tree = parser.passage();
             
-            Console.WriteLine(Utils.PrettyPrint(tree.ToStringTree(parser)));
+            Console.WriteLine(Util.PrettyPrint(tree.ToStringTree(parser)));
             
             var eval = new VineVisitor(story);
             eval.Visit(tree);
