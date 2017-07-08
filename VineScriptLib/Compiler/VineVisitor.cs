@@ -455,7 +455,7 @@ namespace VineScriptLib.Compiler
             if (context.sequenceAccess() != null && context.sequenceAccess().Count() > 0) {
                 value = GetValueInSequence(variable, context.sequenceAccess());
             } else {
-                value = variable.Clone();
+                value = variable;
             }
 
             value.name = name;

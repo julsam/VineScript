@@ -1,0 +1,5 @@
+﻿{% set arr = [[0, 1], [2, 3], [4, 5]] %}
+{% for el in Clone(arr) %}
+	{% set el[0] = el[0] + 1 %}
+	{% set el[1] = el[1] + 1 %}
+{% endfor %}

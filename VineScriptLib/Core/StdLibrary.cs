@@ -30,6 +30,7 @@ namespace VineScriptLib.Core
             functions.Register("Hello", typeof(StdLibrary));
             functions.Register("Add", typeof(StdLibrary));
             functions.Register("Upper", typeof(StdLibrary));
+            functions.Register("Clone", typeof(StdLibrary));
             functions.Register("IsString", typeof(StdLibrary));
             functions.Register("IsBool", typeof(StdLibrary));
             functions.Register("IsInt", typeof(StdLibrary));
@@ -57,6 +58,14 @@ namespace VineScriptLib.Core
         public static VineValue Upper(object context, VineValue value)
         {
             return value.AsString.ToUpper();
+        }
+        
+        public static VineValue Clone(object context, VineValue value)
+        {
+            if (value == null) {
+                throw new Exception("Can't clone Null value");
+            }
+            return value.Clone();
         }
 
         public static bool IsBool(object context, VineValue value)
