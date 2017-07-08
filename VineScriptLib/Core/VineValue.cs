@@ -371,7 +371,7 @@ namespace VineScriptLib.Core
         public VineValue() : this(null) { }
 
         // Create a value with a C# object
-        public VineValue(object value)
+        public VineValue(object value, bool clone=false)
         {
             // Copy an existing value
             if (value is VineValue) {
@@ -395,13 +395,15 @@ namespace VineScriptLib.Core
                         break;
                     case Type.Array:
                         // deep copy
-                        arrayValue = otherValue.arrayValue.ConvertAll(val => val.Clone());
+                        arrayValue = otherValue.arrayValue.ConvertAll(
+                            val => clone ? val.Clone() : val
+                        );
                         break;
                     case Type.Dict:
                         // deep copy
                         dictValue = otherValue.AsDict.ToDictionary(
                             entry => entry.Key,
-                            entry => entry.Value.Clone()
+                            entry => clone ? entry.Value.Clone() : entry.Value
                         );
                         break;
                     default:
@@ -458,7 +460,7 @@ namespace VineScriptLib.Core
 
         public VineValue Clone()
         {
-            return new VineValue(this);
+            return new VineValue(this, true);
         }
 
         public IEnumerator GetEnumerator()
