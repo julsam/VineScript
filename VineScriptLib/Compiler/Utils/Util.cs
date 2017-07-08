@@ -49,7 +49,7 @@ namespace VineScriptLib.Compiler
             return wsRemoved;
         }
 
-        public static string ToLiteral(string input)
+        public static string Escape(string input)
         {
             StringBuilder literal = new StringBuilder(input.Length);
             foreach (var c in input)
@@ -59,14 +59,14 @@ namespace VineScriptLib.Compiler
                     case '\'': literal.Append(@"\'"); break;
                     case '\"': literal.Append(@"\"""); break;
                     case '\\': literal.Append(@"\\"); break;
-                    case '\0': literal.Append(@"\0"); break;
-                    case '\a': literal.Append(@"\a"); break;
-                    case '\b': literal.Append(@"\b"); break;
-                    case '\f': literal.Append(@"\f"); break;
+                    case '\0': literal.Append(@"\0"); break; // Null (0x00)
+                    case '\a': literal.Append(@"\a"); break; // Bell (0x07)
+                    case '\b': literal.Append(@"\b"); break; // Backspace (0x08)
+                    case '\f': literal.Append(@"\f"); break; // From Feed (0x0C)
                     case '\n': literal.Append(@"\n"); break;
                     case '\r': literal.Append(@"\r"); break;
                     case '\t': literal.Append(@"\t"); break;
-                    case '\v': literal.Append(@"\v"); break;
+                    case '\v': literal.Append(@"\v"); break; // Vertical Tab, used internally (0x0B)
                     default: literal.Append(c); break;
                 }
             }

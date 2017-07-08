@@ -221,7 +221,7 @@ namespace VineScriptLib.Compiler
             VineValue ifvalue = Visit(context.expr());
             if (ifvalue.AsBool) {
                 for (int i = 0; i < context.block().Length; i++) {
-                    Console.WriteLine(">>> " + Util.ToLiteral(context.block(i).GetText()));
+                    Console.WriteLine(">>> " + Util.Escape(context.block(i).GetText()));
                     Visit(context.block(i));
                     Console.WriteLine("\r\n-------------\r\n");
                 }
@@ -236,7 +236,7 @@ namespace VineScriptLib.Compiler
             VineValue elifvalue = Visit(context.expr());
             if (elifvalue.AsBool) {
                 for (int i = 0; i <  context.block().Length; i++) {
-                    Console.WriteLine(">>> " + Util.ToLiteral(context.block(i).GetText()));
+                    Console.WriteLine(">>> " + Util.Escape(context.block(i).GetText()));
                     Visit(context.block(i));
                     Console.WriteLine("\r\n-------------\r\n");
                 }
@@ -249,7 +249,7 @@ namespace VineScriptLib.Compiler
             lastEnteredContext = context;
             Console.WriteLine("ELSE STATEMENT");
             for (int i = 0; i <  context.block().Length; i++) {
-                Console.WriteLine(">>> " + Util.ToLiteral(context.block(i).GetText()));
+                Console.WriteLine(">>> " + Util.Escape(context.block(i).GetText()));
                 Visit(context.block(i));
                 Console.WriteLine("\r\n-------------\r\n");
             }
@@ -290,7 +290,7 @@ namespace VineScriptLib.Compiler
                         story.vars[id] = item as VineValue;
                     }
                     for (int i = 0; i < context.block().Length; i++) {
-                        Console.WriteLine(">>> " + Util.ToLiteral(context.block(i).GetText()));
+                        Console.WriteLine(">>> " + Util.Escape(context.block(i).GetText()));
                         Visit(context.block(i));
                         Console.WriteLine("\r\n-------------\r\n");
                     }
