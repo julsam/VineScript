@@ -103,7 +103,7 @@ namespace VineScriptLib.Compiler
         {
             lastEnteredContext = context;
             VineValue value = Visit(context.expr());
-            Console.WriteLine("> VAR: " + context.expr().GetText() + " = " + value);
+            Console.WriteLine("> DISPLAY: " + context.expr().GetText() + " = " + value);
 
             // Get every lines in an array
             string[] outputLines = value.AsString.Split('\n');
@@ -269,9 +269,9 @@ namespace VineScriptLib.Compiler
         public override VineValue VisitForStmt(VineParser.ForStmtContext context)
         {
             lastEnteredContext = context;
-            // TODO scope with temp vars
             Console.WriteLine("FOR STATEMENT");
-
+            
+            // TODO scope with temp vars
             VineValue iterator = null;
             if (context.expr() != null) {
                 iterator = Visit(context.expr());
