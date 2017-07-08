@@ -285,6 +285,32 @@ namespace VineScriptLib.Test
             Assert.AreEqual(cmp.ReadToEnd(), output);
         }
 
+        [TestMethod]
+        public void CmpFileUnescapeStringLiteral01()
+        {
+            StreamReader input = File.OpenText("scripts/basic/unescape_string01.vine");
+            StreamReader cmp = File.OpenText("scripts/basic/unescape_string01.cmp");
+
+            VineStory story = new VineStory();
+            string output = story.RunPassage(input);
+
+            Assert.AreEqual(cmp.ReadToEnd(), output);
+        }
+
+        [TestMethod]
+        public void CmpFileUnescapeStringLiteral02()
+        {
+            try {
+                StreamReader input = File.OpenText("scripts/basic/unescape_string02.vine");
+                VineStory story = new VineStory();
+                string output = story.RunPassage(input);
+                Assert.Fail();
+            }
+            catch (Exception) {
+                /* All good, the '\r' character should make it fail */
+            }
+        }
+
         #region Additional test attributes
         //
         // You can use the following additional attributes as you write your tests:

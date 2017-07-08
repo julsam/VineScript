@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace VineScriptLib.Compiler
@@ -71,6 +72,26 @@ namespace VineScriptLib.Compiler
                 }
             }
             return literal.ToString();
+        }
+
+        public static string UnescapeAuthorizedChars(string input)
+        {
+            if (string.IsNullOrEmpty(input)) {
+                return input;
+            }
+            var unescaped = Regex.Replace(input, @"\\.", m => {
+                switch (m.Value)
+                {
+                    case @"\'": return "\'";
+                    case @"\""": return "\"";
+                    case @"\\": return "\\";
+                    case @"\n": return "\n";
+                    case @"\t": return "\t";
+                    default:
+                        throw new Exception("Unrecognized escape sequence '" + m.Value + "'");
+                }
+            });
+            return unescaped;
         }
     }
 }

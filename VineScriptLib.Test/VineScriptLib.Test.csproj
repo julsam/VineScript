@@ -61,6 +61,15 @@
     <Compile Include="VineValueTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="scripts\basic\unescape_string01.vine">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="scripts\basic\unescape_string01.cmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="scripts\basic\unescape_string02.vine">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="scripts\basic\comments01.vine">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

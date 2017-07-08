@@ -500,9 +500,16 @@ namespace VineScriptLib.Compiler
         {
             lastEnteredContext = context;
             Console.WriteLine("ATOM STRING " + context.STRING().GetText());
+
+            // Get the string literal
             string str = context.STRING().GetText();
+            
+            // Removes starting and ending '"'
             str = str.Substring(1, str.Length - 2);
-            // TODO: remove '\' in '\\n', '\\t' etc
+            
+            // Unescape special chars starting with '\'. E.g. \n, \t, etc
+            str = Compiler.Util.UnescapeAuthorizedChars(str);
+
             return str;
         }
 
