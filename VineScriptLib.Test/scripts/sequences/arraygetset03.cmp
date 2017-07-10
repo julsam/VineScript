@@ -1,0 +1,18 @@
+﻿myvar            => 12
+myvar += 30      => 42
+myvar /= 2       => 21
+myvar -= 22      => -1
+myvar *= -4      => 4
+myvar %= 3       => 1
+---
+arr              => [1, 2.0, "Three", [4, "Six"]]
+arr[0] += arr    => 2
+arr[0] *= 4      => 8
+arr[0] /= 2      => 4
+arr[0] -= 1      => 3
+arr[0] %= 2      => 1
+arr[1] -= 1.1    => 0.9
+arr[2] += " One" => Three One
+arr[3][0] += 10  => 14
+arr[3][0] -= 5   => 9
+arr[3][1] += 10  => Six10

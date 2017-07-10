@@ -128,7 +128,7 @@ namespace VineScriptLib.Compiler
 
         #region Commands
 
-        public override VineValue VisitAssignStmt(VineParser.AssignStmtContext context)
+        public override VineValue VisitAssign(VineParser.AssignContext context)
         {
             // '{%' 'set' ID 'to' expr '%}'
             lastEnteredContext = context;
@@ -154,12 +154,17 @@ namespace VineScriptLib.Compiler
                 }
                 Console.WriteLine(" TO " + value);
                 
-                SetValueInSequence(story.vars[id], context.sequenceAccess(), value);
+                SetValueInSequence(story.vars[id], context.sequenceAccess(), 
+                    value, context.op.Type);
             }
             else
             {
                 Console.WriteLine("STMT SET " + id + " TO " + value);
-                story.vars[id] = value;
+                if (context.op.Type == VineLexer.ASSIGN || context.op.Type == VineLexer.TO) {
+                    story.vars[id] = AssignOp(context.op.Type, null, value);
+                } else {
+                    story.vars[id] = AssignOp(context.op.Type, story.vars[id], value);
+                }
             }
 
             return value;
@@ -601,7 +606,7 @@ namespace VineScriptLib.Compiler
             } else {
                 throw new VineRuntimeException(
                     "Can't access element with [] because the variable '"
-                    + lastSequence.name + "' is neither an array nor a dictionnary "
+                    + lastSequence.name + "' is neither an array nor a dictionnary"
                     + " nor a string",
                     sequences[0]
                 );
@@ -610,7 +615,8 @@ namespace VineScriptLib.Compiler
         }
 
         private void SetValueInSequence(VineValue startingVar, 
-            VineParser.SequenceAccessContext[] sequences, VineValue value)
+            VineParser.SequenceAccessContext[] sequences, VineValue value,
+            int opToken)
         {
             if (startingVar.IsString) {
                 // not allowed: string[0] = 'a'
@@ -635,14 +641,27 @@ namespace VineScriptLib.Compiler
             var lastIndex = Visit(sequences[sequences.Count() - 1].expr());
 
             // Finally set the content of [n]
-            if (lastSequence.IsArray) {
-                lastSequence[lastIndex.AsInt] = value;
-            } else if (lastSequence.IsDict) {
-                lastSequence[lastIndex.AsString] = value;
-            } else {
+            if (lastSequence.IsArray)
+            {
+                var result = AssignOp(opToken, lastSequence[lastIndex.AsInt], value);
+                lastSequence[lastIndex.AsInt] = result;
+            }
+            else if (lastSequence.IsDict)
+            {
+                var result = AssignOp(opToken, lastSequence[lastIndex.AsString], value);
+                lastSequence[lastIndex.AsString] = result;
+            }
+            else if (lastSequence.IsString)
+            {
+                throw new VineRuntimeException(
+                    "Strings don't support item assignment", sequences[sequences.Count() - 1]
+                );
+            }
+            else
+            {
                 throw new VineRuntimeException(
                     "Can't access element with [] because the variable '"
-                    + lastSequence.name + "' is neither an array nor a dictionnary "
+                    + lastSequence.name + "' is neither an array nor a dictionnary"
                     + " nor a string",
                     sequences[0]
                 );
@@ -713,6 +732,34 @@ namespace VineScriptLib.Compiler
                 }
             }
             return lastSequence;
+        }
+
+        private VineValue AssignOp(int opToken, VineValue left, VineValue right)
+        {
+            switch (opToken) {
+                case VineLexer.ASSIGN:
+                case VineLexer.TO:
+                    left = right;
+                    break;
+                case VineLexer.ADDASSIGN:
+                    left += right;
+                    break;
+                case VineLexer.SUBASSIGN:
+                    left -= right;
+                    break;
+                case VineLexer.MULASSIGN:
+                    left *= right;
+                    break;
+                case VineLexer.DIVASSIGN:
+                    left /= right;
+                    break;
+                case VineLexer.MODASSIGN:
+                    left %= right;
+                    break;
+                default:
+                    throw new Exception("Unhandled assignment operator");
+            }
+            return left;
         }
     }
     

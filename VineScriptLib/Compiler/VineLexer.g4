@@ -91,6 +91,14 @@ DOT:            '.' ;
 COMMA:          ',' ;
 COLON:          ':' ;
 
+// Assign
+ADDASSIGN:  '+=' ;
+SUBASSIGN:  '-=' ;
+MULASSIGN:  '*=' ;
+DIVASSIGN:  '/=' ;
+MODASSIGN:  '%=' ;
+ASSIGN:     '=' ;
+
 // Unary op
 MINUS:  '-' ;
 NOT:    '!' ;
@@ -116,9 +124,6 @@ GT:     '>' ;
 LTE:    '<=' ;
 GTE:    '>=' ;
 
-// Assign
-ASSIGN:     '=' ;
-
 // TODO complete list. Commands are built-in functions
 COMMAND:    'array' | 'TODO' ;
 
@@ -143,6 +148,7 @@ ILLEGAL_STRING: '"' (ESC | .)*? '"' ;
 // This includes all forms of Unicode 6 whitespace except \n, \r, and Ogham space mark.
 //WS_CODE:    [ \f\t\v\u00a0\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+ -> skip ;
 // Unicode whitespace https://github.com/antlr/antlr4/blob/master/doc/lexer-rules.md
+// list : https://en.wikipedia.org/wiki/Whitespace_character
 //UNICODE_WS : [\p{White_Space}] -> skip; // match all Unicode whitespace
 WS:     [ \t\f]+ -> channel(HIDDEN) ;
 

@@ -127,6 +127,12 @@
     <None Include="scripts\sequences\array2d_set_for01.vine">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="scripts\sequences\arraygetset03.cmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="scripts\sequences\arraygetset03.vine">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="scripts\sequences\arraygetset02.cmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

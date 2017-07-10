@@ -129,7 +129,7 @@ text
     ;
 
 simpleStmtBlock
-    :   '{%' assignStmt '%}'
+    :   '{%' setStmt '%}'
     |   '{%' funcCall '%}'
     ;
 
@@ -140,10 +140,13 @@ display
     :   '{{' expr '}}'
     ;
 
-assignStmt
-    :   'set' variable (sequenceAccess)* ('='|'to') expr
-    //|   assignStmt (',' assignStmt)+
-    //|   COMMAND expressionList? '%}'           # langCmd // {% formatted on %}, {% br %}, ...
+setStmt
+    :   'set' assign
+    ;
+
+assign
+    :   variable (sequenceAccess)* op=('='|'to') expr
+    |   variable (sequenceAccess)* op=('+='|'-='|'*='|'/='|'%=') expr
     ;
 
 funcCall

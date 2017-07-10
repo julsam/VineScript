@@ -38,6 +38,19 @@ namespace VineScriptLib.Test
         }
 
         [TestMethod]
+        public void SequenceCmpArrayGetSet03()
+        {
+            
+            StreamReader input = File.OpenText("scripts/sequences/arraygetset03.vine");
+            StreamReader cmp = File.OpenText("scripts/sequences/arraygetset03.cmp");
+
+            VineStory story = new VineStory();
+            string output = story.RunPassage(input);
+
+            Assert.AreEqual(cmp.ReadToEnd(), output);
+        }
+
+        [TestMethod]
         public void SequenceInvalidIndexes()
         {
             try {
