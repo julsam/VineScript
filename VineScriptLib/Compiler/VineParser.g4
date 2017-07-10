@@ -141,7 +141,13 @@ display
     ;
 
 setStmt
-    :   'set' assign
+    :   'set' assignList
+    ;
+
+assignList
+    :   assign (',' assign)*
+    |   assignList { NotifyErrorListeners("Missing ',' separator"); } assign (',' assign)*
+    |   assignList { NotifyErrorListeners("Too many ','"); } ',' ',' assignList
     ;
 
 assign

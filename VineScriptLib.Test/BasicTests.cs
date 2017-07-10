@@ -226,6 +226,25 @@ namespace VineScriptLib.Test
         }
 
         [TestMethod]
+        public void AssignList()
+        {
+            VineStory story = new VineStory();
+
+            string input = "{% set v1 = 12, v2 = 2.0, v3 = true, v4 = null, ";
+            input += "v5 = \"Foo\", v6 = [1,2,3], v7 = {\"a\": 4, \"b\": 5 } %}";
+
+            string output = story.RunPassage(input);
+            
+            Assert.AreEqual(12, story.vars["v1"]);
+            Assert.AreEqual(2.0, story.vars["v2"]);
+            Assert.AreEqual(true, story.vars["v3"]);
+            Assert.AreEqual(VineValue.NULL, story.vars["v4"]);
+            Assert.AreEqual("Foo", story.vars["v5"]);
+            Assert.AreEqual(3, story.vars["v6"][2]);
+            Assert.AreEqual(4, story.vars["v7"]["a"]);
+        }
+
+        [TestMethod]
         public void CmpFileFor01()
         {
             StreamReader input = File.OpenText("scripts/basic/for01.vine");
