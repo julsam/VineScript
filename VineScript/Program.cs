@@ -9,49 +9,51 @@ namespace VineScript
     {
         static void Main(string[] args)
         {
-            //VineValue.strictMode = true;
             VineStory story = new VineStory();
             try {
-                //string inputFile = "expressions/test01.expr";
-                //string inputFile = "scripts/if.vine";
-
-                //string inputFile = "scripts/print.vine";
-                //story.vars["hello_world"] = "Hello, World!";
-                //story.vars["my_int"] = 42;
-
-                //string inputFile = "scripts/empty.vine";
-                //string inputFile = "scripts/set01.vine";
-                //string inputFile = "scripts/print02.vine";
-                //string inputFile = "scripts/if02.vine";
-                //string inputFile = "scripts/syntax_error01.vine";
-                string inputFile = "scripts/user_cmd01.vine";
-                //string inputFile = "scripts/check_types01.vine";
-                //string inputFile = "scripts/lang_chars.vine";
-                //string inputFile = "scripts/line_ending01.vine";
-                //string inputFile = "scripts/line_ending02.vine";
-                //string inputFile = "scripts/comments1.vine";
-                //string inputFile = "scripts/comments2.vine";
-                StreamReader istream = File.OpenText(inputFile);
-                //StreamReader istream = new StreamReader(Console.OpenStandardInput());
-                story.RunPassage(istream);
-                //Calc.Evaluate("foobar(42)");
-                //Calc.Evaluate("🍴_11\n_😎2\nπ33424\nµ\n∰\n日本語=42\n");
+                if (args.Length <= 0)
+                {
+                    StreamReader br = new StreamReader(Console.OpenStandardInput());
+                    string input = br.ReadLine();
+                    while (!string.IsNullOrWhiteSpace(input))
+                    {
+                        story.Eval(input);
+                        input = br.ReadLine();
+                    }
+                }
+                else if (args.Length == 1)
+                {
+                    if (args[0] == "-h" || args[0] == "--help")
+                    {
+                        ShowUsage();
+                    }
+                    else
+                    {
+                        string inputFile = args[0];
+                        StreamReader istream = File.OpenText(inputFile);
+                        story.RunPassage(istream);
+                    }
+                }
+                else
+                {
+                    ShowUsage();
+                }
             } catch (Exception e) {
                 Console.WriteLine(e.Message);
             }
+        }
 
-            //try {
-            //    //string inputFile = "expressions/test01.expr";
-            //    string inputFile = "scripts/if.vine";
-            //    //string inputFile = "scripts/print.vine";
-            //    StreamReader istream = File.OpenText(inputFile);
-            //    //StreamReader istream = new StreamReader(Console.OpenStandardInput());
-            //    Interpreter.ExecuteEval(istream);
-            //    //Calc.Evaluate("foobar(42)");
-            //    //Calc.Evaluate("🍴_11\n_😎2\nπ33424\nµ\n∰\n日本語=42\n");
-            //} catch (Exception e) {
-            //    Console.WriteLine(e.Message);
-            //}
+        private static void ShowUsage()
+        {
+            string binname = System.AppDomain.CurrentDomain.FriendlyName;
+            Console.WriteLine(
+                string.Format("Usage: {0} [file]", binname)
+            );
+            Console.WriteLine(
+                "With no file, read from the standard input in expressions mode only."
+            );
+            Console.WriteLine("-h, --help   : show this help message and exit");
+            Console.WriteLine("file         : interpret the script file");
         }
     }
 }
