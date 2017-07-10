@@ -258,7 +258,7 @@ interval
 // Call to force whitespace. Kind of hacky?
 // If the current token is not a white space => error.
 // We use semantic predicates here because WS is in a different
-// channel that the parser can't access directly
+// channel and the parser can't access directly
 wsb // before
     :   {
         if (_input.Get(_input.Index - 1).Type != WS) {
