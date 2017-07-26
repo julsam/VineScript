@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace VineScriptLib.Core
 {
@@ -31,6 +30,9 @@ namespace VineScriptLib.Core
             functions.Register("Add", typeof(StdLibrary));
             functions.Register("Upper", typeof(StdLibrary));
             functions.Register("Clone", typeof(StdLibrary));
+            functions.Register("Int", typeof(StdLibrary));
+            functions.Register("Number", typeof(StdLibrary));
+            functions.Register("String", typeof(StdLibrary));
             functions.Register("IsString", typeof(StdLibrary));
             functions.Register("IsBool", typeof(StdLibrary));
             functions.Register("IsInt", typeof(StdLibrary));
@@ -66,6 +68,21 @@ namespace VineScriptLib.Core
                 throw new Exception("Can't clone Null value");
             }
             return value.Clone();
+        }
+
+        public static int Int(object context, VineValue value)
+        {
+            return value.AsInt;
+        }
+
+        public static double Number(object context, VineValue value)
+        {
+            return value.AsNumber;
+        }
+
+        public static string String(object context, VineValue value)
+        {
+            return value.AsString;
         }
 
         public static bool IsBool(object context, VineValue value)
