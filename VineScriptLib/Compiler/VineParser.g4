@@ -168,8 +168,8 @@ newSequence
     |   '[' expressionList? ']' { NotifyErrorListeners("Too many brackets"); } ']' # newArrayError
     |   '[' expressionList?     { NotifyErrorListeners("Missing closing ']'"); }   # newArrayError
     // dict errors:
-    |   LBRACE keyValueList? RBRACE { NotifyErrorListeners("Too many braces"); } ']' # newDictError
-    |   LBRACE keyValueList?        { NotifyErrorListeners("Missing closing '}'"); } # newDictError
+    |   LBRACE keyValueList? RBRACE { NotifyErrorListeners("Too many braces"); } RBRACE # newDictError
+    |   LBRACE keyValueList?        { NotifyErrorListeners("Missing closing '}'"); }    # newDictError
     ;
 
 // if, elif, else, for, end
