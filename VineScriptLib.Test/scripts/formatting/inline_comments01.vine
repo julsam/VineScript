@@ -1,0 +1,11 @@
+﻿// comment 1 {% Int(0) %}{{ Int(0) }}
+line 1 // comment 2
+/ line 2 /\/\
+/ line 3 \/\/
+/ line 4 \foo\\\// not a comment.
+bar\\// comment
+\\// comment
+\\\\// comment
+\\\// text ((1 '\'))
+\\\\\// text (2 '\')
+\\\\\\\\\// text (4 '\')

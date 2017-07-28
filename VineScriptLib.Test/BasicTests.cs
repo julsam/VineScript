@@ -330,6 +330,18 @@ namespace VineScriptLib.Test
             }
         }
 
+        [TestMethod]
+        public void CmpFileUnescapeStringLiteral03()
+        {
+            StreamReader input = File.OpenText("scripts/basic/unescape_string03.vine");
+            StreamReader cmp = File.OpenText("scripts/basic/unescape_string03.cmp");
+
+            VineStory story = new VineStory();
+            string output = story.RunPassage(input);
+
+            Assert.AreEqual(cmp.ReadToEnd(), output);
+        }
+
         #region Additional test attributes
         //
         // You can use the following additional attributes as you write your tests:
