@@ -56,8 +56,8 @@ namespace VineScriptLib.Test
             try {
                 // Negative index
                 VineStory story = new VineStory();
-                string input = "{% set $arr = [1, 2, 3] %}\n"
-                    + "{{ $arr[-1] %}";
+                string input = "<< set $arr = [1, 2, 3] >>\n"
+                    + "{{ $arr[-1] >>";
                 story.RunPassage(input);
                 Assert.Fail();
             } catch (Exception) {
@@ -67,8 +67,8 @@ namespace VineScriptLib.Test
             try {
                 // Out of range index
                 VineStory story = new VineStory();
-                string input = "{% set $arr = [1, 2, 3] %}\n"
-                    + "{{ $arr[3] %}";
+                string input = "<< set $arr = [1, 2, 3] >>\n"
+                    + "{{ $arr[3] >>";
                 story.RunPassage(input);
                 Assert.Fail();
             } catch (Exception) {
@@ -81,7 +81,7 @@ namespace VineScriptLib.Test
         {
             VineStory story = new VineStory();
 
-            string input = "{% set str = \"FooBar\" %}\n"
+            string input = "<< set str = \"FooBar\" >>\n"
                 + "{{ str }}, "
                 + "{{ str[0] }}, "
                 + "{{ str[1] }}, "
@@ -98,8 +98,8 @@ namespace VineScriptLib.Test
         {
             VineStory story = new VineStory();
 
-            string input = "{% set str = \"FooBar\" %}\n"
-                + "{% set str[0] = \"B\" %}";
+            string input = "<< set str = \"FooBar\" >>\n"
+                + "<< set str[0] = \"B\" >>";
             
             try {
                 // Strings don't support item assignment
@@ -119,11 +119,11 @@ namespace VineScriptLib.Test
             // As 'el' is a reference to 'arr', it's possible to modify the content
             // of each sub-array.
 
-            //{% set arr = [[0, 1], [2, 3], [4, 5]] %}
-            //{% for el in arr %}
-            //    {% set el[0] = el[0] + 1 %}
-            //    {% set el[1] = el[1] + 1 %}
-            //{% endfor %}
+            //<< set arr = [[0, 1], [2, 3], [4, 5]] >>
+            //<< for el in arr >>
+            //    << set el[0] = el[0] + 1 >>
+            //    << set el[1] = el[1] + 1 >>
+            //<< endfor >>
 
             StreamReader input = File.OpenText("scripts/sequences/array2d_set_for01.vine");
             story.RunPassage(input);
@@ -145,11 +145,11 @@ namespace VineScriptLib.Test
             // so 'el' won't be able change the content of the sub-arrays of 'arr'
             // as it's actually modifying the content of the cloned 'arr'.
 
-            //{% set arr = [[0, 1], [2, 3], [4, 5]] %}
-            //{% for el in Clone(arr) %}
-            //    {% set el[0] = el[0] + 1 %}
-            //    {% set el[1] = el[1] + 1 %}
-            //{% endfor %}
+            //<< set arr = [[0, 1], [2, 3], [4, 5]] >>
+            //<< for el in Clone(arr) >>
+            //    << set el[0] = el[0] + 1 >>
+            //    << set el[1] = el[1] + 1 >>
+            //<< endfor >>
 
             StreamReader input = File.OpenText("scripts/sequences/array2d_set_for02.vine");
             story.RunPassage(input);

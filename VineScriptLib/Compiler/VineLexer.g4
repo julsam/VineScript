@@ -23,7 +23,7 @@ using System;
  * Lexer Rules
  */
 
-// Default "mode" (text mode) : Everything that is outside of tags '{{ .. }}', '{% .. %}' or '{# .. #}'
+// Default "mode" (text mode) : Everything that is outside of tags '{{ .. }}', '<< .. >>' or '{# .. #}'
 
 BACKSLASH_ESC
     :   '\\\\' -> type(TXT)
@@ -34,9 +34,12 @@ TXT_ESC_LBRACE
 TXT_ESC_SLASH
     :   '\\/' -> type(TXT)
     ;
+TXT_ESC_LT
+    :   '\\<' -> type(TXT)
+    ;
 
 LOUTPUT:        '{{' -> pushMode(VineCode) ;
-LSTMT:          '{%' -> pushMode(VineCode) ;
+LSTMT:          '<<' -> pushMode(VineCode) ;
 BLOCK_COMMENT:  '{#' .*? '#}' ;
 LINE_COMMENT:   '//' ~[\r\n]* ;
 
@@ -52,13 +55,16 @@ RESERVED_CHARS: [\u000B\u001E\u001F]+ ;
 TXT_LBRACE
     :   '{' -> type(TXT)
     ;
+TXT_LT
+    :   '<' -> type(TXT)
+    ;
 TXT_SLASH
     :   '/' -> type(TXT)
     ;
 TXT_ESC
     :   '\\' -> type(TXT)
     ;
-TXT :   ~[\\{/\r\n\u000B\u001E\u001F]+
+TXT :   ~[\\<{/\r\n\u000B\u001E\u001F]+
     ;
 
 ERROR_CHAR: . ;
@@ -66,7 +72,7 @@ ERROR_CHAR: . ;
 // ----------------------------------------------------------
 mode VineCode;
 ROUTPUT:    '}}' -> popMode ;
-RSTMT:      '%}' -> popMode ;
+RSTMT:      '>>' -> popMode ;
 
 // Parentheses, square brackets, curly braces
 LPAREN:     '(' ;

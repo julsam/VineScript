@@ -1,5 +1,5 @@
-﻿{% if $var %}
+﻿<< if $var >>
 	{{ $var }}
-{% else %}
+<< else >>
 	bar
-{% end %}
+<< end >>

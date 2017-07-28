@@ -119,7 +119,8 @@ namespace VineScriptLib.Compiler
                     {
                         case '{':
                         case '}':
-                        case '%':
+                        case '<':
+                        case '>':
                         case '/':
                         case '\\':
                             unescaped_current = current.ToString();

@@ -28,7 +28,7 @@ stmt:    conditionStmt
     |    variable
     ;
 
-// {{ foo }} is equal to {% print foo %}
+// {{ foo }} is equal to << print foo >>
 
 
 // built-in filters:
@@ -59,24 +59,24 @@ stmt:    conditionStmt
 // https://docs.djangoproject.com/en/1.10/howto/custom-template-tags/#howto-writing-custom-template-filters
 
 
-//{% autoescape off %}
+//<< autoescape off >>
 //    {{ body }}
-//    {% autoescape on %}
+//    << autoescape on >>
 //        {{ foo }}
-//    {% endautoescape %}
-//{% endautoescape %}
+//    << endautoescape >>
+//<< endautoescape >>
 
 // preformatted: (on by default)
-{% formatted on %}
-{% formatted off %}
+<< formatted on >>
+<< formatted off >>
 // or like html:
-{% pre on %}
-{% pre off %}
+<< pre on >>
+<< pre off >>
 // maybe:
-{% tab %}
-{% br %}
+<< tab >>
+<< br >>
 
-'{%' 'set' ID ('='|'to') expr '%}'
+'<<' 'set' ID ('='|'to') expr '>>'
 */
 @members{
     public enum EVineParseMode {
@@ -118,9 +118,8 @@ block
     :   NL              # directOutput
     |   text            # directOutput  // foobar
     |   display         # noOutput      // {{ foo }}
-    |   controlStmt     # noOutput      // {% if true %} something {% endif %}
-    |   simpleStmtBlock # directOutput  // {% set foo = 0 %}
-    //|   LINE_COMMENT
+    |   controlStmt     # noOutput      // << if true >> something << endif >>
+    |   simpleStmtBlock # directOutput  // << set foo = 0 >>
     |   BLOCK_COMMENT   # directOutput  // {# comment #}
     |   LINE_COMMENT    # directOutput  // // inline comment
     ;
@@ -130,8 +129,8 @@ text
     ;
 
 simpleStmtBlock
-    :   '{%' setStmt '%}'
-    |   '{%' funcCall '%}'
+    :   '<<' setStmt '>>'
+    |   '<<' funcCall '>>'
     ;
 
 /**
@@ -180,29 +179,29 @@ controlStmt
     ;
 
 ifStmt
-    :   '{%' 'if' wsa expr '%}' block*
+    :   '<<' 'if' wsa expr '>>' block*
     ;
 
 elifStmt
-    :   '{%' 'elif' wsa expr '%}' block*
+    :   '<<' 'elif' wsa expr '>>' block*
     ;
 
 elseStmt
-    :   '{%' 'else' '%}' block*
+    :   '<<' 'else' '>>' block*
     ;
 
 endIfStmt
-    :   '{%' 'endif' '%}'
+    :   '<<' 'endif' '>>'
     ;
 
 forStmt
-    :   '{%' 'for' wsa variable 'in' expr '%}' NL? block*
-    //|   '{%' 'for' wsa key=variable ',' val=variable 'in' expr '%}' NL? block*
-    |   '{%' 'for' wsa variable 'in' interval '%}' NL? block*
+    :   '<<' 'for' wsa variable 'in' expr '>>' NL? block*
+    //|   '<<' 'for' wsa key=variable ',' val=variable 'in' expr '>>' NL? block*
+    |   '<<' 'for' wsa variable 'in' interval '>>' NL? block*
     ;
 
 endForStmt
-    :   '{%' 'endfor' '%}'
+    :   '<<' 'endfor' '>>'
     ;
 
 expr
@@ -210,7 +209,7 @@ expr
     |   op=('-'|'!') expr                           # unaryExpr 
     |   left=expr op=('*' | DIV | '%') right=expr   # mulDivModExpr
     |   left=expr op=('+'|'-') right=expr           # addSubExpr
-    |   left=expr op=('<'|'>'|'<='|'>=') right=expr # relationalExpr
+    |   left=expr op=(LT|GT|'<='|'>=') right=expr # relationalExpr
     |   left=expr op=('=='|'!=') right=expr         # equalityExpr
     |   left=expr ('&&'|wsb 'and' wsa) right=expr   # andExpr
     |   left=expr ('||'|wsb 'or' wsa) right=expr    # orExpr

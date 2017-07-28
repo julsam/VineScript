@@ -111,7 +111,7 @@ namespace VineScriptLib.Test
         {
             VineStory story = new VineStory();
             story.vars["var"] = 42;
-            string input = "{% if $var == 0 %}Zero{% elif $var == 42%}Forty Two{% else %}Other{% endif %}";
+            string input = "<< if $var == 0 >>Zero<< elif $var == 42>>Forty Two<< else >>Other<< endif >>";
             string output = story.RunPassage(input);
             Assert.AreEqual("Forty Two", output);
         }
@@ -194,7 +194,7 @@ namespace VineScriptLib.Test
         {
             VineStory story = new VineStory();
 
-            string input = "{% set $arr = [1, 2.0, \"Three\", false, null] %}";
+            string input = "<< set $arr = [1, 2.0, \"Three\", false, null] >>";
 
             string output = story.RunPassage(input);
             
@@ -212,7 +212,7 @@ namespace VineScriptLib.Test
         {
             VineStory story = new VineStory();
 
-            string input = "{% set $dict = { \"a\": 1, \"b\": 2.0, \"c\": \"Three\", \"d\": false, \"e\": null } %}";
+            string input = "<< set $dict = { \"a\": 1, \"b\": 2.0, \"c\": \"Three\", \"d\": false, \"e\": null } >>";
 
             string output = story.RunPassage(input);
             
@@ -230,8 +230,8 @@ namespace VineScriptLib.Test
         {
             VineStory story = new VineStory();
 
-            string input = "{% set v1 = 12, v2 = 2.0, v3 = true, v4 = null, ";
-            input += "v5 = \"Foo\", v6 = [1,2,3], v7 = {\"a\": 4, \"b\": 5 } %}";
+            string input = "<< set v1 = 12, v2 = 2.0, v3 = true, v4 = null, ";
+            input += "v5 = \"Foo\", v6 = [1,2,3], v7 = {\"a\": 4, \"b\": 5 } >>";
 
             string output = story.RunPassage(input);
             

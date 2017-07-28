@@ -1,1 +1,1 @@
-﻿{% set $var1 to 42 %}
+﻿<< set $var1 to 42 >>

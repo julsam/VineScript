@@ -1,35 +1,35 @@
-﻿{% set myvar = 12 %}
+﻿<< set myvar = 12 >>
 myvar            => {{ myvar }}
-{% set myvar += 30 %}
+<< set myvar += 30 >>
 myvar += 30      => {{ myvar }}
-{% set myvar /= 2 %}
+<< set myvar /= 2 >>
 myvar /= 2       => {{ myvar }}
-{% set myvar -= 22 %}
+<< set myvar -= 22 >>
 myvar -= 22      => {{ myvar }}
-{% set myvar *= -4 %}
+<< set myvar *= -4 >>
 myvar *= -4      => {{ myvar }}
-{% set myvar %= 3 %}
+<< set myvar %= 3 >>
 myvar %= 3       => {{ myvar }}
 ---
-{% set $arr = [1, 2.0, "Three", [4, "Six"]] %}
+<< set $arr = [1, 2.0, "Three", [4, "Six"]] >>
 arr              => {{ $arr }}
-{% set $arr[0] += $arr[0] %}
+<< set $arr[0] += $arr[0] >>
 arr[0] += arr    => {{ $arr[0] }}
-{% set $arr[0] *= 4 %}
+<< set $arr[0] *= 4 >>
 arr[0] *= 4      => {{ $arr[0] }}
-{% set $arr[0] /= 2 %}
+<< set $arr[0] /= 2 >>
 arr[0] /= 2      => {{ $arr[0] }}
-{% set $arr[0] -= 1 %}
+<< set $arr[0] -= 1 >>
 arr[0] -= 1      => {{ $arr[0] }}
-{% set $arr[0] %= 2 %}
+<< set $arr[0] %= 2 >>
 arr[0] %= 2      => {{ $arr[0] }}
-{% set $arr[1] -= 1.1 %}
+<< set $arr[1] -= 1.1 >>
 arr[1] -= 1.1    => {{ $arr[1] }}
-{% set $arr[2] += " One" %}
+<< set $arr[2] += " One" >>
 arr[2] += " One" => {{ $arr[2] }}
-{% set $arr[3][0] += 10 %}
+<< set $arr[3][0] += 10 >>
 arr[3][0] += 10  => {{ $arr[3][0] }}
-{% set $arr[3][0] -= 5 %}
+<< set $arr[3][0] -= 5 >>
 arr[3][0] -= 5   => {{ $arr[3][0] }}
-{% set $arr[3][1] += 10 %}
+<< set $arr[3][1] += 10 >>
 arr[3][1] += 10  => {{ $arr[3][1] }}

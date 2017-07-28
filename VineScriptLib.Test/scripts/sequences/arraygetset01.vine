@@ -1,6 +1,6 @@
-﻿{% set $arr = [1, 2.0, "Three", false, null, [4, 5, "Six"]] %}
-{% set $arr[0] = 42 %}
-{% set $arr[5][1] = 43 %}
+﻿<< set $arr = [1, 2.0, "Three", false, null, [4, 5, "Six"]] >>
+<< set $arr[0] = 42 >>
+<< set $arr[5][1] = 43 >>
 {{ $arr }}
 {{ $arr[0] }}
 {{ $arr[1] }}

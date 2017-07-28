@@ -1,4 +1,4 @@
 ﻿{{ "foo" }}
-{% set $var to "foo" %}
-{% set $var to "foo" %}
-{% set $var to "foo" %}
+<< set $var to "foo" >>
+<< set $var to "foo" >>
+<< set $var to "foo" >>

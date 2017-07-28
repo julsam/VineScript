@@ -1,13 +1,13 @@
-﻿{% if $var == null %}
-	{% set $result = "var is null" %}
-{% elif $var == "str" %}
-	{% set $result = "var is a string" %}
-{% elif $var == 42 %}
-	{% set $result = "var is an int" %}
-{% elif $var == 4.669 %}
-	{% set $result = "var is a number" %}
-{% elif $var == true or $var == false %}
-	{% set $result = "var is a bool" %}
-{% else %}
-	{% set $result = "error" %}
-{% endif %}
+﻿<< if $var == null >>
+	<< set $result = "var is null" >>
+<< elif $var == "str" >>
+	<< set $result = "var is a string" >>
+<< elif $var == 42 >>
+	<< set $result = "var is an int" >>
+<< elif $var == 4.669 >>
+	<< set $result = "var is a number" >>
+<< elif $var == true or $var == false >>
+	<< set $result = "var is a bool" >>
+<< else >>
+	<< set $result = "error" >>
+<< endif >>

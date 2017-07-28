@@ -1,5 +1,5 @@
-﻿// comment 1 {% if true %}{{ "abc" }}{% endif %}
+﻿// comment 1 << if true >>{{ "abc" }}<< endif >>
 abc\a
-{{ "b\t\\{foo" }} \{\% not a markup \%\} {{ "b\t\\{foo" }}
+{{ "b\t\\{foo" }} \<\< not a markup \>\> {{ "b\t\\{foo" }}
 \\{{ "foobar" }}
 {{ "foobar" }}\

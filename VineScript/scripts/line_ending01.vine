@@ -1,10 +1,10 @@
-﻿{% set $var1 to 42 %}
-{% set $var2 to "FortyTwo" %}{# comment #}
-{% set $var3 to 0 %}
+﻿<< set $var1 to 42 >>
+<< set $var2 to "FortyTwo" >>{# comment #}
+<< set $var3 to 0 >>
 foobar: {{ $var1 }} lol!
 var 1 foo
 bar
-{% set $var3 to 0 %} var 1 = {{ $var1 }}{{ $var1 }} ;ddd
+<< set $var3 to 0 >> var 1 = {{ $var1 }}{{ $var1 }} ;ddd
 var 1 faa
 ad
 

@@ -1,4 +1,4 @@
 ﻿abc\a
-b	\{foo {% not a markup %} b	\{foo
+b	\{foo << not a markup >> b	\{foo
 \foobar
 foobar\

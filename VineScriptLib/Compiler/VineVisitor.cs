@@ -133,9 +133,9 @@ namespace VineScriptLib.Compiler
 
         public override VineValue VisitAssign(VineParser.AssignContext context)
         {
-            // '{%' 'set' ID 'to' expr '%}'
+            // '<<' 'set' ID 'to' expr '>>'
             lastEnteredContext = context;
-            AddToOutput("{% set %}");
+            AddToOutput("<< set >>");
 
             var variable = Visit(context.variable());
             string id = variable.name;
@@ -201,24 +201,24 @@ namespace VineScriptLib.Compiler
         {
             lastEnteredContext = context;
             Console.WriteLine("IF CONTROL STATEMENT");
-            AddToOutput("{% if %}");
+            AddToOutput("<< if >>");
 
             bool ifvalue = Visit(context.ifStmt()).AsBool;
             if (!ifvalue) {
                 bool elifvalue = false;
                 for (int i = 0; i < context.elifStmt().Length; i++) {
-                    AddToOutput("{% elif %}");
+                    AddToOutput("<< elif >>");
                     elifvalue = Visit(context.elifStmt(i)).AsBool;
                     if (elifvalue) {
                         break;
                     }
                 }
                 if (!elifvalue && context.elseStmt() != null) {
-                    AddToOutput("{% else %}");
+                    AddToOutput("<< else >>");
                     Visit(context.elseStmt());
                 }
             }
-            AddToOutput("{% endif %}");
+            AddToOutput("<< endif >>");
             return ifvalue;
         }
 
@@ -268,9 +268,9 @@ namespace VineScriptLib.Compiler
         {
             lastEnteredContext = context;
             Console.WriteLine("FOR CONTROL STATEMENT");
-            AddToOutput("{% for %}");
+            AddToOutput("<< for >>");
             VineValue forvalue = Visit(context.forStmt());
-            AddToOutput("{% endfor %}");
+            AddToOutput("<< endfor >>");
             return null;
         }
 
