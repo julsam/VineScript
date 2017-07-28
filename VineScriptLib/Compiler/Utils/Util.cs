@@ -74,6 +74,72 @@ namespace VineScriptLib.Compiler
             return literal.ToString();
         }
 
+        /// <summary>
+        /// Unescape escaped characters like \{ or \/  in the text of a sequence.
+        /// When the escaped char \ is alone (not followed by [{}\/%], 
+        /// it's not considered as an escape char but as normal text.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string UnescapeVineSequence(string input)
+        {
+            StringBuilder unescaped = new StringBuilder(input.Length);
+            bool escape = false;
+            bool in_display_output = false;
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                char current = input[i];
+
+                if (current == '\u001E') {
+                    // marks the start of the output of the display command
+                    in_display_output = true;
+                    continue;
+                } else if (current == '\u001F') {
+                    // marks the end of the output of the display command
+                    in_display_output = false;
+                    continue;
+                }
+
+                if (in_display_output) {
+                    unescaped.Append(current);
+                    continue;
+                }
+
+                if (!escape && current == '\\' && i < input.Length - 1) {
+                    // next char will be escaped
+                    escape = true;
+                    continue;
+                }
+                
+                if (escape)
+                {
+                    string unescaped_current = "";
+                    switch (current)
+                    {
+                        case '{':
+                        case '}':
+                        case '%':
+                        case '/':
+                        case '\\':
+                            unescaped_current = current.ToString();
+                            break;
+                        default:
+                            unescaped_current = "\\" + current.ToString();
+                            break;
+                    }
+                    unescaped.Append(unescaped_current);
+                    escape = false;
+                }
+                else
+                {
+                    unescaped.Append(current);
+                }
+            }
+            return unescaped.ToString();
+        }
+
+        // UnescapeStringLiteral
         public static string UnescapeAuthorizedChars(string input)
         {
             if (string.IsNullOrEmpty(input)) {

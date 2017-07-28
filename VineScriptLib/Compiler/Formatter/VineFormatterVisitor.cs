@@ -15,9 +15,9 @@ namespace VineScriptLib.Compiler.Formatter
             Console.WriteLine("### END ###");
         }
 
-        public override string VisitContainsOutput(VineFormatterParser.ContainsOutputContext context)
+        public override string VisitContainsText(VineFormatterParser.ContainsTextContext context)
         {
-            //Console.WriteLine("ContainsOutput " + context.GetText());
+            //Console.WriteLine("ContainsText " + context.GetText());
             string text = "";
             for (int i = 0; i < context.children.Count; i++) {
                 text += Visit(context.children[i]);
@@ -25,9 +25,9 @@ namespace VineScriptLib.Compiler.Formatter
             return text;
         }
 
-        public override string VisitOutput(VineFormatterParser.OutputContext context)
+        public override string VisitText(VineFormatterParser.TextContext context)
         {
-            //Console.WriteLine("Output " + context.GetText());
+            //Console.WriteLine("Text " + context.GetText());
             string text = "";
             for (int i = 0; i < context.children.Count; i++) {
                 text += context.children[i].GetText();

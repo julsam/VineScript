@@ -26,6 +26,7 @@ namespace VineScriptLib.Compiler
             // Print input
             Console.WriteLine(vinecode);
 
+            // Pre processing
             // Remove whitespace at the start & end of each lines
             string wsRemoved = Compiler.Util.RemoveWhiteSpace(vinecode);
 
@@ -43,15 +44,18 @@ namespace VineScriptLib.Compiler
             // Print before trimming whitespace
             Console.WriteLine(formatOutput);
 
+            // Post processing
+            // Unescape user input
+            string finalOutput = Util.UnescapeVineSequence(formatOutput);
             // Remove whitespace at the start & end of each lines (again)
             // TODO: keep only one space between words
-            string finalOutput = Compiler.Util.RemoveWhiteSpace(formatOutput);
+            finalOutput = Compiler.Util.RemoveWhiteSpace(finalOutput);
 
             // Stop timer
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
             
-            // Finale output
+            // Final output
             Console.WriteLine("### FORMATTED OUTPUT: ###");
             if (finalOutput.Length > 0)
                 Console.WriteLine(finalOutput);

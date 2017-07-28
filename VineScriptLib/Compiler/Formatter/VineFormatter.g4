@@ -10,48 +10,50 @@ passage
 
 line
     :   NL EOF                              # printLn
-    |   containsOutput NL (block NL?)+ EOF  # consumeLn // foobar {{ $var }}\n  <= consume \n
+    |   containsText NL (block NL?)+ EOF    # consumeLn // foobar {{ $var }}\n  <= consume \n
                                                         // {% endif %}EOF       <= consume this line
-    |   containsOutput NL                   # printLn
-    |   containsOutput EOF                  # consumeLn
+    |   containsText NL                     # printLn
+    |   containsText EOF                    # consumeLn
     |   block+ (NL|EOF)                     # consumeLn
     |   NL                                  # printLn
     ;
 
-containsOutput
-    :   (output|block)* output+ block+
-    |   (output|block)* block+ output+
-    |   output+
-    ;
-
-output
-    :   varPrint
-    |   text
-    |   output output
-    ;
-
-varPrint
-    :   OUTPUT
-    ;
-
-block
-    :   STMT
-    //|   LINE_COMMENT
-    |   BLOCK_COMMENT
+containsText
+    :   (text|block)* text+ block+
+    |   (text|block)* block+ text+
+    |   text+
     ;
 
 text
     :   TXT
+    //|   DISPLAY
+    ;
+
+block
+    :   STMT
+    |   LINE_COMMENT
+    |   BLOCK_COMMENT
     ;
 
 /*
  * Lexer Rules
  */
 
-OUTPUT:         '{{' .*? '}}' ;
+//DISPLAY: '\u001E' .*? '\u001F' ; // output of {{ ... }}
+
+BACKSLASH_ESC
+    :   '\\\\' -> type(TXT)
+    ;
+TXT_ESC_LBRACE
+    :   '\\{' -> type(TXT)
+    ;
+TXT_ESC_SLASH
+    :   '\\/' -> type(TXT)
+    ;
+
 STMT:           '{%' .*? '%}' ;
-//LINE_COMMENT:   '#' ~('#')*? NL ;
 BLOCK_COMMENT:  '{#' .*? '#}' ;
+LINE_COMMENT:   '//' ~[\r\n]* ;
 
 NL:     '\r'? '\n' ;
 WS:     [ \t]+ -> skip ;
@@ -59,17 +61,16 @@ WS:     [ \t]+ -> skip ;
 TXT_LBRACE
     :   '{' -> type(TXT)
     ;
-TXT :   ~[{\r\n]+
+TXT_RBRACE
+    :   '}' -> type(TXT)
     ;
-
-// A text is either :
-//  1. anything that's not {, \r, \n
-//  2. or it is { but then it's not followed by {, %, #. ?
-// TODO: should allow escaping tags
-//TXT :   (       ~('{'|'\r'|'\n')
-//            |   '{' ~('{'|'%'|'#'|'?')
-//        )+ 
-//    |  '{' ~('{'|'%'|'#'|'?')*? // special case when { is not followed by anything (EOF)
-//    ;
+TXT_SLASH
+    :   '/' -> type(TXT)
+    ;
+TXT_ESC
+    :   '\\' -> type(TXT)
+    ;
+TXT :   ~[\\{}/\r\n]+
+    ;
 
 ERROR_CHAR: . ;

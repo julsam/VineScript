@@ -122,6 +122,7 @@ block
     |   simpleStmtBlock # directOutput  // {% set foo = 0 %}
     //|   LINE_COMMENT
     |   BLOCK_COMMENT   # directOutput  // {# comment #}
+    |   LINE_COMMENT    # directOutput  // // inline comment
     ;
 
 text
@@ -207,7 +208,7 @@ endForStmt
 expr
     :   <assoc=right> left=expr '^' right=expr      # powExpr
     |   op=('-'|'!') expr                           # unaryExpr 
-    |   left=expr op=('*' | '/' | '%') right=expr   # mulDivModExpr
+    |   left=expr op=('*' | DIV | '%') right=expr   # mulDivModExpr
     |   left=expr op=('+'|'-') right=expr           # addSubExpr
     |   left=expr op=('<'|'>'|'<='|'>=') right=expr # relationalExpr
     |   left=expr op=('=='|'!=') right=expr         # equalityExpr

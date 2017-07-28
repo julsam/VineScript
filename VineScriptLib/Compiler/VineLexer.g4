@@ -25,44 +25,48 @@ using System;
 
 // Default "mode" (text mode) : Everything that is outside of tags '{{ .. }}', '{% .. %}' or '{# .. #}'
 
-OUTPUT:         '{{' -> pushMode(VineCode) ;
-STMT:           '{%' -> pushMode(VineCode) ;
-//LINE_COMMENT:   '#' ~('#')*? NL -> channel(HIDDEN);
+BACKSLASH_ESC
+    :   '\\\\' -> type(TXT)
+    ;
+TXT_ESC_LBRACE
+    :   '\\{' -> type(TXT)
+    ;
+TXT_ESC_SLASH
+    :   '\\/' -> type(TXT)
+    ;
+
+LOUTPUT:        '{{' -> pushMode(VineCode) ;
+LSTMT:          '{%' -> pushMode(VineCode) ;
 BLOCK_COMMENT:  '{#' .*? '#}' ;
+LINE_COMMENT:   '//' ~[\r\n]* ;
 
 NL:     '\r'? '\n' ;
 
-// Reserved/illegal characters:
+// Reserved / illegal characters:
 //  * '\u000B': \v vertical tabulation, marks '\n' in strings returned by a function
 //              and then used by LinesFormatter to keep those '\n' in place
-RESERVED_CHARS: [\u000B]+ ;
+//  * '\u001E': marks the start of the output of the display command
+//  * '\u001F': marks the end of the output of the display command
+RESERVED_CHARS: [\u000B\u001E\u001F]+ ;
 
 TXT_LBRACE
     :   '{' -> type(TXT)
     ;
-TXT :   ~[{\r\n\u000B]+
+TXT_SLASH
+    :   '/' -> type(TXT)
     ;
-
-// A text is either :
-//  1. anything that's not {, \r, \n
-//  2. or it is { but then it's not followed by {, %, #. ?
-// TODO: should allow escaping tags
-//TXT :   (       ~('{'|'\r'|'\n')
-//            |   '{' ~('{'|'%'|'#'|'?')
-//        )+ 
-//    |  '{' ~('{'|'%'|'#'|'?')*? // special case when { is not followed by anything (EOF)
-//    ;
-//TXT:      ('{'? ~('{'|'%'|'#'|'?'|'\r'|'\n'))+ ;
-//TXT:    (   '{' ~('{'|'%'|'#'|'?')
-//        |   {_input.La(-1) != '{'}? ~('{'|'\r'|'\n')
-//        )+ ;
+TXT_ESC
+    :   '\\' -> type(TXT)
+    ;
+TXT :   ~[\\{/\r\n\u000B\u001E\u001F]+
+    ;
 
 ERROR_CHAR: . ;
 
 // ----------------------------------------------------------
 mode VineCode;
-END_OUTPUT:     '}}' -> popMode ;
-END_STMT:       '%}' -> popMode ;
+ROUTPUT:    '}}' -> popMode ;
+RSTMT:      '%}' -> popMode ;
 
 // Parentheses, square brackets, curly braces
 LPAREN:     '(' ;
@@ -135,7 +139,7 @@ NULL:       'null' ;
 
 STRING:         '"' (ESC | ~('\u000B'))*? '"' ;
 
-// catches string containing '\u000B':
+// catches strings containing '\u000B':
 ILLEGAL_STRING: '"' (ESC | .)*? '"' ;
 
 //tokens { STRING }

@@ -105,6 +105,8 @@ namespace VineScriptLib.Compiler
             VineValue value = Visit(context.expr());
             Console.WriteLine("> DISPLAY: " + context.expr().GetText() + " = " + value);
 
+            // marks the start of the output of the display command
+            AddToOutput("\u001E");
             // Get every lines in an array
             string[] outputLines = value.AsString.Split('\n');
             for (int i = 0; i < outputLines.Length; i++) {
@@ -121,9 +123,10 @@ namespace VineScriptLib.Compiler
                     AddToOutput("\u000B");
                 }
             }
-
-            // value does not contain '\u000B', it shouldn't be needed
-            return value;
+            // marks the end of the output of the display command
+            AddToOutput("\u001F");
+            
+            return null;
         }
 
         #region Commands
