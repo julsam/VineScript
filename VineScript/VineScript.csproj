@@ -82,7 +82,7 @@
     </Antlr4>
     <Antlr4 Include="Compiler\Formatter\VineFormatter.g4">
       <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>VineScriptLib.Compiler.Formatter</CustomToolNamespace>
+      <CustomToolNamespace>VineScript.Compiler.Formatter</CustomToolNamespace>
     </Antlr4>
     <None Include="packages.config" />
   </ItemGroup>
