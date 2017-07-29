@@ -3,7 +3,7 @@ using System.IO;
 using VineScriptLib;
 using VineScriptLib.Core;
 
-namespace VineScript
+namespace VineScriptConsole
 {
     class Program
     {

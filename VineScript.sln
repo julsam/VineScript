@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VineScript", "VineScript\VineScript.csproj", "{9FEE07D0-B2BE-469D-BD16-32407CFE9668}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VineScriptConsole", "VineScriptConsole\VineScriptConsole.csproj", "{9FEE07D0-B2BE-469D-BD16-32407CFE9668}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VineScriptLib", "VineScriptLib\VineScriptLib.csproj", "{316AC8C7-FE14-4429-9F24-BEA336C0E87A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VineScript", "VineScript\VineScript.csproj", "{316AC8C7-FE14-4429-9F24-BEA336C0E87A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VineScriptLib.Test", "VineScriptLib.Test\VineScriptLib.Test.csproj", "{2A0E7C30-D413-4B75-B486-F856841B3AFF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VineScript.Test", "VineScript.Test\VineScript.Test.csproj", "{2A0E7C30-D413-4B75-B486-F856841B3AFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

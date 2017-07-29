@@ -6,8 +6,8 @@
     <ProjectGuid>{2A0E7C30-D413-4B75-B486-F856841B3AFF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VineScriptLib.Test</RootNamespace>
-    <AssemblyName>VineScriptLib.Test</AssemblyName>
+    <RootNamespace>VineScriptTest</RootNamespace>
+    <AssemblyName>VineScriptTest</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -171,9 +171,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VineScriptLib\VineScriptLib.csproj">
+    <ProjectReference Include="..\VineScript\VineScript.csproj">
       <Project>{316ac8c7-fe14-4429-9f24-bea336c0e87a}</Project>
-      <Name>VineScriptLib</Name>
+      <Name>VineScript</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
