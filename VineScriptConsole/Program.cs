@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using VineScriptLib;
-using VineScriptLib.Core;
+using VineScript;
+using VineScript.Core;
 
 namespace VineScriptConsole
 {

@@ -70,15 +70,15 @@
   <ItemGroup>
     <Antlr4 Include="Compiler\LinesFormatter\LinesFormatter.g4">
       <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>VineScriptLib.Compiler.LinesFormatter</CustomToolNamespace>
+      <CustomToolNamespace>VineScript.Compiler.LinesFormatter</CustomToolNamespace>
     </Antlr4>
     <Antlr4 Include="Compiler\VineLexer.g4">
       <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>VineScriptLib.Compiler</CustomToolNamespace>
+      <CustomToolNamespace>VineScript.Compiler</CustomToolNamespace>
     </Antlr4>
     <Antlr4 Include="Compiler\VineParser.g4">
       <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>VineScriptLib.Compiler</CustomToolNamespace>
+      <CustomToolNamespace>VineScript.Compiler</CustomToolNamespace>
     </Antlr4>
     <Antlr4 Include="Compiler\Formatter\VineFormatter.g4">
       <Generator>MSBuild:Compile</Generator>

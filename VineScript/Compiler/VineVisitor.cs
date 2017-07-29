@@ -3,12 +3,12 @@ using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using System.Collections.Generic;
-using VineScriptLib.Core;
+using VineScript.Core;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 
-namespace VineScriptLib.Compiler
+namespace VineScript.Compiler
 {
     internal class VineRuntimeException : Exception
     {
@@ -322,7 +322,7 @@ namespace VineScriptLib.Compiler
                 throw new VineRuntimeException("Intervals must be integers values", context);
             }
             var interval = new VineVar(VineVarUtils.ConvertList(
-                VineScriptLib.Utils.Range(left.AsInt, right.AsInt)
+                VineScript.Utils.Range(left.AsInt, right.AsInt)
             ));
             return interval;
         }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Antlr4.Runtime.Misc;
 
-namespace VineScriptLib.Compiler.Formatter
+namespace VineScript.Compiler.Formatter
 {
     class VineFormatterVisitor : VineFormatterBaseVisitor<string> 
     {

@@ -2,10 +2,10 @@
 using Antlr4.Runtime;
 using System;
 using System.Collections.Generic;
-using VineScriptLib.Core;
-using VineScriptLib.Compiler.Formatter;
+using VineScript.Core;
+using VineScript.Compiler.Formatter;
 
-namespace VineScriptLib.Compiler
+namespace VineScript.Compiler
 {
     public class Interpreter
     {                

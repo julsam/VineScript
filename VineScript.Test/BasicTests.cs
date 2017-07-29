@@ -3,10 +3,10 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VineScriptLib;
-using VineScriptLib.Core;
+using VineScript;
+using VineScript.Core;
 
-namespace VineScriptLib.Test
+namespace VineScript.Test
 {
     /// <summary>
     /// Summary description for BasicTests

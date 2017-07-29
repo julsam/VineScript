@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 
-namespace VineScriptLib.Compiler
+namespace VineScript.Compiler
 {
     class ExceptionUtil
     {

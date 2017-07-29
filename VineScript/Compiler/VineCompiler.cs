@@ -2,9 +2,9 @@
 using Antlr4.Runtime;
 using System;
 using System.Collections.Generic;
-using VineScriptLib.Core;
+using VineScript.Core;
 
-namespace VineScriptLib.Compiler
+namespace VineScript.Compiler
 {
     public class VineCompiler
     {

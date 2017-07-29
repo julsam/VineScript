@@ -1,7 +1,7 @@
 ﻿using System;
 using Antlr4.Runtime;
 
-namespace VineScriptLib.Compiler
+namespace VineScript.Compiler
 {
     class UnderlineErrorListener : BaseErrorListener
     {

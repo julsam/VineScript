@@ -2,9 +2,9 @@
 using Antlr4.Runtime;
 using System;
 using System.Collections.Generic;
-using VineScriptLib.Core;
+using VineScript.Core;
 
-namespace VineScriptLib.Compiler.LinesFormatter
+namespace VineScript.Compiler.LinesFormatter
 {
     [Obsolete]
     public class LinesFormatterCompiler

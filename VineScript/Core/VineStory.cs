@@ -2,9 +2,9 @@
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
-using VineScriptLib.Compiler;
+using VineScript.Compiler;
 
-namespace VineScriptLib.Core
+namespace VineScript.Core
 {
 
     public class VineStory

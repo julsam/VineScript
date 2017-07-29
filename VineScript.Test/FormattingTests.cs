@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VineScriptLib.Core;
+using VineScript.Core;
 
-namespace VineScriptLib.Test
+namespace VineScript.Test
 {
     [TestClass]
     public class FormattingTests

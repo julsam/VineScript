@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace VineScriptLib.Core
+namespace VineScript.Core
 {
     public class VineArithmeticException : Exception
     {

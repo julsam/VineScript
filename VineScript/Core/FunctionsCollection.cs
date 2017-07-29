@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 
-namespace VineScriptLib.Core
+namespace VineScript.Core
 {
     interface IFunctionsCollection
     {
