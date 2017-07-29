@@ -53,7 +53,7 @@ namespace VineScriptLib.Compiler
             lexer.PushMode(VineLexer.VineCode);
 
             // Use the 'Evaluate Expression' mode of the parser
-            parser.ParseMode = VineParser.EVineParseMode.EXPR;
+            parser.ParseMode = VineParser.EVineParseMode.EVAL_EXPR;
 
             var tree = parser.passage();
             
