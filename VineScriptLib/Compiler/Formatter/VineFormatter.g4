@@ -55,7 +55,7 @@ TXT_ESC_LT
     ;
 
 STMT:           '<<' .*? '>>' ;
-BLOCK_COMMENT:  '{#' .*? '#}' ;
+BLOCK_COMMENT:  '/*' .*? '*/' ;
 LINE_COMMENT:   '//' ~[\r\n]* ;
 
 NL:     '\r'? '\n' ;

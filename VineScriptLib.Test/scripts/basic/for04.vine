@@ -4,4 +4,4 @@
 	At position {{ index }}, << if item % 2 == 0 >>{{item}} is even!<< else >>{{item}} is odd!<< endif >>
 	<< set index = index + 1 >>
 << endfor >>
-{# comment #}
+/* comment */

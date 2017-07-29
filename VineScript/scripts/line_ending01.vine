@@ -1,5 +1,5 @@
 ﻿<< set $var1 to 42 >>
-<< set $var2 to "FortyTwo" >>{# comment #}
+<< set $var2 to "FortyTwo" >>/* comment */
 << set $var3 to 0 >>
 foobar: {{ $var1 }} lol!
 var 1 foo

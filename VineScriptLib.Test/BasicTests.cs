@@ -33,7 +33,7 @@ namespace VineScriptLib.Test
         [TestMethod]
         public void SimpleComment()
         {
-            string input = "{# comment #}";
+            string input = "/* comment */";
             VineStory story = new VineStory();
             string output = story.RunPassage(input);
             Assert.AreEqual("", output);

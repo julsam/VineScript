@@ -23,7 +23,7 @@ using System;
  * Lexer Rules
  */
 
-// Default "mode" (text mode) : Everything that is outside of tags '{{ .. }}', '<< .. >>' or '{# .. #}'
+// Default "mode" (text mode) : Everything that is outside of tags '{{ .. }}', '<< .. >>' or '/* .. */'
 
 BACKSLASH_ESC
     :   '\\\\' -> type(TXT)
@@ -40,7 +40,7 @@ TXT_ESC_LT
 
 LOUTPUT:        '{{' -> pushMode(VineCode) ;
 LSTMT:          '<<' -> pushMode(VineCode) ;
-BLOCK_COMMENT:  '{#' .*? '#}' ;
+BLOCK_COMMENT:  '/*' .*? '*/' ;
 LINE_COMMENT:   '//' ~[\r\n]* ;
 
 NL:     '\r'? '\n' ;

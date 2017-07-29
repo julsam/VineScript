@@ -120,7 +120,7 @@ block
     |   display         # noOutput      // {{ foo }}
     |   controlStmt     # noOutput      // << if true >> something << endif >>
     |   simpleStmtBlock # directOutput  // << set foo = 0 >>
-    |   BLOCK_COMMENT   # directOutput  // {# comment #}
+    |   BLOCK_COMMENT   # directOutput  // /* comment */
     |   LINE_COMMENT    # directOutput  // // inline comment
     ;
 
