@@ -10,7 +10,7 @@ namespace VineScriptLib.Core
         void Register(string name, Type cls);
         bool Unregister(string name);
         bool Exists(string name);
-        bool Call(string name, out VineValue result, object context, params object[] args);
+        bool Call(string name, out VineVar result, object context, params object[] args);
     }
 
     public class FunctionsCollection : IFunctionsCollection
@@ -32,7 +32,7 @@ namespace VineScriptLib.Core
             return functions.ContainsKey(name);
         }
 
-        public bool Call(string name, out VineValue result, object context, params object[] args)
+        public bool Call(string name, out VineVar result, object context, params object[] args)
         {
             // if needed later, exemple of params args:
             // http://stackoverflow.com/questions/6484651/calling-a-function-using-reflection-that-has-a-params-parameter-methodbase
@@ -62,26 +62,26 @@ namespace VineScriptLib.Core
                     }
                 }
 
-                // Arguments are usually of type VineValue, but "normal" types are authorized.
-                // This part try to convert arguments to the expected type by the function.
-                // If VineValue is expected, do nothing. Else, converts to bool, int, float,
+                // Arguments are usually of type VineVar, but "normal" types are allowed.
+                // This part try to convert arguments to the types expected by the function.
+                // If VineVar is expected, do nothing. Else, converts to bool, int, float,
                 // double, string.
                 // (skip the first argument because it's the context)
                 for (int i = 1; i < parameters.Length; i++) {
-                    if (parameters[i].ParameterType != typeof(VineValue)) {
+                    if (parameters[i].ParameterType != typeof(VineVar)) {
                         if (parameters[i].ParameterType == typeof(bool)) {
-                            combinedArgs[i] = ((VineValue)combinedArgs[i]).AsBool;
+                            combinedArgs[i] = ((VineVar)combinedArgs[i]).AsBool;
                         }
                         else if (parameters[i].ParameterType == typeof(string)) {
-                            combinedArgs[i] = ((VineValue)combinedArgs[i]).AsString;
+                            combinedArgs[i] = ((VineVar)combinedArgs[i]).AsString;
                         }
                         else if (parameters[i].ParameterType == typeof(int)) {
-                            combinedArgs[i] = ((VineValue)combinedArgs[i]).AsInt;
+                            combinedArgs[i] = ((VineVar)combinedArgs[i]).AsInt;
                         }
                         else if (   parameters[i].ParameterType == typeof(double)
                                 ||  parameters[i].ParameterType == typeof(float)
                         ) {
-                            combinedArgs[i] = ((VineValue)combinedArgs[i]).AsNumber;
+                            combinedArgs[i] = ((VineVar)combinedArgs[i]).AsNumber;
                         }
                         else {
                             // TODO: should throw a custom exception
@@ -92,17 +92,17 @@ namespace VineScriptLib.Core
                             //       function definition that should be fixed.
                             throw new Exception(string.Format("Error calling function \"{0}\""
                                 + "\nThe argument type \"{1}\" is not a recognized type by VineScript."
-                                + "\nExpected types are: VineValue, bool, int, float, double, string",
+                                + "\nExpected types are: VineVar, bool, int, float, double, string",
                                 name, parameters[i].ParameterType.Name));
                         }
                     }
                 }
 
                 // calling the static method by name
-                result = new VineValue(method.Invoke(null /*null for static methods*/, combinedArgs.ToArray()));
+                result = new VineVar(method.Invoke(null /*null for static methods*/, combinedArgs.ToArray()));
                 return true;
             } else {
-                result = VineValue.NULL;
+                result = VineVar.NULL;
                 return false;
             }
         }

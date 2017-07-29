@@ -57,7 +57,7 @@ namespace VineScriptLib.Test
             story.vars["varInt"] = 42;
             story.vars["varNumber"] = 4.669;
             story.vars["varBool"] = true;
-            story.vars["varNull"] = VineValue.NULL;
+            story.vars["varNull"] = VineVar.NULL;
 
             string input = "{{ $varStr }}";
             input += " {{ $varInt }}";
@@ -204,7 +204,7 @@ namespace VineScriptLib.Test
             Assert.AreEqual(2.0, story.vars["arr"][1]);
             Assert.AreEqual("Three", story.vars["arr"][2]);
             Assert.AreEqual(false, story.vars["arr"][3]);
-            Assert.AreEqual(VineValue.NULL, story.vars["arr"][4]);
+            Assert.AreEqual(VineVar.NULL, story.vars["arr"][4]);
         }
 
         [TestMethod]
@@ -222,7 +222,7 @@ namespace VineScriptLib.Test
             Assert.AreEqual(2.0, story.vars["dict"]["b"]);
             Assert.AreEqual("Three", story.vars["dict"]["c"]);
             Assert.AreEqual(false, story.vars["dict"]["d"]);
-            Assert.AreEqual(VineValue.NULL, story.vars["dict"]["e"]);
+            Assert.AreEqual(VineVar.NULL, story.vars["dict"]["e"]);
         }
 
         [TestMethod]
@@ -238,7 +238,7 @@ namespace VineScriptLib.Test
             Assert.AreEqual(12, story.vars["v1"]);
             Assert.AreEqual(2.0, story.vars["v2"]);
             Assert.AreEqual(true, story.vars["v3"]);
-            Assert.AreEqual(VineValue.NULL, story.vars["v4"]);
+            Assert.AreEqual(VineVar.NULL, story.vars["v4"]);
             Assert.AreEqual("Foo", story.vars["v5"]);
             Assert.AreEqual(3, story.vars["v6"][2]);
             Assert.AreEqual(4, story.vars["v7"]["a"]);

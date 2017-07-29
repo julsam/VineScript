@@ -15,7 +15,7 @@ namespace VineScriptLib.Core
         public VineArithmeticException(string msg, Exception innerException)
             : base(msg, innerException) { }
 
-        public VineArithmeticException(string op, VineValue a, VineValue b) 
+        public VineArithmeticException(string op, VineVar a, VineVar b) 
             : base(string.Format("Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'",
                 op, a.type, b.type)) { }
 
@@ -23,7 +23,7 @@ namespace VineScriptLib.Core
             : base(string.Format("Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'",
                 op, a, b)) { }
 
-        public VineArithmeticException(string op, VineValue a) 
+        public VineArithmeticException(string op, VineVar a) 
             : base(string.Format("Unary operator '{0}' cannot be applied to operand of type '{1}' ",
                 op, a.type)) { }
 
@@ -41,10 +41,10 @@ namespace VineScriptLib.Core
         public VineComparisonException(string msg, Exception innerException)
             : base(msg, innerException) { }
 
-        public VineComparisonException(VineValue a, VineValue b) 
+        public VineComparisonException(VineVar a, VineVar b) 
             : base(string.Format("Cannot compare equality between type '{0}' and '{1}'", a.type, b.type)) { }
 
-        public VineComparisonException(string op, VineValue a, VineValue b) 
+        public VineComparisonException(string op, VineVar a, VineVar b) 
             : base(string.Format("Comparison '{0}' cannot be applied to operands of type '{1}' and '{2}'",
                 op, a.type, b.type)) { }
     }
@@ -58,10 +58,10 @@ namespace VineScriptLib.Core
         public VineConversionException(string msg, Exception innerException)
             : base(msg, innerException) { }
 
-        public VineConversionException(VineValue.Type from, VineValue.Type to) 
+        public VineConversionException(VineVar.Type from, VineVar.Type to) 
             : base(string.Format("Cannot convert type '{0}' to '{1}'", from, to)) { }
 
-        public VineConversionException(VineValue from, VineValue to) 
+        public VineConversionException(VineVar from, VineVar to) 
             : base(string.Format("Cannot convert type '{0}' to '{1}'", from.type, to.type)) { }
     }
 
@@ -70,39 +70,39 @@ namespace VineScriptLib.Core
     /// VineScript's main variable. Can be an int, a double, a bool, a string,
     /// an array or a dictionnary.
     /// </summary>
-    public class VineValue : IComparable, IComparable<VineValue>
+    public class VineVar : IComparable, IComparable<VineVar>
     {
         public static bool strictMode = false;
 
-        public static readonly VineValue NULL = new VineValue(null);
-        //public static VineValue newInt {
+        public static readonly VineVar NULL = new VineVar(null);
+        //public static VineVar newInt {
         //    get {
-        //        return new VineValue(0);
+        //        return new VineVar(0);
         //    }
         //}
-        //public static VineValue newNumber {
+        //public static VineVar newNumber {
         //    get {
-        //        return new VineValue(0.0);
+        //        return new VineVar(0.0);
         //    }
         //}
-        //public static VineValue newString {
+        //public static VineVar newString {
         //    get {
-        //        return new VineValue("");
+        //        return new VineVar("");
         //    }
         //}
-        //public static VineValue newBool {
+        //public static VineVar newBool {
         //    get {
-        //        return new VineValue(false);
+        //        return new VineVar(false);
         //    }
         //}
-        public static VineValue newArray {
+        public static VineVar newArray {
             get {
-                return new VineValue(new List<VineValue>());
+                return new VineVar(new List<VineVar>());
             }
         }
-        public static VineValue newDict {
+        public static VineVar newDict {
             get {
-                return new VineValue(new Dictionary<string, VineValue>());
+                return new VineVar(new Dictionary<string, VineVar>());
             }
         }
         
@@ -115,9 +115,9 @@ namespace VineScriptLib.Core
             Int,        // int
             Number,     // double
             String,     // string
-            Array,      // List<VineValue>
-            Dict,       // Dictionnary<string, VineValue>
-            //Dataset     // should be an Hashset<VineValue>
+            Array,      // List<VineVar>
+            Dict,       // Dictionnary<string, VineVar>
+            //Dataset     // should be an Hashset<VineVar>
         }
         
         public Type type { get; internal set; }
@@ -129,8 +129,8 @@ namespace VineScriptLib.Core
         private readonly int intValue;
         private readonly double numberValue;
         private readonly string stringValue;
-        private readonly List<VineValue> arrayValue;
-        private readonly Dictionary<string, VineValue> dictValue;
+        private readonly List<VineVar> arrayValue;
+        private readonly Dictionary<string, VineVar> dictValue;
         
         public bool IsBool      { get { return type == Type.Bool;   } }
         public bool IsInt       { get { return type == Type.Int;    } }
@@ -318,7 +318,7 @@ namespace VineScriptLib.Core
             }
         }
 
-        public List<VineValue> AsArray {
+        public List<VineVar> AsArray {
             get {
                 switch (type) {
                     case Type.Array:
@@ -334,7 +334,7 @@ namespace VineScriptLib.Core
             }
         }
 
-        public Dictionary<string, VineValue> AsDict {
+        public Dictionary<string, VineVar> AsDict {
             get {
                 switch (type) {
                     case Type.Dict:
@@ -350,13 +350,13 @@ namespace VineScriptLib.Core
             }
         }
         
-        public VineValue this[int index]
+        public VineVar this[int index]
         {
             get { return arrayValue[index]; }
             set { arrayValue[index] = value; }
         }
         
-        public VineValue this[string key]
+        public VineVar this[string key]
         {
             get { return dictValue[key]; }
             set { dictValue[key] = value; }
@@ -368,14 +368,14 @@ namespace VineScriptLib.Core
         }
 
         // Create a null value
-        public VineValue() : this(null) { }
+        public VineVar() : this(null) { }
 
         // Create a value with a C# object
-        public VineValue(object value, bool clone=false)
+        public VineVar(object value, bool clone=false)
         {
             // Copy an existing value
-            if (value is VineValue) {
-                var otherValue = value as VineValue;
+            if (value is VineVar) {
+                var otherValue = value as VineVar;
                 type = otherValue.type;
                 name = otherValue.name;
                 switch (type) {
@@ -443,14 +443,14 @@ namespace VineScriptLib.Core
                 boolValue = (bool)value;
                 return;
             }
-            if (value.GetType() == typeof(List<VineValue>)) {
+            if (value.GetType() == typeof(List<VineVar>)) {
                 type = Type.Array;
-                arrayValue = (List<VineValue>)value;
+                arrayValue = (List<VineVar>)value;
                 return;
             }
-            if (value.GetType() == typeof(Dictionary<string, VineValue>)) {
+            if (value.GetType() == typeof(Dictionary<string, VineVar>)) {
                 type = Type.Dict;
-                dictValue = (Dictionary<string, VineValue>)value;
+                dictValue = (Dictionary<string, VineVar>)value;
                 return;
             }
             var error = string.Format("Attempted to create a Value using a {0}; currently, " +
@@ -458,9 +458,9 @@ namespace VineScriptLib.Core
             throw new Exception(error);
         }
 
-        public VineValue Clone()
+        public VineVar Clone()
         {
-            return new VineValue(this, true);
+            return new VineVar(this, true);
         }
 
         public IEnumerator GetEnumerator()
@@ -478,7 +478,7 @@ namespace VineScriptLib.Core
                     break;
                 case Type.String:
                     for (int i = 0; i < this.AsString.Length; i++) {
-                        yield return (VineValue)this.AsString.Substring(i, 1);
+                        yield return (VineVar)this.AsString.Substring(i, 1);
                     }
                     break;
                 default:
@@ -493,7 +493,7 @@ namespace VineScriptLib.Core
             return this.AsObject?.GetHashCode() ?? 0;
         }
 
-        public int CompareTo(VineValue other)
+        public int CompareTo(VineVar other)
         {
             if (other == null) {
                 return 1;
@@ -524,14 +524,14 @@ namespace VineScriptLib.Core
                 return 1;
             }
             
-            var other = obj as VineValue;
+            var other = obj as VineVar;
 
-            // not a VineValue
+            // not a VineVar
             if (other == null) {
-                throw new ArgumentException("Object is not of type VineValue");
+                throw new ArgumentException("Object is not of type VineVar");
             }
 
-            // it's a VineValue
+            // it's a VineVar
             return CompareTo(other);
         }
 
@@ -541,7 +541,7 @@ namespace VineScriptLib.Core
                 return false;
             }
 
-            var other = (VineValue)obj;
+            var other = (VineVar)obj;
             
             // the order is important here:
             // 1. string == string
@@ -558,7 +558,7 @@ namespace VineScriptLib.Core
             }
 
             // They are not both strings, checks if at least one of them is:
-            if (!VineValue.strictMode && (this.IsString || other.IsString)) {
+            if (!VineVar.strictMode && (this.IsString || other.IsString)) {
                 return false;
             }
 
@@ -594,14 +594,14 @@ namespace VineScriptLib.Core
             }
 
             // Finally, all other cases:
-            if (VineValue.strictMode) {
+            if (VineVar.strictMode) {
                 throw new VineComparisonException(this, other);
             } else {
                 return false;
             }
         }
 
-        public static VineValue operator + (VineValue a, VineValue b)
+        public static VineVar operator + (VineVar a, VineVar b)
         {
             // Here's how additions with null are handled:
             // null + null => error
@@ -627,7 +627,7 @@ namespace VineScriptLib.Core
             // null + string
             if (a?.type == Type.String || b?.type == Type.String) {
                 // automatically becomes a string, even if only 1 of the 2 args is a string
-                return new VineValue(a?.AsString + b?.AsString);
+                return new VineVar(a?.AsString + b?.AsString);
             }
 
             // strings are out of the way,
@@ -646,23 +646,23 @@ namespace VineScriptLib.Core
 
             // if one of the two operands is a double, treat both as double
             if ((a.type == Type.Number || b.type == Type.Number)) {
-                return new VineValue(a.AsNumber + b.AsNumber);
+                return new VineVar(a.AsNumber + b.AsNumber);
             }
 
             // Now that doubles are out of the way, check for integers
             if ((a.type == Type.Int || b.type == Type.Int)) {
-                return new VineValue(a.AsInt + b.AsInt);
+                return new VineVar(a.AsInt + b.AsInt);
             }
 
             // Adding 2 arrays together is allowed: [a, b] + [c, d] = [a, b, c, d]
             if ((a.type == Type.Array && b.type == Type.Array)) {
-                return new VineValue(a.AsArray.Concat(b.AsArray).ToList());
+                return new VineVar(a.AsArray.Concat(b.AsArray).ToList());
             }
 
             throw new VineArithmeticException("+", a, b);
         }
 
-        public static VineValue operator - (VineValue a, VineValue b)
+        public static VineVar operator - (VineVar a, VineVar b)
         {
             // Checks for null/Null operands
             Exception e = null;
@@ -674,20 +674,20 @@ namespace VineScriptLib.Core
             if (    (a.type == Type.Number && (b.type == Type.Number || b.type == Type.Null || b.type == Type.Int))
                 ||  (b.type == Type.Number && (a.type == Type.Number || a.type == Type.Null || a.type == Type.Int))
             ) {
-                return new VineValue(a.AsNumber - b.AsNumber);
+                return new VineVar(a.AsNumber - b.AsNumber);
             }
             
             // If not Numbers, then checks for Int and Nulls
             if (    a.type == Type.Int && (b.type == Type.Int || b.type == Type.Null) 
                 ||  b.type == Type.Int && (a.type == Type.Int || a.type == Type.Null)
             ) {
-                return new VineValue(a.AsInt - b.AsInt);
+                return new VineVar(a.AsInt - b.AsInt);
             }
             
             throw new VineArithmeticException("-", a, b);
         }
 
-        public static VineValue operator * (VineValue a, VineValue b)
+        public static VineVar operator * (VineVar a, VineVar b)
         {
             // Checks for null/Null operands
             Exception e = null;
@@ -699,20 +699,20 @@ namespace VineScriptLib.Core
             if (    (a.type == Type.Number && (b.type == Type.Number || b.type == Type.Null || b.type == Type.Int))
                 ||  (b.type == Type.Number && (a.type == Type.Number || a.type == Type.Null || a.type == Type.Int))
             ) {
-                return new VineValue(a.AsNumber * b.AsNumber);
+                return new VineVar(a.AsNumber * b.AsNumber);
             }
             
             // If not Numbers, then checks for Int and Nulls
             if (    a.type == Type.Int && (b.type == Type.Int || b.type == Type.Null) 
                 ||  b.type == Type.Int && (a.type == Type.Int || a.type == Type.Null)
             ) {
-                return new VineValue(a.AsInt * b.AsInt);
+                return new VineVar(a.AsInt * b.AsInt);
             }
             
             throw new VineArithmeticException("*", a, b);
         }
 
-        public static VineValue operator / (VineValue a, VineValue b)
+        public static VineVar operator / (VineVar a, VineVar b)
         {
             // Checks for null/Null operands
             Exception e = null;
@@ -724,20 +724,20 @@ namespace VineScriptLib.Core
             if (    (a.type == Type.Number && (b.type == Type.Number || b.type == Type.Null || b.type == Type.Int))
                 ||  (b.type == Type.Number && (a.type == Type.Number || a.type == Type.Null || a.type == Type.Int))
             ) {
-                return new VineValue(a.AsNumber / b.AsNumber);
+                return new VineVar(a.AsNumber / b.AsNumber);
             }
             
             // If not Numbers, then checks for Int and Nulls
             if (    a.type == Type.Int && (b.type == Type.Int || b.type == Type.Null) 
                 ||  b.type == Type.Int && (a.type == Type.Int || a.type == Type.Null)
             ) {
-                return new VineValue(a.AsInt / b.AsInt);
+                return new VineVar(a.AsInt / b.AsInt);
             }
 
             throw new VineArithmeticException("/", a, b);
         }
 
-        public static VineValue operator % (VineValue a, VineValue b)
+        public static VineVar operator % (VineVar a, VineVar b)
         {
             // Checks for null/Null operands
             Exception e = null;
@@ -749,20 +749,20 @@ namespace VineScriptLib.Core
             if (    (a.type == Type.Number && (b.type == Type.Number || b.type == Type.Null || b.type == Type.Int))
                 ||  (b.type == Type.Number && (a.type == Type.Number || a.type == Type.Null || a.type == Type.Int))
             ) {
-                return new VineValue(a.AsNumber % b.AsNumber);
+                return new VineVar(a.AsNumber % b.AsNumber);
             }
             
             // If not Numbers, then checks for Int and Nulls
             if (    a.type == Type.Int && (b.type == Type.Int || b.type == Type.Null) 
                 ||  b.type == Type.Int && (a.type == Type.Int || a.type == Type.Null)
             ) {
-                return new VineValue(a.AsInt % b.AsInt);
+                return new VineVar(a.AsInt % b.AsInt);
             }
             
             throw new VineArithmeticException("%", a, b);
         }
 
-        public static VineValue operator ^ (VineValue a, VineValue b)
+        public static VineVar operator ^ (VineVar a, VineVar b)
         {
             // Checks for null/Null operands
             Exception e = null;
@@ -774,20 +774,20 @@ namespace VineScriptLib.Core
             if (    (a.type == Type.Number && (b.type == Type.Number || b.type == Type.Null || b.type == Type.Int))
                 ||  (b.type == Type.Number && (a.type == Type.Number || a.type == Type.Null || a.type == Type.Int))
             ) {
-                return new VineValue(Math.Pow(a.AsNumber, b.AsNumber));
+                return new VineVar(Math.Pow(a.AsNumber, b.AsNumber));
             }
             
             // If not Numbers, then checks for Int and Nulls
             if (    a.type == Type.Int && (b.type == Type.Int || b.type == Type.Null) 
                 ||  b.type == Type.Int && (a.type == Type.Int || a.type == Type.Null)
             ) {
-                return new VineValue((int)Math.Pow(a.AsInt, b.AsInt));
+                return new VineVar((int)Math.Pow(a.AsInt, b.AsInt));
             }
             
             throw new VineArithmeticException("^", a, b);
         }
 
-        public static VineValue operator - (VineValue a)
+        public static VineVar operator - (VineVar a)
         {
             // Checks for null/Null operand
             Exception e = null;
@@ -796,18 +796,18 @@ namespace VineScriptLib.Core
             }
 
             if (a.type == Type.Number) {
-                return new VineValue(-a.AsNumber);
+                return new VineVar(-a.AsNumber);
             }
             if (a.type == Type.Int) {
-                return new VineValue(-a.AsInt);
+                return new VineVar(-a.AsInt);
             }
             if (a.type == Type.Null) {
-                return new VineValue(-0); // Not really sure with that...
+                return new VineVar(-0); // Not really sure with that...
             }
             throw new VineArithmeticException("-", a);
         }
 
-        public static VineValue operator ! (VineValue a)
+        public static VineVar operator ! (VineVar a)
         {
             // Checks for null/Null operand
             Exception e = null;
@@ -816,13 +816,13 @@ namespace VineScriptLib.Core
             }
 
             if (a.type == Type.Bool) {
-                return new VineValue(!a.AsBool);
+                return new VineVar(!a.AsBool);
             }
 
             throw new VineArithmeticException("!", a);
         }
         
-        public static bool operator == (VineValue a, VineValue b)
+        public static bool operator == (VineVar a, VineVar b)
         {
             if (!object.ReferenceEquals(a, null)) {
                 return a.Equals(b);
@@ -837,7 +837,7 @@ namespace VineScriptLib.Core
             //return (a?.Equals(b) ?? b?.Equals(a)) ?? true;
         }
 
-        public static bool operator != (VineValue a, VineValue b)
+        public static bool operator != (VineVar a, VineVar b)
         {
             if (!object.ReferenceEquals(a, null)) {
                 return !a.Equals(b);
@@ -853,7 +853,7 @@ namespace VineScriptLib.Core
         }
 
         // Define the is greater than operator.
-        public static bool operator > (VineValue a, VineValue b)
+        public static bool operator > (VineVar a, VineVar b)
         {
             if (!object.ReferenceEquals(a, null) && !object.ReferenceEquals(b, null)) { 
                 if (    (a.type == Type.Int || a.type == Type.Number)
@@ -863,7 +863,7 @@ namespace VineScriptLib.Core
                 }
             }
 
-            if (VineValue.strictMode) {
+            if (VineVar.strictMode) {
                 throw new VineComparisonException(">", a, b);
             } else {
                 return false;
@@ -871,7 +871,7 @@ namespace VineScriptLib.Core
         }
 
         // Define the is less than operator.
-        public static bool operator < (VineValue a, VineValue b)
+        public static bool operator < (VineVar a, VineVar b)
         {
             if (!object.ReferenceEquals(a, null) && !object.ReferenceEquals(b, null)) { 
                 if (    (a.type == Type.Int || a.type == Type.Number)
@@ -881,7 +881,7 @@ namespace VineScriptLib.Core
                 }
             }
             
-            if (VineValue.strictMode) {
+            if (VineVar.strictMode) {
                 throw new VineComparisonException("<", a, b);
             } else {
                 return false;
@@ -889,7 +889,7 @@ namespace VineScriptLib.Core
         }
 
         // Define the is greater than or equal to operator.
-        public static bool operator >= (VineValue a, VineValue b)
+        public static bool operator >= (VineVar a, VineVar b)
         {
             if (!object.ReferenceEquals(a, null) && !object.ReferenceEquals(b, null)) { 
                 if (    (a.type == Type.Int || a.type == Type.Number)
@@ -899,7 +899,7 @@ namespace VineScriptLib.Core
                 }
             }
             
-            if (VineValue.strictMode) {
+            if (VineVar.strictMode) {
                 throw new VineComparisonException(">=", a, b);
             } else {
                 return false;
@@ -907,7 +907,7 @@ namespace VineScriptLib.Core
         }
 
         // Define the is less than or equal to operator.
-        public static bool operator <= (VineValue a, VineValue b)
+        public static bool operator <= (VineVar a, VineVar b)
         {
             if (!object.ReferenceEquals(a, null) && !object.ReferenceEquals(b, null)) { 
                 if (    (a.type == Type.Int || a.type == Type.Number)
@@ -917,64 +917,64 @@ namespace VineScriptLib.Core
                 }
             }
             
-            if (VineValue.strictMode) {
+            if (VineVar.strictMode) {
                 throw new VineComparisonException("<=", a, b);
             } else {
                 return false;
             }
         }
 
-        public static implicit operator VineValue(bool val)
+        public static implicit operator VineVar(bool val)
         {
-            return new VineValue(val);
+            return new VineVar(val);
         }
 
-        public static implicit operator VineValue(int val)
+        public static implicit operator VineVar(int val)
         {
-            return new VineValue(val);
+            return new VineVar(val);
         }
 
-        public static implicit operator VineValue(double val)
+        public static implicit operator VineVar(double val)
         {
-            return new VineValue(val);
+            return new VineVar(val);
         }
 
-        public static implicit operator VineValue(float val)
+        public static implicit operator VineVar(float val)
         {
-            return new VineValue(val);
+            return new VineVar(val);
         }
 
-        public static implicit operator VineValue(string val)
+        public static implicit operator VineVar(string val)
         {
-            return new VineValue(val);
+            return new VineVar(val);
         }
 
-        public static implicit operator VineValue(List<VineValue> val)
+        public static implicit operator VineVar(List<VineVar> val)
         {
-            return new VineValue(val);
+            return new VineVar(val);
         }
 
-        public static implicit operator VineValue(Dictionary<string, VineValue> val)
+        public static implicit operator VineVar(Dictionary<string, VineVar> val)
         {
-            return new VineValue(val);
+            return new VineVar(val);
         }
 
-        //public static implicit operator bool(VineValue val)
+        //public static implicit operator bool(VineVar val)
         //{
         //    return val.AsBool;
         //}
 
-        //public static implicit operator int(VineValue val)
+        //public static implicit operator int(VineVar val)
         //{
         //    return val.AsInt;
         //}
 
-        //public static implicit operator double(VineValue val)
+        //public static implicit operator double(VineVar val)
         //{
         //    return val.AsNumber;
         //}
 
-        //public static implicit operator string(VineValue val)
+        //public static implicit operator string(VineVar val)
         //{
         //    return val.AsString;
         //}

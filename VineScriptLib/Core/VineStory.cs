@@ -18,7 +18,7 @@ namespace VineScriptLib.Core
         private IVineLibrary userlib;
 
         // Vars
-        public Dictionary<string, VineValue> vars { get; private set; }
+        public Dictionary<string, VineVar> vars { get; private set; }
 
         public VineStory(IVineLibrary userlib=null)
         {
@@ -28,7 +28,7 @@ namespace VineScriptLib.Core
             std.RegisterFilters();
             
             // vars
-            vars = new Dictionary<string, VineValue>();
+            vars = new Dictionary<string, VineVar>();
 
             //test2();
 
@@ -66,16 +66,16 @@ namespace VineScriptLib.Core
             userlib.RegisterFilters();
         }
 
-        public VineValue GetVar(string name)
+        public VineVar GetVar(string name)
         {
-            VineValue output;
+            VineVar output;
             if (vars.TryGetValue(name, out output)) {
                 return output;
             }
-            return VineValue.NULL;
+            return VineVar.NULL;
         }
 
-        public void SetVar(string name, VineValue value)
+        public void SetVar(string name, VineVar value)
         {
             vars.Add(name, value);
         }
@@ -85,9 +85,9 @@ namespace VineScriptLib.Core
             userlib.functions.Register(name, cls);
         }
 
-        public VineValue CallFunction(string name, params object[] args)
+        public VineVar CallFunction(string name, params object[] args)
         {
-            VineValue output = VineValue.NULL;
+            VineVar output = VineVar.NULL;
 
             if (userlib != null && userlib.functions != null && userlib.functions.Exists(name)) {
                 if (userlib.functions.Call(name, out output, vars, args)) {
@@ -106,9 +106,9 @@ namespace VineScriptLib.Core
             }
         }
 
-        public VineValue CallFilter(string name, params object[] args)
+        public VineVar CallFilter(string name, params object[] args)
         {
-            VineValue output = VineValue.NULL;
+            VineVar output = VineVar.NULL;
             
             if (userlib != null && userlib.filters != null && userlib.filters.Exists(name)) {
                 if (userlib.filters.Call(name, out output, vars, args)) {

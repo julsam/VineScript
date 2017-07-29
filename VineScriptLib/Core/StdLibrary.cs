@@ -47,22 +47,22 @@ namespace VineScriptLib.Core
             filters.Register("Upper", typeof(StdLibrary));
         }
 
-        public static VineValue Hello(object context)
+        public static VineVar Hello(object context)
         {
             return "Hello, World!";
         }
 
-        public static VineValue Add(object context, VineValue a, VineValue b)
+        public static VineVar Add(object context, VineVar a, VineVar b)
         {
             return a + b;
         }
         
-        public static VineValue Upper(object context, VineValue value)
+        public static VineVar Upper(object context, VineVar value)
         {
             return value.AsString.ToUpper();
         }
         
-        public static VineValue Clone(object context, VineValue value)
+        public static VineVar Clone(object context, VineVar value)
         {
             if (value == null) {
                 throw new Exception("Can't clone Null value");
@@ -70,57 +70,57 @@ namespace VineScriptLib.Core
             return value.Clone();
         }
 
-        public static int Int(object context, VineValue value)
+        public static int Int(object context, VineVar value)
         {
             return value.AsInt;
         }
 
-        public static double Number(object context, VineValue value)
+        public static double Number(object context, VineVar value)
         {
             return value.AsNumber;
         }
 
-        public static string String(object context, VineValue value)
+        public static string String(object context, VineVar value)
         {
             return value.AsString;
         }
 
-        public static bool IsBool(object context, VineValue value)
+        public static bool IsBool(object context, VineVar value)
         {
             return value.IsBool;
         }
 
-        public static bool IsInt(object context, VineValue value)
+        public static bool IsInt(object context, VineVar value)
         {
             return value.IsInt;
         }
 
-        public static bool IsNumber(object context, VineValue value)
+        public static bool IsNumber(object context, VineVar value)
         {
             return value.IsNumber;
         }
 
-        public static bool IsString(object context, VineValue value)
+        public static bool IsString(object context, VineVar value)
         {
             return value.IsString;
         }
 
-        public static bool IsNull(object context, VineValue value)
+        public static bool IsNull(object context, VineVar value)
         {
             return value.IsNull;
         }
 
-        public static bool IsArray(object context, VineValue value)
+        public static bool IsArray(object context, VineVar value)
         {
             return value.IsArray;
         }
 
-        public static bool IsDict(object context, VineValue value)
+        public static bool IsDict(object context, VineVar value)
         {
             return value.IsDict;
         }
 
-        // Using c# types instead of VineValue:
+        // Using c# types instead of VineVar:
 
         //public static string Upper(object context, string value)
         //{
