@@ -26,28 +26,29 @@ namespace VineScript.Compiler
 
     class VineVisitor : VineParserBaseVisitor<VineVar> 
     {
+        public PassageResult passageResult { get; private set; }
         private VineStory story;
-        public string output { get; private set; } = "";
 
         private ParserRuleContext lastEnteredContext;
 
         public void printOutput()
         {
             Console.WriteLine("### EVALUATE OUTPUT: ###");
-            if (output.Length > 0) {
-                Console.WriteLine(output);
+            if (passageResult.text.Length > 0) {
+                Console.WriteLine(passageResult.text);
             }
             Console.WriteLine("### END ###");
         }
         
-        public void AddToOutput(string text)
+        private void AddToPassageResult(string text)
         {
-            output += text;
+            passageResult.text += text;
         }
 
         public VineVisitor(VineStory story)
         {
             this.story = story;
+            passageResult = new PassageResult();
         }
 
         /// <summary>
@@ -60,8 +61,9 @@ namespace VineScript.Compiler
         public override VineVar VisitEvalExprMode(VineParser.EvalExprModeContext context)
         {
             lastEnteredContext = context;
+
             VineVar value = Visit(context.expr());
-            AddToOutput(value.AsString);
+            AddToPassageResult(value.AsString);
             return value;
         }
 
@@ -95,7 +97,7 @@ namespace VineScript.Compiler
         {
             lastEnteredContext = context;
             VisitChildren(context);
-            AddToOutput(context.GetText());
+                AddToPassageResult(context.GetText());
             return null;
         }
 
@@ -106,12 +108,12 @@ namespace VineScript.Compiler
             Console.WriteLine("> DISPLAY: " + context.expr().GetText() + " = " + value);
 
             // marks the start of the output of the display command
-            AddToOutput("\u001E");
+            AddToPassageResult("\u001E");
             // Get every lines in an array
             string[] outputLines = value.AsString.Split('\n');
             for (int i = 0; i < outputLines.Length; i++) {
                 //  add the line to the output
-                AddToOutput(outputLines[i]);
+                AddToPassageResult(outputLines[i]);
 
                 // if not the last line
                 if (i < outputLines.Length - 1) {
@@ -120,11 +122,11 @@ namespace VineScript.Compiler
                     // between line returns that are in the source code
                     // and line returns added by displaying the return value
                     // of a function containing '\n'
-                    AddToOutput("\u000B");
+                    AddToPassageResult("\u000B");
                 }
             }
             // marks the end of the output of the display command
-            AddToOutput("\u001F");
+            AddToPassageResult("\u001F");
             
             return null;
         }
@@ -135,7 +137,7 @@ namespace VineScript.Compiler
         {
             // '<<' 'set' ID 'to' expr '>>'
             lastEnteredContext = context;
-            AddToOutput("<< set >>");
+            AddToPassageResult("<< set >>");
 
             var variable = Visit(context.variable());
             string id = variable.name;
@@ -201,24 +203,24 @@ namespace VineScript.Compiler
         {
             lastEnteredContext = context;
             Console.WriteLine("IF CONTROL STATEMENT");
-            AddToOutput("<< if >>");
+            AddToPassageResult("<< if >>");
 
             bool ifvalue = Visit(context.ifStmt()).AsBool;
             if (!ifvalue) {
                 bool elifvalue = false;
                 for (int i = 0; i < context.elifStmt().Length; i++) {
-                    AddToOutput("<< elif >>");
+                    AddToPassageResult("<< elif >>");
                     elifvalue = Visit(context.elifStmt(i)).AsBool;
                     if (elifvalue) {
                         break;
                     }
                 }
                 if (!elifvalue && context.elseStmt() != null) {
-                    AddToOutput("<< else >>");
+                    AddToPassageResult("<< else >>");
                     Visit(context.elseStmt());
                 }
             }
-            AddToOutput("<< endif >>");
+            AddToPassageResult("<< endif >>");
             return ifvalue;
         }
 
@@ -268,9 +270,9 @@ namespace VineScript.Compiler
         {
             lastEnteredContext = context;
             Console.WriteLine("FOR CONTROL STATEMENT");
-            AddToOutput("<< for >>");
+            AddToPassageResult("<< for >>");
             VineVar forvalue = Visit(context.forStmt());
-            AddToOutput("<< endfor >>");
+            AddToPassageResult("<< endfor >>");
             return null;
         }
 

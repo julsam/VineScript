@@ -16,12 +16,12 @@ namespace VineScript.Compiler
             this.story = story;
         }
 
-        public string Execute(StreamReader istream)
+        public PassageResult Execute(StreamReader istream)
         {
             return Execute(istream.ReadToEnd());
         }
 
-        public string Execute(string vinecode)
+        public PassageResult Execute(string vinecode)
         {
             // Print input
             Console.WriteLine(vinecode);
@@ -35,11 +35,11 @@ namespace VineScript.Compiler
 
             // Compile Vine code
             var vineCompiler = new VineCompiler();
-            string parsed = vineCompiler.Parse(wsRemoved, story);
+            PassageResult parsedResult = vineCompiler.Parse(wsRemoved, story);
 
             // Formatting lines (removes empty lines containing Vine code)
             var formatCompiler = new VineFormatterCompiler();
-            string formatOutput = formatCompiler.FormatLines(parsed);
+            string formatOutput = formatCompiler.FormatLines(parsedResult.text);
             
             // Print before trimming whitespace
             Console.WriteLine(formatOutput);
@@ -51,20 +51,22 @@ namespace VineScript.Compiler
             // TODO: keep only one space between words
             finalOutput = Compiler.Util.RemoveWhiteSpace(finalOutput);
 
+            PassageResult finalResult = new PassageResult(finalOutput, parsedResult.links);
+
             // Stop timer
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
             
             // Final output
             Console.WriteLine("### FORMATTED OUTPUT: ###");
-            if (finalOutput.Length > 0)
-                Console.WriteLine(finalOutput);
+            if (finalResult.text.Length > 0)
+                Console.WriteLine(finalResult.text);
             Console.WriteLine("### END ###");
 
             // Timer output
             Console.WriteLine(string.Format("Time elapsed: {0} ms", elapsedMs.ToString("0.00")));
-
-            return finalOutput;
+            
+            return finalResult;
         }
 
         public string Eval(StreamReader istream)

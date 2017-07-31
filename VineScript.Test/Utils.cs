@@ -14,7 +14,7 @@ namespace VineScript.Test
             StreamReader cmp = File.OpenText(cmpfile);
 
             VineStory story = new VineStory();
-            string output = story.RunPassage(input);
+            string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
         }

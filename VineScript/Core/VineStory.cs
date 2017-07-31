@@ -20,6 +20,9 @@ namespace VineScript.Core
         // Vars
         public Dictionary<string, VineVar> vars { get; private set; }
 
+        public PassageResult currentPassage;
+        public List<PassageResult> history { get; private set; }
+
         public VineStory(IVineLibrary userlib=null)
         {
             // std
@@ -29,8 +32,8 @@ namespace VineScript.Core
             
             // vars
             vars = new Dictionary<string, VineVar>();
-
-            //test2();
+            
+            history = new List<PassageResult>();
 
             interpreter = new Interpreter(this);
 
@@ -39,14 +42,17 @@ namespace VineScript.Core
             }
         }
 
-        public string RunPassage(StreamReader istream)
+        public PassageResult RunPassage(StreamReader istream)
         {
-            return interpreter.Execute(istream);
+            return RunPassage(istream.ReadToEnd());
         }
 
-        public string RunPassage(string text)
+        public PassageResult RunPassage(string text)
         {
-            return interpreter.Execute(text);
+            currentPassage = new PassageResult();
+            currentPassage = interpreter.Execute(text);
+            history.Add(currentPassage);
+            return currentPassage;
         }
 
         public string Eval(StreamReader istream)

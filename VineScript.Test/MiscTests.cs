@@ -19,7 +19,7 @@ namespace VineScript.Test
             // is '\u000B' (vertical tabulation) and is not allowed in text
             string input = "{{ 1 }}";
             VineStory story = new VineStory();
-            string output = story.RunPassage(input);
+            string output = story.RunPassage(input).text;
         }
         [TestMethod]
         [ExpectedException(typeof(Exception))]
@@ -29,7 +29,7 @@ namespace VineScript.Test
             // is '\u000B' (vertical tabulation) and is not in a string literal
             string input = "{{ \"foobar\" }}";
             VineStory story = new VineStory();
-            string output = story.RunPassage(input);
+            string output = story.RunPassage(input).text;
         }
     }
 }

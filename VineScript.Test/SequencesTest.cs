@@ -19,7 +19,7 @@ namespace VineScript.Test
             StreamReader cmp = File.OpenText("scripts/sequences/arraygetset01.cmp");
 
             VineStory story = new VineStory();
-            string output = story.RunPassage(input);
+            string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
         }
@@ -32,7 +32,7 @@ namespace VineScript.Test
             StreamReader cmp = File.OpenText("scripts/sequences/arraygetset02.cmp");
 
             VineStory story = new VineStory();
-            string output = story.RunPassage(input);
+            string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
         }
@@ -45,7 +45,7 @@ namespace VineScript.Test
             StreamReader cmp = File.OpenText("scripts/sequences/arraygetset03.cmp");
 
             VineStory story = new VineStory();
-            string output = story.RunPassage(input);
+            string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
         }
@@ -88,7 +88,7 @@ namespace VineScript.Test
                 + "{{ str[2] }}, "
                 + "{{ str[3] }}";
 
-            string output = story.RunPassage(input);
+            string output = story.RunPassage(input).text;
 
             Assert.AreEqual("FooBar, F, o, o, B", output);
         }

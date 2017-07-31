@@ -29,7 +29,7 @@ namespace VineScript.Compiler
             parser.AddErrorListener(underlineListener);
         }
 
-        public string Parse(string text, VineStory story)
+        public PassageResult Parse(string text, VineStory story)
         {
             Setup(text);
 
@@ -41,7 +41,7 @@ namespace VineScript.Compiler
             eval.Visit(tree);
             eval.printOutput();
 
-            return eval.output;
+            return eval.passageResult;
         }
 
         public string Eval(string expr, VineStory story)
@@ -63,7 +63,7 @@ namespace VineScript.Compiler
             eval.Visit(tree);
             eval.printOutput();
 
-            return eval.output;
+            return eval.passageResult.text;
         }
     }
 }
