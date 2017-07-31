@@ -41,17 +41,9 @@ block
 
 //DISPLAY: '\u001E' .*? '\u001F' ; // output of {{ ... }}
 
-BACKSLASH_ESC
-    :   '\\\\' -> type(TXT)
-    ;
-TXT_ESC_LBRACE
-    :   '\\{' -> type(TXT)
-    ;
-TXT_ESC_SLASH
-    :   '\\/' -> type(TXT)
-    ;
-TXT_ESC_LT
-    :   '\\<' -> type(TXT)
+// Escaped commands, eg: \<< this is text >> 
+TXT_ESC
+    :   ('\\\\' | '\\{' | '\\/' | '\\<') -> type(TXT)
     ;
 
 STMT:           '<<' .*? '>>' ;
@@ -61,23 +53,8 @@ LINE_COMMENT:   '//' ~[\r\n]* ;
 NL:     '\r'? '\n' ;
 WS:     [ \t]+ -> skip ;
 
-TXT_LBRACE
-    :   '{' -> type(TXT)
-    ;
-TXT_RBRACE
-    :   '}' -> type(TXT)
-    ;
-TXT_LT
-    :   '<' -> type(TXT)
-    ;
-TXT_GT
-    :   '>' -> type(TXT)
-    ;
-TXT_SLASH
-    :   '/' -> type(TXT)
-    ;
-TXT_ESC
-    :   '\\' -> type(TXT)
+TXT_SPECIALS
+    :   [\\/<>{}] -> type(TXT)
     ;
 TXT :   ~[\\<>{}/\r\n]+
     ;

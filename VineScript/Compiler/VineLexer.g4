@@ -25,20 +25,9 @@ using System;
 
 // Default "mode" (text mode) : Everything that is outside of tags '{{ .. }}', '<< .. >>' or '/* .. */'
 
-BACKSLASH_ESC
-    :   '\\\\' -> type(TXT)
-    ;
-TXT_ESC_LBRACE
-    :   '\\{' -> type(TXT)
-    ;
-TXT_ESC_SLASH
-    :   '\\/' -> type(TXT)
-    ;
-TXT_ESC_LT
-    :   '\\<' -> type(TXT)
-    ;
-TXT_ESC_LBRACK
-    :   '\\[' -> type(TXT)
+// Escaped commands, eg: \<< this is text >> 
+TXT_ESC
+    :   ('\\\\' | '\\{' | '\\/' | '\\<' | '\\[') -> type(TXT)
     ;
 
 LOUTPUT:        '{{' -> pushMode(VineCode) ;
@@ -56,20 +45,8 @@ NL:     '\r'? '\n' ;
 //  * '\u001F': marks the end of the output of the display command
 RESERVED_CHARS: [\u000B\u001E\u001F]+ ;
 
-TXT_LBRACE
-    :   '{' -> type(TXT)
-    ;
-TXT_LT
-    :   '<' -> type(TXT)
-    ;
-TXT_LBRACK
-    :   '[' -> type(TXT)
-    ;
-TXT_SLASH
-    :   '/' -> type(TXT)
-    ;
-TXT_ESC
-    :   '\\' -> type(TXT)
+TXT_SPECIALS
+    :   [\\/[<{] -> type(TXT)
     ;
 TXT :   ~[\\<\[{/\r\n\u000B\u001E\u001F]+
     ;
