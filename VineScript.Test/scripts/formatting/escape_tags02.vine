@@ -1,5 +1,6 @@
 ﻿// comment 1 << if true >>{{ "abc" }}<< endif >>
 abc\a
+\\[[title|link]]
 {{ "b\t\\{foo" }} \<\< not a markup \>\> {{ "b\t\\{foo" }}
 \\{{ "foobar" }}
 {{ "foobar" }}\

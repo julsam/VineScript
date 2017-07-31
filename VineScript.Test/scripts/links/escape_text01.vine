@@ -1,0 +1,7 @@
+﻿[[ not need to escape this >]-< -> link]]
+
+[[my [[own\]] title|mylink]]
+[[my \| title|mylink]]
+[[mylink<-my \<- title]]
+[[my \-> title->mylink]]
+[[my \\\\ title->mylink]]
