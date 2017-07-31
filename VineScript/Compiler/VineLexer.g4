@@ -37,9 +37,13 @@ TXT_ESC_SLASH
 TXT_ESC_LT
     :   '\\<' -> type(TXT)
     ;
+TXT_ESC_LBRACK
+    :   '\\[' -> type(TXT)
+    ;
 
 LOUTPUT:        '{{' -> pushMode(VineCode) ;
 LSTMT:          '<<' -> pushMode(VineCode) ;
+LLINK:          '[[' -> pushMode(LinkMode) ;
 BLOCK_COMMENT:  '/*' .*? '*/' ;
 LINE_COMMENT:   '//' ~[\r\n]* ;
 
@@ -58,16 +62,41 @@ TXT_LBRACE
 TXT_LT
     :   '<' -> type(TXT)
     ;
+TXT_LBRACK
+    :   '[' -> type(TXT)
+    ;
 TXT_SLASH
     :   '/' -> type(TXT)
     ;
 TXT_ESC
     :   '\\' -> type(TXT)
     ;
-TXT :   ~[\\<{/\r\n\u000B\u001E\u001F]+
+TXT :   ~[\\<\[{/\r\n\u000B\u001E\u001F]+
     ;
 
 ERROR_CHAR: . ;
+
+// ----------------------------------------------------------
+mode LinkMode;
+
+LINK_ESC
+    :   (   '\\\\'  // [[my \\ title|mylink]]
+        |   '\\]'   // [[my [[own\]] title|mylink]]
+        |   '\\|'   // [[my \| title|mylink]]
+        |   '\\<'   // [[mylink<-my \<- title]]
+        |   '\\-'   // [[my \-> title->mylink]]
+        )
+        -> type(LINK_TEXT)
+    ;
+
+RLINK: ']]' -> popMode ;
+
+LINK_PIPE:  '|' ;
+LINK_LEFT:  '<-' ;
+LINK_RIGHT: '->' ;
+
+LINK_TEXT_SPECIALS: [\\<\]-] -> type(LINK_TEXT) ;
+LINK_TEXT:  ~[\\|<\]\r\n-]+ ;
 
 // ----------------------------------------------------------
 mode VineCode;

@@ -75,8 +75,8 @@ namespace VineScript.Compiler
         }
 
         /// <summary>
-        /// Unescape escaped characters like \{ or \/  in the text of a sequence.
-        /// When the escaped char \ is alone (not followed by [{}\/%], 
+        /// Unescape escaped characters like \{ or \/ in the text of a sequence.
+        /// When the escaped char \ is alone (not followed by '{}\/%<>['), 
         /// it's not considered as an escape char but as normal text.
         /// </summary>
         /// <param name="input"></param>
@@ -121,7 +121,58 @@ namespace VineScript.Compiler
                         case '}':
                         case '<':
                         case '>':
+                        case '[':
+                        case ']':
                         case '/':
+                        case '\\':
+                            unescaped_current = current.ToString();
+                            break;
+                        default:
+                            unescaped_current = "\\" + current.ToString();
+                            break;
+                    }
+                    unescaped.Append(unescaped_current);
+                    escape = false;
+                }
+                else
+                {
+                    unescaped.Append(current);
+                }
+            }
+            return unescaped.ToString();
+        }
+
+        /// <summary>
+        /// Unescape escaped characters like \] or \| in the text of a link.
+        /// When the escaped char \ is alone (not followed by "<]|-\\")
+        /// it's not considered as an escape char but as normal text.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string UnescapeLinkContent(string input)
+        {
+            StringBuilder unescaped = new StringBuilder(input.Length);
+            bool escape = false;
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                char current = input[i];
+
+                if (!escape && current == '\\' && i < input.Length - 1) {
+                    // next char will be escaped
+                    escape = true;
+                    continue;
+                }
+                
+                if (escape)
+                {
+                    string unescaped_current = "";
+                    switch (current)
+                    {
+                        case '<':
+                        case ']':
+                        case '|':
+                        case '-':
                         case '\\':
                             unescaped_current = current.ToString();
                             break;

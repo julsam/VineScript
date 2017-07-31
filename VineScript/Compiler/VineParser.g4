@@ -120,6 +120,7 @@ block
     |   display         # noOutput      // {{ foo }}
     |   controlStmt     # noOutput      // << if true >> something << endif >>
     |   simpleStmtBlock # directOutput  // << set foo = 0 >>
+    |   link            # noOutput      // [[label|link]]
     |   BLOCK_COMMENT   # directOutput  // /* comment */
     |   LINE_COMMENT    # directOutput  // // inline comment
     ;
@@ -131,6 +132,17 @@ text
 simpleStmtBlock
     :   '<<' setStmt '>>'
     |   '<<' funcCall '>>'
+    ;
+
+link
+    :   '[[' title=linkContent+ ']]'
+    |   '[[' title=linkContent+ '|' passageName=linkContent+ ']]'
+    |   '[[' title=linkContent+ '->' passageName=linkContent+ ']]'
+    |   '[[' passageName=linkContent+ '<-' title=linkContent+ ']]'
+    ;
+
+linkContent
+    :   LINK_TEXT+
     ;
 
 /**
@@ -162,11 +174,11 @@ funcCall
     ;
 
 newSequence
-    :   '[' expressionList? ']'     # newArray
+    :   LBRACK expressionList? RBRACK     # newArray
     |   LBRACE keyValueList? RBRACE # newDict
     // array errors:
-    |   '[' expressionList? ']' { NotifyErrorListeners("Too many brackets"); } ']' # newArrayError
-    |   '[' expressionList?     { NotifyErrorListeners("Missing closing ']'"); }   # newArrayError
+    |   LBRACK expressionList? RBRACK { NotifyErrorListeners("Too many brackets"); } RBRACK # newArrayError
+    |   LBRACK expressionList?     { NotifyErrorListeners("Missing closing ']'"); }   # newArrayError
     // dict errors:
     |   LBRACE keyValueList? RBRACE { NotifyErrorListeners("Too many braces"); } RBRACE # newDictError
     |   LBRACE keyValueList?        { NotifyErrorListeners("Missing closing '}'"); }    # newDictError
@@ -206,10 +218,10 @@ endForStmt
 
 expr
     :   <assoc=right> left=expr '^' right=expr      # powExpr
-    |   op=('-'|'!') expr                           # unaryExpr 
+    |   op=(MINUS|'!') expr                         # unaryExpr 
     |   left=expr op=('*' | DIV | '%') right=expr   # mulDivModExpr
-    |   left=expr op=('+'|'-') right=expr           # addSubExpr
-    |   left=expr op=(LT|GT|'<='|'>=') right=expr # relationalExpr
+    |   left=expr op=('+'|MINUS) right=expr         # addSubExpr
+    |   left=expr op=(LT|GT|'<='|'>=') right=expr   # relationalExpr
     |   left=expr op=('=='|'!=') right=expr         # equalityExpr
     |   left=expr ('&&'|wsb 'and' wsa) right=expr   # andExpr
     |   left=expr ('||'|wsb 'or' wsa) right=expr    # orExpr
@@ -257,7 +269,7 @@ variable
     ;
 
 sequenceAccess
-    :   '[' expr ']'
+    :   LBRACK expr RBRACK
     ;
 
 interval

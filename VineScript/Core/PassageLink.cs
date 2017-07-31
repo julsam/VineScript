@@ -8,14 +8,17 @@ namespace VineScript.Core
 {
     public struct PassageLink
     {
-        string title;
-        string link;
-        int order;
+        // link text
+        public string title { get; }
+        // passage name
+        public string passageName { get; }
+        // order in which the link was created
+        public int order { get; }
 
-        public PassageLink(string title, string link, int order=0)
+        public PassageLink(string title, string passageName, int order=0)
         {
             this.title = title;
-            this.link = link;
+            this.passageName = passageName;
             this.order = order;
         }
     }

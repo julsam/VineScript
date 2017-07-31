@@ -98,6 +98,53 @@ namespace VineScript.Compiler
             lastEnteredContext = context;
             VisitChildren(context);
                 AddToPassageResult(context.GetText());
+
+        public override VineVar VisitLink(VineParser.LinkContext context)
+        {
+            // '[[' title=linkContent+ '|' passageName=linkContent+ ']]'
+            lastEnteredContext = context;
+
+            // Link Title
+            string title = Visit(context.title).AsString.Trim(new char[] { '\t', ' ' });
+            title = Util.UnescapeLinkContent(title);
+
+            // Passage Name
+            string passageName = title;
+            if (context.passageName != null) { 
+                passageName = Visit(context.passageName).AsString.Trim(new char[] { '\t', ' ' });
+                passageName = Util.UnescapeLinkContent(passageName);
+            }
+
+            // Check for empty title/link like [[mytitle| ]] or [[ |mylink]]
+            if (string.IsNullOrWhiteSpace(title)) {
+                throw new VineRuntimeException("The title of a link can't be empty!", context);
+            } else if (string.IsNullOrWhiteSpace(passageName)) {
+                throw new VineRuntimeException("A link can't be empty!", context);
+            }
+
+            // DEBUG: print in passage
+            //AddToPassageResult("title: " + title + ", link: " + passageName);
+
+            // Add it back to the output passage as a statement and will be treated
+            // accordingly by the VineFormatter.
+            AddToPassageResult("<< " + title + " | " + passageName + " >>");
+
+            passageResult.links.Add(
+                new PassageLink(title, passageName, passageResult.links.Count)
+            );
+
+            return null;
+        }
+
+        public override VineVar VisitLinkContent(VineParser.LinkContentContext context)
+        {
+            lastEnteredContext = context;
+            string result = "";
+            foreach (var item in context.LINK_TEXT()) {
+                result += item.GetText();
+            }
+            return result;
+        }
             return null;
         }
 
