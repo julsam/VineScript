@@ -145,8 +145,6 @@ namespace VineScript.Compiler
             }
             return result;
         }
-            return null;
-        }
 
         public override VineVar VisitDisplay(VineParser.DisplayContext context)
         {
