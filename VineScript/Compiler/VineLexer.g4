@@ -100,6 +100,7 @@ KW_AND: 'and' ;
 KW_OR:  'or' ;
 TO:     'to' ;
 SET:    'set' ;
+UNSET:  'unset' ;
 
 // Separators
 INTERVAL_SEP:   '...' ;

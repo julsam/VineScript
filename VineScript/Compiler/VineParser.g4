@@ -131,6 +131,7 @@ text
 
 simpleStmtBlock
     :   '<<' setStmt '>>'
+    |   '<<' unsetStmt '>>'
     |   '<<' funcCall '>>'
     ;
 
@@ -165,6 +166,16 @@ assignList
 assign
     :   variable (sequenceAccess)* op=('='|'to') expr
     |   variable (sequenceAccess)* op=('+='|'-='|'*='|'/='|'%=') expr
+    ;
+
+unsetStmt
+    :   'unset' unsetList
+    ;
+
+unsetList
+    :   variable (',' variable)*
+    |   unsetList { NotifyErrorListeners("Missing ',' separator"); } variable (',' variable)*
+    |   unsetList { NotifyErrorListeners("Too many ','"); } ',' ',' unsetList
     ;
 
 funcCall

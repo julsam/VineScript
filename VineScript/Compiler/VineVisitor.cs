@@ -222,6 +222,32 @@ namespace VineScript.Compiler
             return value;
         }
 
+        public override VineVar VisitUnsetList(VineParser.UnsetListContext context)
+        {
+            // '<<' 'unset' ID '>>'
+            lastEnteredContext = context;
+            AddToPassageResult("<< unset >>");
+
+            foreach (var item in context.variable()) {
+                var variable = Visit(item);
+                string id = variable.name;
+
+                // Debug
+                Console.Write("STMT UNSET " + id);
+
+                if (story.vars.ContainsKey(id)) {
+                    story.vars.Remove(id);
+                } else {
+                    Console.WriteLine(string.Format(
+                        "[!!] Warning, the variable '{0}' is not defined!"
+                        + " Its value cannot be unset.", id
+                    ));
+                }
+            }
+
+            return null;
+        }
+
         public override VineVar VisitFuncCall(VineParser.FuncCallContext context)
         {
             // ID '(' expressionList? ')'
