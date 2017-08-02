@@ -119,7 +119,7 @@ block
     |   text            # directOutput  // foobar
     |   display         # noOutput      // {{ foo }}
     |   controlStmt     # noOutput      // << open stmt >> something << close stmt >>
-    |   simpleStmtBlock # directOutput  // << set foo = 0 >>
+    |   simpleStmtBlock # noOutput      // << set foo = 0 >>
     |   link            # noOutput      // [[label|link]]
     |   BLOCK_COMMENT   # directOutput  // /* comment */
     |   LINE_COMMENT    # directOutput  // // inline comment

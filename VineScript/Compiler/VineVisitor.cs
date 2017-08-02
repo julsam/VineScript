@@ -236,8 +236,9 @@ namespace VineScript.Compiler
         {
             // ID '(' expressionList? ')'
             lastEnteredContext = context;
-
             var funcName = context.ID().GetText();
+            AddToPassageResult(string.Format("<< call func \"{0}\" >>", funcName));
+
             List<object> list = new List<object>();
             if (context.expressionList() != null)
             {
