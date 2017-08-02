@@ -50,10 +50,8 @@
     <Compile Include="Compiler\Utils\ExceptionUtil.cs" />
     <Compile Include="Compiler\Formatter\VineFormatterCompiler.cs" />
     <Compile Include="Compiler\Formatter\VineFormatterVisitor.cs" />
-    <Compile Include="Compiler\LinesFormatter\LinesFormatterCompiler.cs" />
     <Compile Include="Compiler\VineCompiler.cs" />
     <Compile Include="Compiler\ErrorListeners\LexerErrorListener.cs" />
-    <Compile Include="Compiler\LinesFormatter\LinesFormatterVisitor.cs" />
     <Compile Include="Compiler\ErrorListeners\ParserErrorListener.cs" />
     <Compile Include="Compiler\Utils\Util.cs" />
     <Compile Include="Compiler\VineVisitor.cs" />
@@ -70,10 +68,6 @@
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Antlr4 Include="Compiler\LinesFormatter\LinesFormatter.g4">
-      <Generator>MSBuild:Compile</Generator>
-      <CustomToolNamespace>VineScript.Compiler.LinesFormatter</CustomToolNamespace>
-    </Antlr4>
     <Antlr4 Include="Compiler\VineLexer.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>VineScript.Compiler</CustomToolNamespace>
