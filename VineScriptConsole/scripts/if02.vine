@@ -1,5 +1,0 @@
-﻿<< if $var >>
-	{{ $var }}
-<< else >>
-	bar
-<< end >>

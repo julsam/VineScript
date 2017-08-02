@@ -195,6 +195,34 @@ namespace VineScript.Test
         }
 
         [TestMethod]
+        public void FileIf02()
+        {
+            /*
+            << if ($hello_world == "Hello, World!" || 1 > 2) 
+                and (0 < 1) && $my_int >= 42 && $my_int != "42"
+            >>
+            */
+            string filename = "scripts/basic/if02.vine";
+
+            VineStory story = new VineStory();
+            
+            story.vars["hello_world"] = "Hello, World!";
+            story.vars["my_int"] = 0;
+            story.RunPassage(File.OpenText(filename));
+            Assert.AreEqual(new VineVar(false), story.vars["result"]);
+            
+            story.vars["hello_world"] = "abc";
+            story.vars["my_int"] = 43;
+            story.RunPassage(File.OpenText(filename));
+            Assert.AreEqual(new VineVar(false), story.vars["result"]);
+            
+            story.vars["hello_world"] = "Hello, World!";
+            story.vars["my_int"] = 43;
+            story.RunPassage(File.OpenText(filename));
+            Assert.AreEqual(new VineVar(true), story.vars["result"]);
+        }
+
+        [TestMethod]
         public void CmpFileLangChars01()
         {
             StreamReader input = File.OpenText("scripts/basic/lang_chars01.vine");
