@@ -2,4 +2,4 @@
 << for el in arr >>
 	<< set el[0] = el[0] + 1 >>
 	<< set el[1] = el[1] + 1 >>
-<< endfor >>
+<< end >>

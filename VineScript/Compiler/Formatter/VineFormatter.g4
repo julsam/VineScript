@@ -12,7 +12,7 @@ line
     :   NL EOF                              # printLn
     |   block+ WS block+ (NL|EOF)           # consumeFullLine
     |   containsText NL (block NL?)+ EOF    # consumeLn // foobar {{ $var }}\n  <= consume \n
-                                                        // << endif >>EOF       <= consume this line
+                                                        // << end >>EOF         <= consume this line
     |   containsText NL                     # printLn
     |   containsText EOF                    # consumeLn
     |   block+ (NL|EOF)                     # consumeLn

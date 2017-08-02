@@ -110,7 +110,7 @@ namespace VineScript.Test
             //<< for el in arr >>
             //    << set el[0] = el[0] + 1 >>
             //    << set el[1] = el[1] + 1 >>
-            //<< endfor >>
+            //<< end >>
 
             StreamReader input = File.OpenText("scripts/sequences/array2d_set_for01.vine");
             story.RunPassage(input);
@@ -136,7 +136,7 @@ namespace VineScript.Test
             //<< for el in Clone(arr) >>
             //    << set el[0] = el[0] + 1 >>
             //    << set el[1] = el[1] + 1 >>
-            //<< endfor >>
+            //<< end >>
 
             StreamReader input = File.OpenText("scripts/sequences/array2d_set_for02.vine");
             story.RunPassage(input);

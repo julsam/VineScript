@@ -1,1 +1,1 @@
-﻿/* comment */<< if true >>var<< set $var to "foo" >>='{{ $var }}'<< endif >>
+﻿/* comment */<< if true >>var<< set $var to "foo" >>='{{ $var }}'<< end >>

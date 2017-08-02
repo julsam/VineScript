@@ -19,7 +19,7 @@ on 3
 
 << if true >>
 	7
-<< endif >>
+<< end >>
 
 
 /* *Comment into comment /* Comment 2. */ 

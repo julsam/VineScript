@@ -291,7 +291,7 @@ namespace VineScript.Compiler
                     Visit(context.elseStmt());
                 }
             }
-            AddToPassageResult("<< endif >>");
+            AddToPassageResult("<< end >>");
             return ifvalue;
         }
 
@@ -343,7 +343,7 @@ namespace VineScript.Compiler
             Console.WriteLine("FOR CONTROL STATEMENT");
             AddToPassageResult("<< for >>");
             VineVar forvalue = Visit(context.forStmt());
-            AddToPassageResult("<< endfor >>");
+            AddToPassageResult("<< end >>");
             return null;
         }
 

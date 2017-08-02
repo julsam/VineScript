@@ -160,7 +160,7 @@ namespace VineScript.Test
         {
             VineStory story = new VineStory();
             story.vars["var"] = 42;
-            string input = "<< if $var == 0 >>Zero<< elif $var == 42>>Forty Two<< else >>Other<< endif >>";
+            string input = "<< if $var == 0 >>Zero<< elif $var == 42>>Forty Two<< else >>Other<< end >>";
             string output = story.RunPassage(input).text;
             Assert.AreEqual("Forty Two", output);
         }

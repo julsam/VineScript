@@ -4,6 +4,6 @@
 		{{i}} is even!
 	<< else >>
 		{{i}} is odd!
-	<< endif >>
-<< endfor >>
+	<< end >>
+<< end >>
 /* comment */

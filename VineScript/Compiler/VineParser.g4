@@ -118,7 +118,7 @@ block
     :   NL              # directOutput
     |   text            # directOutput  // foobar
     |   display         # noOutput      // {{ foo }}
-    |   controlStmt     # noOutput      // << if true >> something << endif >>
+    |   controlStmt     # noOutput      // << open stmt >> something << close stmt >>
     |   simpleStmtBlock # directOutput  // << set foo = 0 >>
     |   link            # noOutput      // [[label|link]]
     |   BLOCK_COMMENT   # directOutput  // /* comment */
@@ -217,7 +217,7 @@ elseStmt
     ;
 
 endIfStmt
-    :   '<<' 'endif' '>>'
+    :   '<<' 'end' '>>'
     ;
 
 forStmt
@@ -227,7 +227,7 @@ forStmt
     ;
 
 endForStmt
-    :   '<<' 'endfor' '>>'
+    :   '<<' 'end' '>>'
     ;
 
 expr
@@ -315,7 +315,7 @@ reservedKeyword
     :   IF
     |   ELIF
     |   ELSE
-    |   ENDIF
+    |   END
     |   KW_AND
     |   KW_OR
     |   TO
