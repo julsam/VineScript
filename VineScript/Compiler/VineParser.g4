@@ -185,8 +185,8 @@ funcCall
     ;
 
 newSequence
-    :   LBRACK expressionList? RBRACK     # newArray
-    |   LBRACE keyValueList? RBRACE # newDict
+    :   LBRACK expressionList? RBRACK   # newArray
+    |   LBRACE keyValueList? RBRACE     # newDict
     // array errors:
     |   LBRACK expressionList? RBRACK { NotifyErrorListeners("Too many brackets"); } RBRACK # newArrayError
     |   LBRACK expressionList?     { NotifyErrorListeners("Missing closing ']'"); }   # newArrayError
