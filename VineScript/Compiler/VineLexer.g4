@@ -167,7 +167,7 @@ ILLEGAL_STRING: '"' (ESC | .)*? '"' ;
 // Unicode whitespace https://github.com/antlr/antlr4/blob/master/doc/lexer-rules.md
 // list : https://en.wikipedia.org/wiki/Whitespace_character
 //UNICODE_WS : [\p{White_Space}] -> skip; // match all Unicode whitespace
-WS:     [ \t\f]+ -> channel(HIDDEN) ;
+WS:     [ \t\f\r\n]+ -> channel(HIDDEN) ;
 
 VAR_PREFIX: '$' ;
 
