@@ -166,6 +166,9 @@ assignList
 assign
     :   variable (sequenceAccess)* op=('='|'to') expr
     |   variable (sequenceAccess)* op=('+='|'-='|'*='|'/='|'%=') expr
+    |   variable (sequenceAccess)* { NotifyErrorListeners("Missing assignation operator"); } expr
+    |   variable (sequenceAccess)* op=('='|'to'|'+='|'-='|'*='|'/='|'%=')
+        { NotifyErrorListeners("Missing expression after the operator"); }
     ;
 
 unsetStmt
