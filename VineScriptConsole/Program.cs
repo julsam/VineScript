@@ -17,7 +17,8 @@ namespace VineScriptConsole
                     string input = br.ReadLine();
                     while (!string.IsNullOrWhiteSpace(input))
                     {
-                        story.Eval(input);
+                        string output = story.Eval(input);
+                        Console.WriteLine(output);
                         input = br.ReadLine();
                     }
                 }
