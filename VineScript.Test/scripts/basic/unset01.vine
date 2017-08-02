@@ -1,0 +1,2 @@
+﻿<< set a = 1, b = 2.0, c = "foo", d = true, e = null, f = [1, 2, 3], g = { "k1": 1, "k2": 2 } >>
+<< unset a, b, c, d, e, f, g, e >>

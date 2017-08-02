@@ -109,7 +109,7 @@ namespace VineScript.Test
         [TestMethod]
         public void CmpFileSet03()
         {
-            
+            // +=, -=, *=, /=, %=
             StreamReader input = File.OpenText("scripts/basic/set03.vine");
             StreamReader cmp = File.OpenText("scripts/basic/set03.cmp");
 
@@ -136,6 +136,23 @@ namespace VineScript.Test
             Assert.AreEqual("Foo", story.vars["v5"]);
             Assert.AreEqual(3, story.vars["v6"][2]);
             Assert.AreEqual(4, story.vars["v7"]["a"]);
+        }
+
+        [TestMethod]
+        public void Unset01()
+        {
+            string input = File.OpenText("scripts/basic/unset01.vine").ReadToEnd();
+            
+            VineStory story = new VineStory();
+            string output = story.RunPassage(input).text;
+            
+            Assert.IsFalse(story.vars.ContainsKey("a"));
+            Assert.IsFalse(story.vars.ContainsKey("b"));
+            Assert.IsFalse(story.vars.ContainsKey("c"));
+            Assert.IsFalse(story.vars.ContainsKey("d"));
+            Assert.IsFalse(story.vars.ContainsKey("e"));
+            Assert.IsFalse(story.vars.ContainsKey("f"));
+            Assert.IsFalse(story.vars.ContainsKey("g"));
         }
 
         [TestMethod]
