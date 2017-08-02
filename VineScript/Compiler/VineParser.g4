@@ -320,6 +320,7 @@ reservedKeyword
     |   KW_OR
     |   TO
     |   SET
+    |   UNSET
     |   TRUE
     |   FALSE
     |   NULL
