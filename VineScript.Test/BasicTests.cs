@@ -107,6 +107,38 @@ namespace VineScript.Test
         }
 
         [TestMethod]
+        public void CmpFileSet03()
+        {
+            
+            StreamReader input = File.OpenText("scripts/basic/set03.vine");
+            StreamReader cmp = File.OpenText("scripts/basic/set03.cmp");
+
+            VineStory story = new VineStory();
+            string output = story.RunPassage(input).text;
+
+            Assert.AreEqual(cmp.ReadToEnd(), output);
+        }
+
+        [TestMethod]
+        public void AssignList()
+        {
+            VineStory story = new VineStory();
+
+            string input = "<< set v1 = 12, v2 = 2.0, v3 = true, v4 = null, ";
+            input += "v5 = \"Foo\", v6 = [1,2,3], v7 = {\"a\": 4, \"b\": 5 } >>";
+
+            string output = story.RunPassage(input).text;
+            
+            Assert.AreEqual(12, story.vars["v1"]);
+            Assert.AreEqual(2.0, story.vars["v2"]);
+            Assert.AreEqual(true, story.vars["v3"]);
+            Assert.AreEqual(VineVar.NULL, story.vars["v4"]);
+            Assert.AreEqual("Foo", story.vars["v5"]);
+            Assert.AreEqual(3, story.vars["v6"][2]);
+            Assert.AreEqual(4, story.vars["v7"]["a"]);
+        }
+
+        [TestMethod]
         public void SimpleIf()
         {
             VineStory story = new VineStory();
@@ -223,25 +255,6 @@ namespace VineScript.Test
             Assert.AreEqual("Three", story.vars["dict"]["c"]);
             Assert.AreEqual(false, story.vars["dict"]["d"]);
             Assert.AreEqual(VineVar.NULL, story.vars["dict"]["e"]);
-        }
-
-        [TestMethod]
-        public void AssignList()
-        {
-            VineStory story = new VineStory();
-
-            string input = "<< set v1 = 12, v2 = 2.0, v3 = true, v4 = null, ";
-            input += "v5 = \"Foo\", v6 = [1,2,3], v7 = {\"a\": 4, \"b\": 5 } >>";
-
-            string output = story.RunPassage(input).text;
-            
-            Assert.AreEqual(12, story.vars["v1"]);
-            Assert.AreEqual(2.0, story.vars["v2"]);
-            Assert.AreEqual(true, story.vars["v3"]);
-            Assert.AreEqual(VineVar.NULL, story.vars["v4"]);
-            Assert.AreEqual("Foo", story.vars["v5"]);
-            Assert.AreEqual(3, story.vars["v6"][2]);
-            Assert.AreEqual(4, story.vars["v7"]["a"]);
         }
 
         [TestMethod]
