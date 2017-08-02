@@ -601,11 +601,6 @@ namespace VineScript.Compiler
             return vineDict;
         }
 
-        private void Visit(TerminalNodeImpl node)
-        {
-            Console.WriteLine(" Visit Symbol={0}", node.Symbol.Text);
-        }
-
         private VineVar GetValueInSequence(VineVar startingVar, 
             VineParser.SequenceAccessContext[] sequences)
         {
