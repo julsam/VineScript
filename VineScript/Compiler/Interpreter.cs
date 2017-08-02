@@ -23,15 +23,16 @@ namespace VineScript.Compiler
 
         public PassageResult Execute(string vinecode)
         {
+#if GRAMMAR_VERBOSE
             // Print input
             Console.WriteLine(vinecode);
 
+            // Start timer
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+#endif
             // Pre processing
             // Remove whitespace at the start & end of each lines
             string wsRemoved = Compiler.Util.RemoveWhiteSpace(vinecode);
-
-            // Start timer
-            var watch = System.Diagnostics.Stopwatch.StartNew();
 
             // Compile Vine code
             var vineCompiler = new VineCompiler();
@@ -41,9 +42,6 @@ namespace VineScript.Compiler
             var formatCompiler = new VineFormatterCompiler();
             string formatOutput = formatCompiler.FormatLines(parsedResult.text);
             
-            // Print before trimming whitespace
-            Console.WriteLine(formatOutput);
-
             // Post processing
             // Unescape user input
             string finalOutput = Util.UnescapeVineSequence(formatOutput);
@@ -53,6 +51,7 @@ namespace VineScript.Compiler
 
             PassageResult finalResult = new PassageResult(finalOutput, parsedResult.links);
 
+#if GRAMMAR_VERBOSE
             // Stop timer
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
@@ -65,7 +64,7 @@ namespace VineScript.Compiler
 
             // Timer output
             Console.WriteLine(string.Format("Time elapsed: {0} ms", elapsedMs.ToString("0.00")));
-            
+#endif
             return finalResult;
         }
 
@@ -76,14 +75,16 @@ namespace VineScript.Compiler
 
         public string Eval(string expr)
         {
+#if GRAMMAR_VERBOSE
             // Print input
             Console.WriteLine(expr);
 
-            // Remove whitespace at the start & end of each lines
-            string wsRemoved = Compiler.Util.RemoveWhiteSpace(expr);
-
             // Start timer
             var watch = System.Diagnostics.Stopwatch.StartNew();
+#endif
+
+            // Remove whitespace at the start & end of each lines
+            string wsRemoved = Compiler.Util.RemoveWhiteSpace(expr);
 
             // Compile Vine code
             var vineCompiler = new VineCompiler();
@@ -93,18 +94,12 @@ namespace VineScript.Compiler
             // TODO: keep only one space between words
             string finalOutput = Compiler.Util.RemoveWhiteSpace(parsed);
 
+#if GRAMMAR_VERBOSE
             // Stop timer
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
-            
-            // Finale output
-            Console.WriteLine("### FORMATTED OUTPUT: ###");
-            if (finalOutput.Length > 0)
-                Console.WriteLine(finalOutput);
-            Console.WriteLine("### END ###");
-
-            // Timer output
             Console.WriteLine(string.Format("Time elapsed: {0} ms", elapsedMs.ToString("0.00")));
+#endif
 
             return finalOutput;
         }

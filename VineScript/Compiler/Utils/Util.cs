@@ -9,7 +9,8 @@ namespace VineScript.Compiler
 {
     public class Util
     {
-        public static string PrettyPrint(string stringTree)
+#if GRAMMAR_TREE
+        internal static string PrettyGrammarTree(string stringTree)
         {
             string output = "";
             string str = stringTree.Replace(" (", "\n(");
@@ -30,10 +31,13 @@ namespace VineScript.Compiler
             }
             return output;
         }
+#endif
 
         public static string RemoveWhiteSpace(string text)
         {
+#if GRAMMAR_VERBOSE
             Console.WriteLine("--- WS removed: ---");
+#endif
             string wsRemoved = "";
             string tmp = text.Replace("\r", "");
             string[] lines = tmp.Split(new char[] { '\n'});
@@ -45,8 +49,10 @@ namespace VineScript.Compiler
                     wsRemoved += Environment.NewLine;
                 }
             }
+#if GRAMMAR_VERBOSE
             Console.WriteLine(wsRemoved);
             Console.WriteLine("--- ---");
+#endif
             return wsRemoved;
         }
 

@@ -31,6 +31,7 @@ namespace VineScript.Compiler
 
         private ParserRuleContext lastEnteredContext;
 
+#if GRAMMAR_VERBOSE
         public void printOutput()
         {
             Console.WriteLine("### EVALUATE OUTPUT: ###");
@@ -39,7 +40,8 @@ namespace VineScript.Compiler
             }
             Console.WriteLine("### END ###");
         }
-        
+#endif
+
         private void AddToPassageResult(string text)
         {
             passageResult.text += text;

@@ -34,13 +34,17 @@ namespace VineScript.Compiler
             Setup(text);
 
             var tree = parser.passage();
-            
-            Console.WriteLine(Util.PrettyPrint(tree.ToStringTree(parser)));
-            
+
+#if GRAMMAR_TREE || GRAMMAR_VERBOSE
+            Console.WriteLine(Util.PrettyGrammarTree(tree.ToStringTree(parser)));
+#endif
+
             var eval = new VineVisitor(story);
             eval.Visit(tree);
-            eval.printOutput();
 
+#if GRAMMAR_VERBOSE
+            eval.printOutput();
+#endif
             return eval.passageResult;
         }
 
@@ -56,12 +60,17 @@ namespace VineScript.Compiler
             parser.ParseMode = VineParser.EVineParseMode.EVAL_EXPR;
 
             var tree = parser.passage();
-            
-            Console.WriteLine(Util.PrettyPrint(tree.ToStringTree(parser)));
-            
+
+#if GRAMMAR_TREE || GRAMMAR_VERBOSE
+            Console.WriteLine(Util.PrettyGrammarTree(tree.ToStringTree(parser)));
+#endif
+
             var eval = new VineVisitor(story);
             eval.Visit(tree);
+
+#if GRAMMAR_VERBOSE
             eval.printOutput();
+#endif
 
             return eval.passageResult.text;
         }

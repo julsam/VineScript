@@ -27,13 +27,17 @@ namespace VineScript.Compiler.Formatter
             Setup(text);
 
             var tree = parser.passage();
-            
-            Console.WriteLine(Util.PrettyPrint(tree.ToStringTree(parser)));
+
+#if GRAMMAR_TREE || GRAMMAR_VERBOSE
+            Console.WriteLine(Util.PrettyGrammarTree(tree.ToStringTree(parser)));
+#endif
             
             visitor = new VineFormatterVisitor();
             visitor.Visit(tree);
-            visitor.printOutput();
 
+#if GRAMMAR_VERBOSE
+            visitor.printOutput();
+#endif
             return visitor.output;
         }
 

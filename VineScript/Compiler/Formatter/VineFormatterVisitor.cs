@@ -7,7 +7,8 @@ namespace VineScript.Compiler.Formatter
     class VineFormatterVisitor : VineFormatterBaseVisitor<string> 
     {
         public string output { get; private set; } = "";
-        
+
+#if GRAMMAR_VERBOSE
         public void printOutput()
         {
             Console.WriteLine("### FORMATTER OUTPUT: ###");
@@ -16,6 +17,7 @@ namespace VineScript.Compiler.Formatter
             }
             Console.WriteLine("### END ###");
         }
+#endif
 
         public override string VisitContainsText(VineFormatterParser.ContainsTextContext context)
         {
