@@ -325,19 +325,3 @@ reservedKeyword
     |   FALSE
     |   NULL
     ;
-
-/*
-variable:   ID                      # variableValue
-        |   variable Dot variable   # combinedVariable
-//        |   ID[expr]+    
-        ;
-
-postfixExpression
-    :   atom //should be ID (and maybe allow STRING too)
-    |   postfixExpression '[' expr ']'
-    |   postfixExpression '(' argumentExpressionList? ')'
-    |   postfixExpression '.' ID                            # attributeLookup 
-    |   postfixExpression '++'
-    |   postfixExpression '--'
-    ;
-*/
