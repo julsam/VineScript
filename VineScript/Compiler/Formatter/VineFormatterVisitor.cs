@@ -11,7 +11,9 @@ namespace VineScript.Compiler.Formatter
         public void printOutput()
         {
             Console.WriteLine("### FORMATTER OUTPUT: ###");
-            Console.WriteLine(output);
+            if (output.Length > 0) {
+                Console.WriteLine(output);
+            }
             Console.WriteLine("### END ###");
         }
 
@@ -51,6 +53,17 @@ namespace VineScript.Compiler.Formatter
         }
 
         /// <summary>
+        /// Special case where whitespaces are between 2 blocks. By doing nothing
+        /// the line will be fully removed.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public override string VisitConsumeFullLine(VineFormatterParser.ConsumeFullLineContext context)
+        {
+            return null;
+        }
+
+        /// <summary>
         /// Print line with line return.
         /// </summary>
         /// <param name="context"></param>
@@ -61,7 +74,7 @@ namespace VineScript.Compiler.Formatter
             for (int i = 0; i < context.children.Count; i++) {
                 text += Visit(context.children[i]);
             }
-            output += text + Environment.NewLine;
+            output += text + "\n";
             return null;
         }
     }

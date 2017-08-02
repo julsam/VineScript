@@ -45,7 +45,7 @@ namespace VineScriptTest
             PassageResult result = story.RunPassage(input);
 
             
-            Assert.AreEqual("not need to escape this >]-<", result.links[0].title);
+            Assert.AreEqual("not need to escape this \\ >]-<", result.links[0].title);
             Assert.AreEqual("link", result.links[0].passageName);
 
             Assert.AreEqual("my [[own]] title", result.links[1].title);

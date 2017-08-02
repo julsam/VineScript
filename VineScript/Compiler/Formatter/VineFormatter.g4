@@ -10,6 +10,7 @@ passage
 
 line
     :   NL EOF                              # printLn
+    |   block+ WS block+ (NL|EOF)           # consumeFullLine
     |   containsText NL (block NL?)+ EOF    # consumeLn // foobar {{ $var }}\n  <= consume \n
                                                         // << endif >>EOF       <= consume this line
     |   containsText NL                     # printLn
@@ -26,6 +27,7 @@ containsText
 
 text
     :   TXT
+    |   WS
     //|   DISPLAY
     ;
 
@@ -51,7 +53,7 @@ BLOCK_COMMENT:  '/*' .*? '*/' ;
 LINE_COMMENT:   '//' ~[\r\n]* ;
 
 NL:     '\r'? '\n' ;
-WS:     [ \t]+ -> skip ;
+WS:     [ \t]+ ;
 
 TXT_SPECIALS
     :   [\\/<>{}] -> type(TXT)
