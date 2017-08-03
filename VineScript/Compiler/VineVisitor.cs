@@ -10,7 +10,7 @@ using System.Runtime.ExceptionServices;
 
 namespace VineScript.Compiler
 {
-    internal class VineRuntimeException : Exception
+    public class VineRuntimeException : Exception
     {
         ParserRuleContext runtimeContext;
 
