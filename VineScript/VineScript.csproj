@@ -47,12 +47,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compiler\Utils\ExceptionUtil.cs" />
+    <Compile Include="Compiler\ErrorListeners\SyntaxCheckErrorListener.cs" />
+    <Compile Include="Compiler\ErrorListeners\SyntaxErrorReport.cs" />
+    <Compile Include="Compiler\ErrorListeners\VineParseException.cs" />
+    <Compile Include="Compiler\Analyzer.cs" />
+    <Compile Include="Compiler\Utils\UnderlineErrorFormatter.cs" />
     <Compile Include="Compiler\Formatter\VineFormatterCompiler.cs" />
     <Compile Include="Compiler\Formatter\VineFormatterVisitor.cs" />
     <Compile Include="Compiler\VineCompiler.cs" />
     <Compile Include="Compiler\ErrorListeners\LexerErrorListener.cs" />
-    <Compile Include="Compiler\ErrorListeners\ParserErrorListener.cs" />
     <Compile Include="Compiler\Utils\Util.cs" />
     <Compile Include="Compiler\VineVisitor.cs" />
     <Compile Include="Core\FunctionsCollection.cs" />
@@ -64,7 +67,7 @@
     <Compile Include="Core\VineVarUtils.cs" />
     <Compile Include="Compiler\Interpreter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Compiler\ErrorListeners\UnderlineErrorListener.cs" />
+    <Compile Include="Compiler\ErrorListeners\ParserErrorListener.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>

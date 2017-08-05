@@ -12,28 +12,70 @@ namespace VineScript.Compiler
         private VineLexer lexer;
         private CommonTokenStream tokens;
         private VineParser parser;
-        private ParserErrorListener errorListener;
-        private UnderlineErrorListener underlineListener;
+        private ParserRuleContext tree;
+        private bool parsed = false;
 
-        private void Setup(string text)
+        private void Setup(string vinecode)
         {
-            inputStream = new AntlrInputStream(text);
+            inputStream = new AntlrInputStream(vinecode);
             lexer = new VineLexer(inputStream);
             tokens = new CommonTokenStream(lexer);
             parser = new VineParser(tokens);
-            
-            //errorListener = new ParserErrorListener();
-            underlineListener = new UnderlineErrorListener();
-            parser.RemoveErrorListeners(); // remove ConsoleErrorListener
-            //parser.AddErrorListener(errorListener);
-            parser.AddErrorListener(underlineListener);
         }
 
-        public PassageResult Parse(string text, VineStory story)
+        public static List<SyntaxErrorReport> CheckSyntax(string vinecode)
         {
-            Setup(text);
+            VineCompiler compiler = new VineCompiler();
+            compiler.Setup(vinecode);
+            
+            // Setup error listener
+            compiler.parser.RemoveErrorListeners();
+            SyntaxCheckErrorListener errorListener = new SyntaxCheckErrorListener();
+            compiler.parser.AddErrorListener(errorListener);
 
-            var tree = parser.passage();
+            // Parse
+            compiler.parser.BuildParseTree = false;
+            compiler.parser.passage();
+
+            return errorListener.errorReports;
+        }
+
+        public void ParseWithSyntaxCheck(string vinecode)
+        {
+            // Setup error listener
+            parser.RemoveErrorListeners();
+            SyntaxCheckErrorListener syntaxCheckErrorListener = new SyntaxCheckErrorListener();
+            parser.AddErrorListener(syntaxCheckErrorListener);
+
+            // Parse
+            parser.BuildParseTree = true;
+            tree = parser.passage();
+            parsed = true;
+
+            // Check for errors
+            if (syntaxCheckErrorListener.errorReports.Count > 0) {
+                throw new VineParseException(syntaxCheckErrorListener.errorReports);
+            }
+        }
+
+        public void Parse(string vinecode)
+        {
+            // Setup error listener
+            parser.RemoveErrorListeners(); // remove ConsoleErrorListener
+            ParserErrorListener underlineErrorListener = new ParserErrorListener();
+            parser.AddErrorListener(underlineErrorListener);
+
+            // Parse
+            parser.BuildParseTree = true;
+            tree = parser.passage();
+            parsed = true;
+        }
+
+        public PassageResult Compile(string vinecode, VineStory story, bool checkSyntax=true)
+        {
+            Setup(vinecode);
+
+            ParseWithSyntaxCheck(vinecode);
 
 #if GRAMMAR_TREE || GRAMMAR_VERBOSE
             Console.WriteLine(Util.PrettyGrammarTree(tree.ToStringTree(parser)));

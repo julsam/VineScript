@@ -36,11 +36,11 @@ namespace VineScript.Compiler
 
             // Compile Vine code
             var vineCompiler = new VineCompiler();
-            PassageResult parsedResult = vineCompiler.Parse(wsRemoved, story);
+            PassageResult compiledResult = vineCompiler.Compile(wsRemoved, story);
 
             // Formatting lines (removes empty lines containing Vine code)
             var formatCompiler = new VineFormatterCompiler();
-            string formatOutput = formatCompiler.FormatLines(parsedResult.text);
+            string formatOutput = formatCompiler.FormatLines(compiledResult.text);
             
             // Post processing
             // Unescape user input
@@ -49,7 +49,7 @@ namespace VineScript.Compiler
             // TODO: keep only one space between words
             finalOutput = Compiler.Util.RemoveWhiteSpace(finalOutput);
 
-            PassageResult finalResult = new PassageResult(finalOutput, parsedResult.links);
+            PassageResult finalResult = new PassageResult(finalOutput, compiledResult.links);
 
 #if GRAMMAR_VERBOSE
             // Stop timer

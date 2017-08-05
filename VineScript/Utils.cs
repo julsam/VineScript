@@ -79,5 +79,15 @@ namespace VineScript
                 }
             }
         }
+
+        public static string UppercaseFirst(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s)) {
+                return string.Empty;
+            }
+            char[] a = s.ToCharArray();
+            a[0] = char.ToUpper(a[0]);
+            return new string(a);
+        }
     }
 }

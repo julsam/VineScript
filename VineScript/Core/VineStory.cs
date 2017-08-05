@@ -47,10 +47,10 @@ namespace VineScript.Core
             return RunPassage(istream.ReadToEnd());
         }
 
-        public PassageResult RunPassage(string text)
+        public PassageResult RunPassage(string vinecode)
         {
             currentPassage = new PassageResult();
-            currentPassage = interpreter.Execute(text);
+            currentPassage = interpreter.Execute(vinecode);
             history.Add(currentPassage);
             return currentPassage;
         }

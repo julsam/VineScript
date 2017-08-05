@@ -15,13 +15,13 @@ namespace VineScript.Compiler
         ParserRuleContext runtimeContext;
 
         public VineRuntimeException(string msg, ParserRuleContext ctx)
-            : base(ExceptionUtil.UnderlineError(typeof(VineRuntimeException), msg, ctx))
+            : base(RuntimeErrorFormatter.Format(typeof(VineRuntimeException), msg, ctx))
         {
             runtimeContext = ctx;
         }
 
         public VineRuntimeException(string msg, Exception innerException)
-            : base(msg, innerException) { }
+            : base(msg, innerException) {}
     }
 
     class VineVisitor : VineParserBaseVisitor<VineVar> 
@@ -81,7 +81,7 @@ namespace VineScript.Compiler
             }
             catch (Exception e) {
                 // Reformat the error message
-                string formatted = ExceptionUtil.UnderlineError(
+                string formatted = RuntimeErrorFormatter.Format(
                     e.GetType(),
                     e.Message,
                     lastEnteredContext

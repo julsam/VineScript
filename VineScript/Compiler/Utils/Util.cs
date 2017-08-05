@@ -56,28 +56,28 @@ namespace VineScript.Compiler
             return wsRemoved;
         }
 
-        public static string Escape(string input)
+        public static string EscapeWhiteSpace(string input)
         {
-            StringBuilder literal = new StringBuilder(input.Length);
+            StringBuilder escaped = new StringBuilder(input.Length);
             foreach (var c in input)
             {
                 switch (c)
                 {
-                    case '\'': literal.Append(@"\'"); break;
-                    case '\"': literal.Append(@"\"""); break;
-                    case '\\': literal.Append(@"\\"); break;
-                    case '\0': literal.Append(@"\0"); break; // Null (0x00)
-                    case '\a': literal.Append(@"\a"); break; // Bell (0x07)
-                    case '\b': literal.Append(@"\b"); break; // Backspace (0x08)
-                    case '\f': literal.Append(@"\f"); break; // From Feed (0x0C)
-                    case '\n': literal.Append(@"\n"); break;
-                    case '\r': literal.Append(@"\r"); break;
-                    case '\t': literal.Append(@"\t"); break;
-                    case '\v': literal.Append(@"\v"); break; // Vertical Tab, used internally (0x0B)
-                    default: literal.Append(c); break;
+                    //case '\'': escaped.Append(@"\'"); break;
+                    //case '\"': escaped.Append(@"\"""); break;
+                    //case '\\': escaped.Append(@"\\"); break;
+                    case '\0': escaped.Append(@"\0"); break; // Null (0x00)
+                    case '\a': escaped.Append(@"\a"); break; // Bell (0x07)
+                    case '\b': escaped.Append(@"\b"); break; // Backspace (0x08)
+                    case '\f': escaped.Append(@"\f"); break; // From Feed (0x0C)
+                    case '\n': escaped.Append(@"\n"); break;
+                    case '\r': escaped.Append(@"\r"); break;
+                    case '\t': escaped.Append(@"\t"); break;
+                    case '\v': escaped.Append(@"\v"); break; // Vertical Tab, used internally (0x0B)
+                    default: escaped.Append(c); break;
                 }
             }
-            return literal.ToString();
+            return escaped.ToString();
         }
 
         /// <summary>

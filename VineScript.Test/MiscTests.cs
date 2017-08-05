@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VineScript;
 using VineScript.Core;
+using VineScript.Compiler;
 
 namespace VineScript.Test
 {
@@ -12,7 +13,7 @@ namespace VineScript.Test
     public class MiscTests
     {
         [TestMethod]
-        [ExpectedException(typeof(Exception))]
+        [ExpectedException(typeof(VineParseException))]
         public void IllegalCharacter01()
         {
             // the first character (sometimes displayed as a whitespace)
@@ -21,8 +22,9 @@ namespace VineScript.Test
             VineStory story = new VineStory();
             string output = story.RunPassage(input).text;
         }
+
         [TestMethod]
-        [ExpectedException(typeof(Exception))]
+        [ExpectedException(typeof(VineParseException))]
         public void IllegalCharacter02()
         {
             // the first character (sometimes displayed as a whitespace)
