@@ -43,7 +43,7 @@ NL:     '\r'? '\n' ;
 //              and then used by LinesFormatter to keep those '\n' in place
 //  * '\u001E': marks the start of the output of the display command
 //  * '\u001F': marks the end of the output of the display command
-RESERVED_CHARS: [\u000B\u001E\u001F]+ ;
+RESERVED_CHARS: [\u000B\u001E\u001F] ;
 
 TXT_SPECIALS
     :   [\\/[<{] -> type(TXT)
@@ -149,7 +149,7 @@ FALSE:      'false' ;
 NULL:       'null' ;
 
 
-STRING:         '"' (ESC | ~('\u000B'))*? '"' ;
+STRING:         '"' (ESC | ~[\u000B\u001E\u001F])*? '"' ;
 
 // catches strings containing '\u000B':
 ILLEGAL_STRING: '"' (ESC | .)*? '"' ;

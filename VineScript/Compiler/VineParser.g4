@@ -86,15 +86,51 @@ stmt:    conditionStmt
 
     // by default, parse as a single passage
     public EVineParseMode ParseMode = EVineParseMode.SINGLE_PASSAGE;
-
-    private static readonly string errReservedChar =
-        "'\u000B' (vertical tabulation) is a reserved character and is not allowed to be used!";
     
-    private static readonly string errVarDefReservedKw =
+    internal static readonly string errReservedChar000B =
+        "'\\v' (vertical tabulation) is a reserved character and is not allowed to be used!";
+    internal static readonly string errReservedChar001E =
+        "'\\u001E' (record separator) is a reserved character and is not allowed to be used!";
+    internal static readonly string errReservedChar001F =
+        "'\\u001F' (unit separator) is a reserved character and is not allowed to be used!";
+    
+    internal static readonly string errVarDefReservedKw =
         "Can't use a reserved keyword as a variable name!";
         
-    private static readonly string errMissingSpaceBefore = "Missing space before ";
-    private static readonly string errMissingSpaceAfter = "Missing space after ";
+    internal static readonly string errMissingSpaceBefore = "Missing space before ";
+    internal static readonly string errMissingSpaceAfter = "Missing space after ";
+    
+    private void ReservedChar()
+    {
+        var token = _input.Lt(-1);
+        ReservedChar(token);
+    }
+
+    private void ReservedChar(IToken token)
+    {
+        string msg = "";
+        if (token.Text.Contains("\u000B")) {
+            msg = errReservedChar000B;
+        }
+        else if (token.Text.Contains("\u001E")) {
+            msg = errReservedChar001E;
+        }
+        else if (token.Text.Contains("\u001F")) {
+            msg = errReservedChar001F;
+        }
+        NotifyPrev(token, msg);
+    }
+
+    private void NotifyPrev(string msg)
+    {
+        var token = _input.Lt(-1);
+        NotifyPrev(token, msg);
+    }
+
+    private void NotifyPrev(IToken token, string msg)
+    {
+        NotifyErrorListeners(token, msg, null);
+    }
 }
 options { tokenVocab=VineLexer; }
 
@@ -104,8 +140,8 @@ options { tokenVocab=VineLexer; }
 passage
     :   {ParseMode == EVineParseMode.EVAL_EXPR}? evalExprMode NL? EOF // active only if we're expr parse mode
     |   block* NL? EOF
-    |   { NotifyErrorListeners(errReservedChar); } RESERVED_CHARS 
-    //|   { NotifyErrorListeners("Error char"); } ERROR_CHAR
+    |   RESERVED_CHARS { ReservedChar(); }
+    |   { NotifyErrorListeners("Error char"); } ERROR_CHAR
     ;
 
 evalExprMode
@@ -123,6 +159,7 @@ block
     |   link            # noOutput      // [[label|link]]
     |   BLOCK_COMMENT   # directOutput  // /* comment */
     |   LINE_COMMENT    # directOutput  // // inline comment
+    |   RESERVED_CHARS { ReservedChar(); } # blockError
     ;
 
 text
@@ -272,7 +309,7 @@ atom:   INT             # intAtom
 
 stringLiteral
     :   STRING
-    |   { NotifyErrorListeners(errReservedChar); } ILLEGAL_STRING
+    |   ILLEGAL_STRING { ReservedChar(); }
     ;
 
 // Variable access. The '$' prefix is optional

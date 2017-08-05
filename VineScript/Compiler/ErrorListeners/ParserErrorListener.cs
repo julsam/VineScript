@@ -8,9 +8,10 @@ namespace VineScript.Compiler
         public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, 
             int line, int column, string errmsg, RecognitionException e)
         {
-            throw new VineParseException(
-                recognizer, offendingSymbol, line, column,  Utils.UppercaseFirst(errmsg), e
+            var report = new SyntaxErrorReport(
+                "<stdin>", recognizer, offendingSymbol, line, column, errmsg
             );
+            throw new VineParseException(report);
         }
     }
 }

@@ -7,16 +7,20 @@ namespace VineScript.Compiler
 {
     public class VineParseException : Exception
     {
+        public SyntaxErrorReport errorReport { get; }
+
         public VineParseException(SyntaxErrorReport report)
-            : base(ParserErrorFormatter.Format(report)) {}
+            : base(ParserErrorFormatter.Format(report))
+        {
+            errorReport = report;
+        }
 
         public VineParseException(List<SyntaxErrorReport> reports)
-            : base(ParserErrorFormatter.Format(reports)) {}
-
-        public VineParseException(IRecognizer recognizer, IToken offendingSymbol, 
-            int line, int column, string msg, RecognitionException e)
-            : base(ParserErrorFormatter.Format(recognizer, offendingSymbol, line, column, msg), e)
-        {}
-
+            : base(ParserErrorFormatter.Format(reports))
+        {
+            if (reports.Count > 0) {
+                errorReport = reports[0];
+            }
+        }
     }
 }
