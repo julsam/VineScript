@@ -11,11 +11,13 @@ namespace VineScript.Compiler
     {                
         private VineStory story;
         private VineCompiler vineCompiler;
+        private VineFormatterCompiler formatCompiler;
 
         public Interpreter(VineStory story)
         {
             this.story = story;
             this.vineCompiler = new VineCompiler(story);
+            this.formatCompiler = new VineFormatterCompiler();
         }
 
         public PassageResult Execute(StreamReader istream, string sourceName)
@@ -40,8 +42,7 @@ namespace VineScript.Compiler
             PassageResult compiledResult = vineCompiler.Compile(wsRemoved, sourceName);
 
             // Formatting lines (removes empty lines containing Vine code)
-            var formatCompiler = new VineFormatterCompiler();
-            string formatOutput = formatCompiler.FormatLines(compiledResult.text);
+            string formatOutput = formatCompiler.FormatLines(compiledResult.text, sourceName);
             
             // Post processing
             // Unescape user input

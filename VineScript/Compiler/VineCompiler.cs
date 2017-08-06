@@ -23,6 +23,7 @@ namespace VineScript.Compiler
         {
             this.story = story;
         }
+
         private void Init(string vinecode, string sourceName)
         {
             if (!inited)
