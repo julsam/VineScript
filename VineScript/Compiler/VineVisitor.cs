@@ -7,6 +7,7 @@ using VineScript.Core;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using System.Text;
 
 namespace VineScript.Compiler
 {
@@ -139,11 +140,11 @@ namespace VineScript.Compiler
         public override VineVar VisitLinkContent(VineParser.LinkContentContext context)
         {
             lastEnteredContext = context;
-            string result = "";
+            StringBuilder result = new StringBuilder();
             foreach (var item in context.LINK_TEXT()) {
-                result += item.GetText();
+                result.Append(item.GetText());
             }
-            return result;
+            return result.ToString();
         }
 
         public override VineVar VisitDisplay(VineParser.DisplayContext context)
