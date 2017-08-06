@@ -40,6 +40,7 @@ namespace VineScript.Compiler
             var fullmsg = string.Format(
                 "{0} in {1} at line {2}:{3}: {4}", 
                 "Syntax error", "<stdin>", line, column, errmsg
+                "Syntax error", sourceName, line, column, errmsg
             );
             
             this.SourceName = sourceName;
