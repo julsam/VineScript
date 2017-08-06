@@ -237,8 +237,8 @@ newSequence
 
 // if, elif, else, for, end
 controlStmt
-    :   ifStmt (elifStmt)* (elseStmt)? endIfStmt    # ifCtrlStmt
-    |   forStmt endForStmt                          # forCtrlStmt
+    :   ifStmt (elifStmt)* (elseStmt)? endStmt  # ifCtrlStmt
+    |   forStmt endStmt                         # forCtrlStmt
     ;
 
 ifStmt
@@ -253,7 +253,7 @@ elseStmt
     :   '<<' 'else' '>>' block*
     ;
 
-endIfStmt
+endStmt
     :   '<<' 'end' '>>'
     ;
 
@@ -261,10 +261,6 @@ forStmt
     :   '<<' 'for' wsa variable 'in' expr '>>' NL? block*
     //|   '<<' 'for' wsa key=variable ',' val=variable 'in' expr '>>' NL? block*
     |   '<<' 'for' wsa variable 'in' interval '>>' NL? block*
-    ;
-
-endForStmt
-    :   '<<' 'end' '>>'
     ;
 
 expr
