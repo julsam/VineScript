@@ -176,5 +176,42 @@ namespace VineScript.Test
                 Assert.Fail();
             }
         }
+
+        [TestMethod]
+        public void MissingSpaceSeparator01()
+        {
+            // 4 Errors here:
+            string input = "<< if!false and 1<2and 0==0or!true >>FOO<<end>>";
+
+            //  1. space after 'if'
+            string errMsg1 = VineParser.errMissingSpaceAfter + "'if'";
+            //  2. space between '2' and 'and'
+            string errMsg2 = VineParser.errMissingSpaceBefore + "'and'";
+            //  3. space between '0' and 'or'
+            string errMsg3 = VineParser.errMissingSpaceBefore + "'or'";
+            //  4. space after 'or'
+            string errMsg4 = VineParser.errMissingSpaceAfter + "'or'";
+
+            VineStory story = new VineStory();
+            try {
+                story.RunPassage(input);
+                Assert.Fail();
+            } catch (VineParseException e) {
+                if (e.errorReports[0].ErrorMessage != errMsg1) {
+                    Assert.Fail();
+                }
+                if (e.errorReports[1].ErrorMessage != errMsg2) {
+                    Assert.Fail();
+                }
+                if (e.errorReports[2].ErrorMessage != errMsg3) {
+                    Assert.Fail();
+                }
+                if (e.errorReports[3].ErrorMessage != errMsg4) {
+                    Assert.Fail();
+                }
+            } catch (Exception) {
+                Assert.Fail();
+            }
+        }
     }
 }

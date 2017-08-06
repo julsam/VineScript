@@ -335,7 +335,7 @@ interval
 wsb // before
     :   {
         if (_input.Get(_input.Index - 1).Type != WS) {
-            string offendingSymbol = _input.Get(_input.Index - 1).Text;
+            string offendingSymbol = _input.Get(_input.Index).Text;
             NotifyErrorListeners(errMissingSpaceBefore + "'" + offendingSymbol + "'");
         }
         }

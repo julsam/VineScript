@@ -8,7 +8,7 @@ using VineScript.Core;
 
 namespace VineScript.Compiler
 {
-    public struct SyntaxErrorReport
+    public class SyntaxErrorReport
     {
         public string SourceName { get; set; }
         public int Line { get; set; }
