@@ -17,6 +17,7 @@ namespace VineScript.Compiler
         private VineParser parser;
         private ParserRuleContext tree;
         private bool parsed = false;
+        private bool inited = false;
 
         public VineCompiler(VineStory story)
         {
@@ -24,11 +25,23 @@ namespace VineScript.Compiler
         }
         private void Init(string vinecode, string sourceName)
         {
-            inputStream = new AntlrInputStream(vinecode);
-            inputStream.name = sourceName;
-            lexer = new VineLexer(inputStream);
-            tokens = new CommonTokenStream(lexer);
-            parser = new VineParser(tokens);
+            if (!inited)
+            {
+                inputStream = new AntlrInputStream(vinecode);
+                inputStream.name = sourceName;
+                lexer = new VineLexer(inputStream);
+                tokens = new CommonTokenStream(lexer);
+                parser = new VineParser(tokens);
+                inited = true;
+            }
+            else
+            {
+                inputStream = new AntlrInputStream(vinecode);
+                inputStream.name = sourceName;
+                lexer.SetInputStream(inputStream);
+                tokens = new CommonTokenStream(lexer);
+                parser.SetInputStream(tokens);
+            }
             parsed = false;
         }
 
