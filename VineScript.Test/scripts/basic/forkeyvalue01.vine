@@ -1,0 +1,11 @@
+﻿<< for k, v in {"abc": 1, "def": true, "ghv": "foo"} >>
+	key: {{ k }}, value: {{ v }}
+<< end >>
+---
+<< for k, v in [5,6,7] >>
+	key: {{ k }}, value: {{ v }}
+<< end >>
+---
+<< for k, v in "FooBar" >>
+	key: {{ k }}, value: {{ v }}
+<< end >>

@@ -351,6 +351,18 @@ namespace VineScript.Test
         }
 
         [TestMethod]
+        public void CmpFileForKeyValue01()
+        {
+            StreamReader input = File.OpenText("scripts/basic/forkeyvalue01.vine");
+            StreamReader cmp = File.OpenText("scripts/basic/forkeyvalue01.cmp");
+
+            VineStory story = new VineStory();
+            string output = story.RunPassage(input).text;
+
+            Assert.AreEqual(cmp.ReadToEnd(), output);
+        }
+
+        [TestMethod]
         public void CmpFileInterval01()
         {
             StreamReader input = File.OpenText("scripts/basic/interval01.vine");
