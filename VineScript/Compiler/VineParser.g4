@@ -263,9 +263,9 @@ endStmt
     ;
 
 forStmt
-    :   '<<' 'for' wsa variable 'in' expr '>>' NL? block*
-    //|   '<<' 'for' wsa key=variable ',' val=variable 'in' expr '>>' NL? block*
-    |   '<<' 'for' wsa variable 'in' interval '>>' NL? block*
+    :   '<<' 'for' wsa variable 'in' expr '>>' NL? block*                       # forValueStmt
+    |   '<<' 'for' wsa variable 'in' interval '>>' NL? block*                   # forValueStmt
+    |   '<<' 'for' wsa key=variable ',' val=variable 'in' expr '>>' NL? block*  # forKeyValueStmt
     ;
 
 expr

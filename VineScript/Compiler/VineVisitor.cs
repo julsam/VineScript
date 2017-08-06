@@ -328,7 +328,7 @@ namespace VineScript.Compiler
             return null;
         }
 
-        public override VineVar VisitForStmt(VineParser.ForStmtContext context)
+        public override VineVar VisitForValueStmt(VineParser.ForValueStmtContext context)
         {
             lastEnteredContext = context;
             
@@ -341,12 +341,11 @@ namespace VineScript.Compiler
             }
 
             if (iterator.IsArray || iterator.IsDict || iterator.IsString) {
-                var tempForVar = Visit(context.variable());
-                string id = tempForVar.name;
+                var tempVarValue = Visit(context.variable());
+                string id = tempVarValue.name;
                 foreach (var item in iterator) {
                     if (iterator.IsDict) {
-                        story.vars[id] =
-                            ((KeyValuePair<string, VineVar>)item).Value;
+                        story.vars[id] = ((KeyValuePair<string, VineVar>)item).Value;
                     } else {
                         story.vars[id] = item as VineVar;
                     }
@@ -355,6 +354,53 @@ namespace VineScript.Compiler
                     }
                 }
             } else {
+                throw new VineRuntimeException(
+                    "'" + iterator.type + "' is not iterable", context
+                );
+            }
+
+            return null;
+        }
+
+        public override VineVar VisitForKeyValueStmt(VineParser.ForKeyValueStmtContext context)
+        {
+            lastEnteredContext = context;
+            
+            VineVar iterator = null;
+            if (context.expr() != null) {
+                iterator = Visit(context.expr());
+            }
+            
+            // TODO scope with temp vars
+            VineVar tempVarKey = Visit(context.key);
+            VineVar tempVarValue = Visit(context.val);
+            string keyId = tempVarKey.name;
+            string valueId = tempVarValue.name;
+
+            if (iterator.IsDict)
+            {
+                foreach (var item in iterator) {
+                    story.vars[keyId] = ((KeyValuePair<string, VineVar>)item).Key;
+                    story.vars[valueId] = ((KeyValuePair<string, VineVar>)item).Value;
+                    for (int i = 0; i < context.block().Length; i++) {
+                        Visit(context.block(i));
+                    }
+                }
+            }
+            else if (iterator.IsArray || iterator.IsString)
+            {
+                story.vars[keyId] = 0;
+                foreach (var item in iterator)
+                {
+                    story.vars[valueId] = item as VineVar;
+                    for (int i = 0; i < context.block().Length; i++) {
+                        Visit(context.block(i));
+                    }
+                    story.vars[keyId] += 1;
+                }
+            }
+            else
+            {
                 throw new VineRuntimeException(
                     "'" + iterator.type + "' is not iterable", context
                 );
