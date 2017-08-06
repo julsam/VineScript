@@ -68,12 +68,16 @@ LINK_ESC
 
 RLINK: ']]' -> popMode ;
 
+LINK_RESERVED_CHARS: [\u000B\u001E\u001F] ;
+
 LINK_PIPE:  '|' ;
 LINK_LEFT:  '<-' ;
 LINK_RIGHT: '->' ;
 
 LINK_TEXT_SPECIALS: [\\<\]-] -> type(LINK_TEXT) ;
-LINK_TEXT:  ~[\\|<\]\r\n-]+ ;
+LINK_TEXT:  ~[\\|<\]\r\n\u000B\u001E\u001F-]+ ;
+
+LinkMode_ERROR_CHAR: ERROR_CHAR -> type(ERROR_CHAR) ;
 
 // ----------------------------------------------------------
 mode VineCode;

@@ -8,9 +8,6 @@ using VineScript.Core;
 
 namespace VineScriptTest
 {
-    /// <summary>
-    /// Summary description for UnitTest1
-    /// </summary>
     [TestClass]
     public class LinksTest
     {
@@ -22,7 +19,6 @@ namespace VineScriptTest
             VineStory story = new VineStory();
             PassageResult result = story.RunPassage(input);
 
-            
             Assert.AreEqual("my title 01", result.links[0].title);
             Assert.AreEqual("mylink01", result.links[0].passageName);
 
