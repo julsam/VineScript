@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compiler\ErrorListeners\BailErrorListener.cs" />
     <Compile Include="Compiler\ErrorListeners\SyntaxCheckErrorListener.cs" />
     <Compile Include="Compiler\ErrorListeners\SyntaxErrorReport.cs" />
     <Compile Include="Compiler\ErrorListeners\VineParseException.cs" />
