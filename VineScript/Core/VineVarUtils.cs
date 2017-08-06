@@ -79,5 +79,43 @@ namespace VineScript.Core
             }
             return converted;
         }
+
+        public static string Stringify(List<VineVar> list)
+        {
+            StringBuilder str = new StringBuilder();
+            str.Append("[");
+            for (int i = 0; i < list.Count; i++) {
+                if (list[i].IsString) {
+                    str.AppendFormat("\"{0}\"", list[i].ToString());
+                } else {
+                    str.Append(list[i].ToString());
+                }
+                if (i < list.Count - 1) {
+                    str.Append(", ");
+                }
+            }
+            str.Append("]");
+            return str.ToString();
+        }
+
+        public static string Stringify(Dictionary<string, VineVar> dict)
+        {
+            StringBuilder str = new StringBuilder();
+            str.Append("{");
+            for (int i = 0; i < dict.Count; i++) {
+                var el = dict.ElementAt(i);
+                str.AppendFormat("\"{0}\": ", el.Key);
+                if (el.Value.IsString) {
+                    str.AppendFormat("\"{0}\"", el.Value.ToString());
+                } else {
+                    str.Append(el.Value.ToString());
+                }
+                if (i < dict.Count - 1) {
+                    str.Append(", ");
+                }
+            }
+            str.Append("}");
+            return str.ToString();
+        }
     }
 }

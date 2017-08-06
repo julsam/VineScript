@@ -260,35 +260,9 @@ namespace VineScript.Core
                     case Type.Null:
                         return "";
                     case Type.Array:
-                        string arr_str = "[";
-                        for (int i = 0; i < arrayValue.Count; i++) {
-                            if (arrayValue[i].IsString) {
-                                arr_str += string.Format("\"{0}\"", arrayValue[i].ToString());
-                            } else {
-                                arr_str += arrayValue[i].ToString();
-                            }
-                            if (i < arrayValue.Count - 1) {
-                                arr_str += ", ";
-                            }
-                        }
-                        arr_str += "]";
-                        return arr_str;
+                        return VineVarUtils.Stringify(arrayValue);
                     case Type.Dict:
-                        string dm_str = "{";
-                        for (int i = 0; i < dictValue.Count; i++) {
-                            var el = dictValue.ElementAt(i);
-                            dm_str += string.Format("\"{0}\": ", el.Key);
-                            if (el.Value.IsString) {
-                                dm_str += string.Format("\"{0}\"", el.Value.ToString());
-                            } else {
-                                dm_str += el.Value.ToString();
-                            }
-                            if (i < dictValue.Count - 1) {
-                                dm_str += ", ";
-                            }
-                        }
-                        dm_str += "}";
-                        return dm_str;
+                        return VineVarUtils.Stringify(dictValue);
                     default:
                         throw new VineConversionException(type, Type.String);
                 }
