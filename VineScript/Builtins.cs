@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using VineScript.Core;
 
-namespace VineScript
+namespace VineScript.Core
 {
-    public class Utils
+    public class Builtins
     {
         public static List<int> Range(int stop)
         {

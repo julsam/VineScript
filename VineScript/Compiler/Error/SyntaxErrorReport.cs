@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
+using VineScript.Core;
 
 namespace VineScript.Compiler
 {
@@ -35,7 +36,7 @@ namespace VineScript.Compiler
             var underline = UnderlineErrorFormatter.Underline(
                 recognizer, offendingSymbol, line, column
             );
-            errmsg = Utils.UppercaseFirst(errmsg);
+            errmsg = Builtins.UppercaseFirst(errmsg);
             var fullmsg = string.Format(
                 "{0} in {1} at line {2}:{3}: {4}", 
                 "Syntax error", "<stdin>", line, column, errmsg

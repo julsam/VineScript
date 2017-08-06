@@ -372,7 +372,7 @@ namespace VineScript.Compiler
                 throw new VineRuntimeException("Intervals must be integers values", context);
             }
             var interval = new VineVar(VineVarUtils.ConvertList(
-                VineScript.Utils.Range(left.AsInt, right.AsInt)
+                Builtins.Range(left.AsInt, right.AsInt)
             ));
             return interval;
         }

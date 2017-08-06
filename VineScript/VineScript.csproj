@@ -69,7 +69,7 @@
     <Compile Include="Compiler\Interpreter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Compiler\Error\ParserErrorListener.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="Builtins.cs" />
   </ItemGroup>
   <ItemGroup>
     <Antlr4 Include="Compiler\VineLexer.g4">
