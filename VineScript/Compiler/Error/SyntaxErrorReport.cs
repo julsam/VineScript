@@ -38,8 +38,7 @@ namespace VineScript.Compiler
             );
             errmsg = Builtins.UppercaseFirst(errmsg);
             var fullmsg = string.Format(
-                "{0} in {1} at line {2}:{3}: {4}", 
-                "Syntax error", "<stdin>", line, column, errmsg
+                "{0} in {1}:{2}:{3}: {4}", 
                 "Syntax error", sourceName, line, column, errmsg
             );
             
