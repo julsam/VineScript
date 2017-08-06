@@ -74,7 +74,11 @@ namespace VineScript.Core
     {
         public static bool strictMode = false;
 
-        public static readonly VineVar NULL = new VineVar(null);
+        public static VineVar NULL {
+            get {
+                return new VineVar(null);
+            }
+        }
         //public static VineVar newInt {
         //    get {
         //        return new VineVar(0);
