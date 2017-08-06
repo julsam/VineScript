@@ -42,27 +42,27 @@ namespace VineScript.Core
             }
         }
 
-        public PassageResult RunPassage(StreamReader istream)
+        public PassageResult RunPassage(StreamReader istream, string sourceName="<stdin>")
         {
-            return RunPassage(istream.ReadToEnd());
+            return RunPassage(istream.ReadToEnd(), sourceName);
         }
 
-        public PassageResult RunPassage(string vinecode)
+        public PassageResult RunPassage(string vinecode, string sourceName="<stdin>")
         {
             currentPassage = new PassageResult();
-            currentPassage = interpreter.Execute(vinecode);
+            currentPassage = interpreter.Execute(vinecode, sourceName);
             history.Add(currentPassage);
             return currentPassage;
         }
 
-        public string Eval(StreamReader istream)
+        public string Eval(StreamReader istream, string sourceName="<stdin>")
         {
-            return interpreter.Eval(istream);
+            return interpreter.Eval(istream, sourceName);
         }
 
-        public string Eval(string expr)
+        public string Eval(string expr, string sourceName="<stdin>")
         {
-            return interpreter.Eval(expr);
+            return interpreter.Eval(expr, sourceName);
         }
 
         public void Register(IVineLibrary lib)

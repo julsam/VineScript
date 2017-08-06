@@ -55,17 +55,15 @@ namespace VineScript.Compiler
             string input = ctx.Start.InputStream.ToString();
             int start = ctx.Start.StartIndex;
             int stop = ctx.Stop.StopIndex;
+            string srcName = ctx.start.InputStream.SourceName;
 
             string underline = Underline(
                 input, line, column, start, stop
             );
             
-            // TODO if the input is a file, show the filename in the error msg.
-            // instead of <stdin>. Could use the Passage's name too, if they
-            // ever get one
             return string.Format(
                 "{0}: {1}\n  File \"{2}\", in line {3}:{4} at '{5}':\n{6}", 
-                cls.Name, msg, "<stdin>", line, column, ctx.GetText(), underline
+                cls.Name, msg, srcName, line, column, ctx.GetText(), underline
             );
         }
     }
@@ -79,11 +77,12 @@ namespace VineScript.Compiler
             string input = tokens.TokenSource.InputStream.ToString();
             int start = offendingSymbol.StartIndex;
             int stop = offendingSymbol.StopIndex;
+            string srcName = tokens.TokenSource.InputStream.SourceName;
 
             string underline = Underline(
                 input, line, column, start, stop
             );
-            return Format(line, column, offendingSymbol, underline, errmsg);
+            return Format(srcName, line, column, offendingSymbol, underline, errmsg);
         }
 
         public static string Format(List<SyntaxErrorReport> reports)
@@ -101,7 +100,7 @@ namespace VineScript.Compiler
                     }
                 }
             }
-            return Format(reports[0].Line, reports[0].Column,
+            return Format(reports[0].SourceName, reports[0].Line, reports[0].Column,
                 reports[0].OffendingSymbol, reports[0].Underline,
                 reports[0].ErrorMessage + "\n\n" + errorListing.ToString()
             );
@@ -110,18 +109,18 @@ namespace VineScript.Compiler
 
         public static string Format(SyntaxErrorReport report)
         {
-            return Format(report.Line, report.Column,
+            return Format(report.SourceName, report.Line, report.Column,
                 report.OffendingSymbol, report.Underline, report.ErrorMessage
             );
         }
 
-        public static string Format(int line, int column,
+        public static string Format(string sourceName, int line, int column,
             IToken offendingSymbol, string underline, string errmsg)
         {
             return string.Format(
-                "[Parser] Invalid Expression '{0}' at line {1}:{2}:\n{3}\n{4}",
+                "[Parser] Invalid Expression '{0}' at {1} {2}:{3}:\n{4}\n{5}",
                 Compiler.Util.EscapeWhiteSpace(offendingSymbol.Text),
-                line, column, underline, errmsg
+                sourceName, line, column, underline, errmsg
             );
         }
     }

@@ -9,7 +9,7 @@ namespace VineScript.Compiler
 {
     public struct SyntaxErrorReport
     {
-        public string Filename { get; set; }
+        public string SourceName { get; set; }
         public int Line { get; set; }
         public int Column { get; set; }
         public IToken OffendingSymbol { get; set; }
@@ -17,10 +17,10 @@ namespace VineScript.Compiler
         public string ErrorMessage { get; set; }
         public string Underline { get; set; }
 
-        public SyntaxErrorReport(string filename, int line, int column, 
+        public SyntaxErrorReport(string sourceName, int line, int column, 
             IToken offendingSymbol, string message, string errorMsg, string underline)
         {
-            this.Filename = filename;
+            this.SourceName = sourceName;
             this.Line = line;
             this.Column = column;
             this.OffendingSymbol = offendingSymbol;
@@ -29,7 +29,7 @@ namespace VineScript.Compiler
             this.Underline = underline;
         }
 
-        public SyntaxErrorReport(string filename, IRecognizer recognizer,
+        public SyntaxErrorReport(string sourceName, IRecognizer recognizer,
             IToken offendingSymbol, int line, int column, string errmsg)
         {
             var underline = UnderlineErrorFormatter.Underline(
@@ -41,7 +41,7 @@ namespace VineScript.Compiler
                 "Syntax error", "<stdin>", line, column, errmsg
             );
             
-            this.Filename = "";
+            this.SourceName = sourceName;
             this.Line = line;
             this.Column = column;
             this.OffendingSymbol = offendingSymbol;

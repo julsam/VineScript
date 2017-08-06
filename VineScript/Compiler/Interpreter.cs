@@ -10,18 +10,20 @@ namespace VineScript.Compiler
     public class Interpreter
     {                
         private VineStory story;
+        private VineCompiler vineCompiler;
 
         public Interpreter(VineStory story)
         {
             this.story = story;
+            this.vineCompiler = new VineCompiler(story);
         }
 
-        public PassageResult Execute(StreamReader istream)
+        public PassageResult Execute(StreamReader istream, string sourceName)
         {
-            return Execute(istream.ReadToEnd());
+            return Execute(istream.ReadToEnd(), sourceName);
         }
 
-        public PassageResult Execute(string vinecode)
+        public PassageResult Execute(string vinecode, string sourceName)
         {
 #if GRAMMAR_VERBOSE
             // Print input
@@ -35,8 +37,7 @@ namespace VineScript.Compiler
             string wsRemoved = Compiler.Util.RemoveWhiteSpace(vinecode);
 
             // Compile Vine code
-            var vineCompiler = new VineCompiler();
-            PassageResult compiledResult = vineCompiler.Compile(wsRemoved, story);
+            PassageResult compiledResult = vineCompiler.Compile(wsRemoved, sourceName);
 
             // Formatting lines (removes empty lines containing Vine code)
             var formatCompiler = new VineFormatterCompiler();
@@ -68,12 +69,12 @@ namespace VineScript.Compiler
             return finalResult;
         }
 
-        public string Eval(StreamReader istream)
+        public string Eval(StreamReader istream, string sourceName)
         {
-            return Eval(istream.ReadToEnd());
+            return Eval(istream.ReadToEnd(), sourceName);
         }
 
-        public string Eval(string expr)
+        public string Eval(string expr, string sourceName)
         {
 #if GRAMMAR_VERBOSE
             // Print input
@@ -87,8 +88,7 @@ namespace VineScript.Compiler
             string wsRemoved = Compiler.Util.RemoveWhiteSpace(expr);
 
             // Compile Vine code
-            var vineCompiler = new VineCompiler();
-            string parsed = vineCompiler.Eval(wsRemoved, story);
+            string parsed = vineCompiler.Eval(wsRemoved, sourceName);
             
             // Remove whitespace at the start & end of each lines (again)
             // TODO: keep only one space between words

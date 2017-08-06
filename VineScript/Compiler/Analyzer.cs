@@ -9,6 +9,13 @@ namespace VineScript.Compiler
 {
     public class Analyzer
     {
+        private VineStory story;
+
+        public Analyzer(VineStory story)
+        {
+            this.story = story;
+        }
+
         public List<SyntaxErrorReport> CheckSyntaxFile(string filename)
         {
             // if file exists:
@@ -23,7 +30,7 @@ namespace VineScript.Compiler
             throw new NotImplementedException();
         }
 
-        public List<SyntaxErrorReport> CheckSyntaxDirectory(string dir, string ext=".vine")
+        public List<SyntaxErrorReport> CheckSyntaxDirectory(string dir, string ext="vine")
         {
             // if directory exists:
             // list = "dir/*.vine"
@@ -32,9 +39,10 @@ namespace VineScript.Compiler
             throw new NotImplementedException();
         }
 
-        public List<SyntaxErrorReport> CheckSyntax(string vinecode)
+        public List<SyntaxErrorReport> CheckSyntax(string vinecode, string sourceName)
         {
-            var errors = VineCompiler.CheckSyntax(vinecode);
+            VineCompiler vineCompiler = new VineCompiler(story);
+            var errors = vineCompiler.CheckSyntax(vinecode, sourceName);
             Console.WriteLine("Errors found: " + errors.Count);
             if (errors.Count > 0) {
                 Console.WriteLine(ParserErrorFormatter.Format(errors));

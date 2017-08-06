@@ -11,8 +11,9 @@ namespace VineScript.Compiler
         public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, 
             int line, int column, string errmsg, RecognitionException e)
         {
+            var src = recognizer.InputStream.SourceName;
             errorReports.Add(new SyntaxErrorReport(
-                "<stdin>", recognizer, offendingSymbol, line, column, errmsg
+                src, recognizer, offendingSymbol, line, column, errmsg
             ));
         }
     }

@@ -10,6 +10,7 @@ namespace VineScript.Compiler
 {
     public class VineCompiler
     {
+        private VineStory story;
         private AntlrInputStream inputStream;
         private VineLexer lexer;
         private CommonTokenStream tokens;
@@ -17,50 +18,33 @@ namespace VineScript.Compiler
         private ParserRuleContext tree;
         private bool parsed = false;
 
-        private void Setup(string vinecode)
+        public VineCompiler(VineStory story)
+        {
+            this.story = story;
+        }
+        private void Init(string vinecode, string sourceName)
         {
             inputStream = new AntlrInputStream(vinecode);
+            inputStream.name = sourceName;
             lexer = new VineLexer(inputStream);
             tokens = new CommonTokenStream(lexer);
             parser = new VineParser(tokens);
+            parsed = false;
         }
 
-        public static List<SyntaxErrorReport> CheckSyntax(string vinecode)
+        public List<SyntaxErrorReport> CheckSyntax(string vinecode, string sourceName)
         {
-            VineCompiler compiler = new VineCompiler();
-            compiler.Setup(vinecode);
-            
-            // Setup error listener
-            compiler.parser.RemoveErrorListeners();
-            SyntaxCheckErrorListener errorListener = new SyntaxCheckErrorListener();
-            compiler.parser.AddErrorListener(errorListener);
+            Init(vinecode, sourceName);
 
             // Parse
-            compiler.parser.BuildParseTree = false;
-            compiler.parser.passage();
+            parser.BuildParseTree = false;
+            var errorReports = Parse(vinecode);
+            //compiler.parser.AddParseListener();
 
-            return errorListener.errorReports;
+            return errorReports;
         }
 
-        public void ParseWithSyntaxCheck(string vinecode)
-        {
-            // Setup error listener
-            parser.RemoveErrorListeners();
-            SyntaxCheckErrorListener syntaxCheckErrorListener = new SyntaxCheckErrorListener();
-            parser.AddErrorListener(syntaxCheckErrorListener);
-
-            // Parse
-            parser.BuildParseTree = true;
-            tree = parser.passage();
-            parsed = true;
-
-            // Check for errors
-            if (syntaxCheckErrorListener.errorReports.Count > 0) {
-                throw new VineParseException(syntaxCheckErrorListener.errorReports);
-            }
-        }
-
-        private List<SyntaxErrorReport> OptimizedParse(string vinecode)
+        private List<SyntaxErrorReport> Parse(string vinecode)
         {
             // try with simpler/faster SLL(*)
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
@@ -102,24 +86,19 @@ namespace VineScript.Compiler
             }
         }
 
-        public void Parse(string vinecode)
-        {
-            // Setup error listener
-            parser.RemoveErrorListeners(); // remove ConsoleErrorListener
-            ParserErrorListener underlineErrorListener = new ParserErrorListener();
-            parser.AddErrorListener(underlineErrorListener);
 
-            // Parse
+        public PassageResult Compile(string vinecode, string sourceName, bool checkSyntax=true)
+        {
+            Init(vinecode, sourceName);
+            
             parser.BuildParseTree = true;
-            tree = parser.passage();
-            parsed = true;
-        }
+            var errorReports = Parse(vinecode);
 
-        public PassageResult Compile(string vinecode, VineStory story, bool checkSyntax=true)
-        {
-            Setup(vinecode);
-
-            ParseWithSyntaxCheck(vinecode);
+            // Check for errors
+            //parser.NumberOfSyntaxErrors
+            if (errorReports?.Count > 0) {
+                throw new VineParseException(errorReports);
+            }
 
 #if GRAMMAR_TREE || GRAMMAR_VERBOSE
             Console.WriteLine(Util.PrettyGrammarTree(tree.ToStringTree(parser)));
@@ -134,10 +113,10 @@ namespace VineScript.Compiler
             return eval.passageResult;
         }
 
-        public string Eval(string expr, VineStory story)
+        public string Eval(string expr, string sourceName)
         {
             // TODO need a specific Error Listener for this mode?
-            Setup(expr);
+            Init(expr, sourceName);
 
             // Go to "code" mode directly, we don't want to evaluate text
             lexer.PushMode(VineLexer.VineCode);

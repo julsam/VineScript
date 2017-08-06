@@ -32,7 +32,7 @@ namespace VineScriptConsole
                     {
                         string inputFile = args[0];
                         StreamReader istream = File.OpenText(inputFile);
-                        PassageResult result = story.RunPassage(istream);
+                        PassageResult result = story.RunPassage(istream, Path.GetFileName(inputFile));
 
                         // Final output
                         Console.WriteLine("### FINAL OUTPUT: ###");
