@@ -240,6 +240,10 @@ newSequence
 controlStmt
     :   ifStmt (elifStmt)* (elseStmt)? endStmt  # ifCtrlStmt
     |   forStmt endStmt                         # forCtrlStmt
+    |   ifStmt (elifStmt)* (elseStmt)? {NotifyErrorListeners("'if' statement is missing a closing '<< end >>'");} # ctrlStmtError
+    |   ifStmt (elifStmt)* elseStmt {NotifyErrorListeners("Too many 'else' statements");} (elseStmt)+  # ctrlStmtError
+    |   ifStmt {NotifyErrorListeners("Misplaced '<< else >>'");} (elseStmt) (elifStmt)+ endStmt # ctrlStmtError
+    |   forStmt {NotifyErrorListeners("'for' statement is missing a closing '<< end >>'");}  # ctrlStmtError
     ;
 
 ifStmt
