@@ -188,12 +188,14 @@ namespace VineScript.Compiler
             string id = variable.name;
             VineVar value = Visit(context.expr());
 
-            if (story.vars.ContainsKey(id)) { 
+#if DEBUG
+            if (story.vars.ContainsKey(id)) {
                 Console.WriteLine(string.Format(
                     "[!!] Warning, the variable '{0}' is already defined!"
                     + " Its value '{1}' will be overridden.", id, value
                 ));
             }
+#endif
 
             if (context.sequenceAccess() != null && context.sequenceAccess().Count() > 0)
             {
@@ -256,9 +258,9 @@ namespace VineScript.Compiler
             return value;
         }
 
-        #endregion Commands
+#endregion Commands
 
-        #region Control Statements
+#region Control Statements
 
         public override VineVar VisitIfCtrlStmt(VineParser.IfCtrlStmtContext context)
         {
@@ -375,9 +377,9 @@ namespace VineScript.Compiler
             return interval;
         }
 
-        #endregion Control Statements
+#endregion Control Statements
 
-        #region Expr
+#region Expr
 
         public override VineVar VisitUnaryExpr(VineParser.UnaryExprContext context)
         {
@@ -508,9 +510,9 @@ namespace VineScript.Compiler
             return value;
         }
         
-        #endregion Expr
+#endregion Expr
 
-        #region Atom
+#region Atom
 
         public override VineVar VisitIntAtom(VineParser.IntAtomContext context)
         {
@@ -536,7 +538,7 @@ namespace VineScript.Compiler
             return VineVar.NULL;
         }
 
-        #endregion Atom
+#endregion Atom
 
         public override VineVar VisitStringLiteral(VineParser.StringLiteralContext context)
         {
