@@ -17,6 +17,36 @@ using System;
     //            return base.Emit();
     //    }
     //}
+
+    public static bool IsVerbatim(string str)
+    {
+        if (ToVerbatim(str) != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static string ToVerbatim(string str)
+    {
+        try {
+            while ( str.Length >= 3 && str.StartsWith("`") && str.EndsWith("`")
+                &&  !Util.IsCharAtEscaped(str, str.Length - 1)
+                ) {
+                str = str.Remove(0, 1);
+                str = str.Remove(str.Length - 1, 1);
+            }
+            if  (   str.Length > 0 && !str.StartsWith("`")
+                &&  (!str.EndsWith("`") ||  Util.IsCharAtEscaped(str, str.Length - 1))
+                ) {
+                return str;
+            } else {
+                return null;
+            }
+        } catch (Exception) {
+            throw new Exception("Internal error VineLexer:ToVerbatim");
+        }
+    }
 }
 
 /*
@@ -25,9 +55,14 @@ using System;
 
 // Default "mode" (text mode) : Everything that is outside of tags '{{ .. }}', '<< .. >>' or '/* .. */'
 
-// Escaped commands, eg: \<< this is text >> 
+// Escape '\' or '`'. For every char added here, must think to add it to UnescapeVineSequence too
 TXT_ESC
-    :   ('\\\\' | '\\{' | '\\/' | '\\<' | '\\[') -> type(TXT)
+    :   ('\\\\' | '\\`') -> type(TXT)
+    ;
+
+// Escape everything between ` ` or `` `` or ``` ```, etc
+VERBATIM
+    :   ('`')+ ALL_BUT_RESERVED_CHARS*? ('`')+ {IsVerbatim(Text)}?
     ;
 
 LOUTPUT:        '{{' -> pushMode(VineCode) ;
@@ -48,9 +83,9 @@ fragment
 ALL_BUT_RESERVED_CHARS: ~[\u000B\u001E\u001F] ;
 
 TXT_SPECIALS
-    :   [\\/[<{] -> type(TXT)
+    :   [`\\<\[{/] -> type(TXT)
     ;
-TXT :   ~[\\<\[{/\r\n\u000B\u001E\u001F]+
+TXT :   ~[`\\<\[{/\r\n\u000B\u001E\u001F]+
     ;
 
 ERROR_CHAR: . ;

@@ -3,6 +3,8 @@ grammar VineFormatter;
 /*
  * Parser Rules
  */
+@lexer::members {
+}
 
 passage
     :   line* EOF?
@@ -26,9 +28,14 @@ containsText
     ;
 
 text
-    :   TXT
+    :   DISPLAY
+    |   TXT
     |   WS
-    //|   DISPLAY
+    |   verbatim
+    ;
+
+verbatim
+    :   VERBATIM
     ;
 
 block
@@ -41,11 +48,15 @@ block
  * Lexer Rules
  */
 
-//DISPLAY: '\u001E' .*? '\u001F' ; // output of {{ ... }}
-
-// Escaped commands, eg: \<< this is text >> 
+DISPLAY: '\u001E' .*? '\u001F' ; // output of {{ ... }}
+ 
 TXT_ESC
-    :   ('\\\\' | '\\{' | '\\/' | '\\<') -> type(TXT)
+    :   ('\\\\' | '\\`') -> type(TXT)
+    ;
+
+// Escape everything between ` ` or `` `` or ``` ```, etc
+VERBATIM
+    :   ('`')+ .*? ('`')+ {VineLexer.IsVerbatim(Text)}?
     ;
 
 STMT:           '<<' .*? '>>' ;
@@ -56,9 +67,9 @@ NL:     '\r'? '\n' ;
 WS:     [ \t]+ ;
 
 TXT_SPECIALS
-    :   [\\/<>{}] -> type(TXT)
+    :   [`\\/<>{}] -> type(TXT)
     ;
-TXT :   ~[\\<>{}/\r\n]+
+TXT :   ~[`\\<>{}/\r\n\u001E\u001F]+
     ;
 
 ERROR_CHAR: . ;

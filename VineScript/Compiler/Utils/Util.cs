@@ -107,6 +107,8 @@ namespace VineScript.Compiler
                     continue;
                 }
 
+                // doesn't escape anything if it's between start/end of display command
+                // just add it as it is to the output
                 if (in_display_output) {
                     unescaped.Append(current);
                     continue;
@@ -123,14 +125,8 @@ namespace VineScript.Compiler
                     string unescaped_current = "";
                     switch (current)
                     {
-                        case '{':
-                        case '}':
-                        case '<':
-                        case '>':
-                        case '[':
-                        case ']':
-                        case '/':
                         case '\\':
+                        case '`':
                             unescaped_current = current.ToString();
                             break;
                         default:
@@ -146,6 +142,37 @@ namespace VineScript.Compiler
                 }
             }
             return unescaped.ToString();
+        }
+        
+        /// <summary>
+        /// Is the char at the given index escaped? Escape character is '\'
+        /// </summary>
+        /// <param name="input">String to check</param>
+        /// <param name="index">Index of the character to check in str</param>
+        /// <returns>true if the char is escaped, else false.</returns>
+        public static bool IsCharAtEscaped(string input, int index)
+        {
+            bool escape = false;
+
+            for (int i = 0; i <= index; i++)
+            {
+                char current = input[i];
+
+                if (!escape && current == '\\' && i < input.Length - 1) {
+                    // next char is marked to be escaped
+                    escape = true;
+                    continue;
+                }
+                
+                if (escape)
+                {
+                    if (index == i) {
+                        return true;
+                    }
+                    escape = false;
+                }
+            }
+            return false;
         }
 
         /// <summary>

@@ -152,6 +152,7 @@ evalExprMode
 // The output will then be parsed by the formatter.
 block
     :   NL              # directOutput
+    |   VERBATIM        # directOutput
     |   text            # directOutput  // foobar
     |   display         # noOutput      // {{ foo }}
     |   controlStmt     # noOutput      // << open stmt >> something << close stmt >>

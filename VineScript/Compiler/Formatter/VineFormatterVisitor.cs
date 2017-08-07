@@ -34,7 +34,11 @@ namespace VineScript.Compiler.Formatter
             //Console.WriteLine("Text " + context.GetText());
             string text = "";
             for (int i = 0; i < context.children.Count; i++) {
-                text += context.children[i].GetText();
+                if (context.verbatim() != null) {
+                    text += Visit(context.verbatim());
+                } else {
+                    text += context.children[i].GetText();
+                }
             }
             return text;
         }
@@ -78,6 +82,17 @@ namespace VineScript.Compiler.Formatter
             }
             output += text + "\n";
             return null;
+        }
+        
+        public override string VisitVerbatim(VineFormatterParser.VerbatimContext context)
+        {
+            string str = context.VERBATIM().GetText();
+            string unescaped = VineLexer.ToVerbatim(str);
+            if (unescaped != null) {
+                return unescaped;
+            } else {
+                throw new Exception("Failed to escape " + str);
+            }
         }
     }
 }
