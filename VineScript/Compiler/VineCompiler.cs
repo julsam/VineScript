@@ -100,7 +100,6 @@ namespace VineScript.Compiler
             }
         }
 
-
         public PassageResult Compile(string vinecode, string sourceName, bool checkSyntax=true)
         {
             Init(vinecode, sourceName);

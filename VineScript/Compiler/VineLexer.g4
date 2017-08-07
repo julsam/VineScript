@@ -206,13 +206,14 @@ ILLEGAL_STRING: '"' .*? '"' ;
 //WS_CODE:    [ \f\t\v\u00a0\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+ -> skip ;
 // Unicode whitespace https://github.com/antlr/antlr4/blob/master/doc/lexer-rules.md
 // list : https://en.wikipedia.org/wiki/Whitespace_character
-//UNICODE_WS : [\p{White_Space}] -> skip; // match all Unicode whitespace
+//UNICODE_WS : [\p{White_Space}] -> skip; // match all Unicode whitespace (only in Antlr >= 4.6)
 WS:     [ \t\f\r\n]+ -> channel(HIDDEN) ;
 
 VAR_PREFIX: '$' ;
 
 // Unicode ID https://github.com/antlr/antlr4/blob/master/doc/lexer-rules.md
-//UNICODE_ID : [\p{Alpha}\p{General_Category=Other_Letter}] [\p{Alnum}\p{General_Category=Other_Letter}]* ; // match full Unicode alphabetic ids
+// match full Unicode alphabetic ids (only in Antlr >= 4.6)
+//UNICODE_ID : [\p{Alpha}\p{General_Category=Other_Letter}] [\p{Alnum}\p{General_Category=Other_Letter}]* ;
 ID:         ID_LETTER (ID_LETTER | DIGIT)* ;
 INT:        DIGIT+ ;
 FLOAT:      DIGIT+ '.' DIGIT+ ;
