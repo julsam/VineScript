@@ -61,6 +61,13 @@ namespace VineScript.Core
                         combinedArgs.AddRange(args);
                     }
                 }
+                while (combinedArgs.Count < parameters.Length) {
+                    combinedArgs.Add(Type.Missing);
+                }
+                // TODO if (combinedArgs.Count > parameters.Length) {
+                //  throw new Exception();
+                //}
+
 
                 // Arguments are usually of type VineVar, but "normal" types are allowed.
                 // This part try to convert arguments to the types expected by the function.
@@ -82,6 +89,9 @@ namespace VineScript.Core
                                 ||  parameters[i].ParameterType == typeof(float)
                         ) {
                             combinedArgs[i] = ((VineVar)combinedArgs[i]).AsNumber;
+                        }
+                        else if (parameters[i].ParameterType.Equals(Type.Missing)) {
+                            break;
                         }
                         else {
                             // TODO: should throw a custom exception
