@@ -44,6 +44,8 @@ NL:     '\r'? '\n' ;
 //  * '\u001E': marks the start of the output of the display command
 //  * '\u001F': marks the end of the output of the display command
 RESERVED_CHARS: [\u000B\u001E\u001F] ;
+fragment
+ALL_BUT_RESERVED_CHARS: ~[\u000B\u001E\u001F] ;
 
 TXT_SPECIALS
     :   [\\/[<{] -> type(TXT)
@@ -68,7 +70,7 @@ LINK_ESC
 
 RLINK: ']]' -> popMode ;
 
-LINK_RESERVED_CHARS: [\u000B\u001E\u001F] ;
+LINK_RESERVED_CHARS: RESERVED_CHARS -> type(RESERVED_CHARS) ;
 
 LINK_PIPE:  '|' ;
 LINK_LEFT:  '<-' ;
@@ -153,10 +155,10 @@ FALSE:      'false' ;
 NULL:       'null' ;
 
 
-STRING:         '"' (ESC | ~[\u000B\u001E\u001F])*? '"' ;
+STRING:         '"' (ESC | ALL_BUT_RESERVED_CHARS)*? '"' ;
 
-// catches strings containing '\u000B':
-ILLEGAL_STRING: '"' (ESC | .)*? '"' ;
+// catches strings containing '\u000B' or '\u001E' or '\u001F':
+ILLEGAL_STRING: '"' .*? '"' ;
 
 //tokens { STRING }
 //DOUBLE : '"' .*? '"'   -> type(STRING) ;

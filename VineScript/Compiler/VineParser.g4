@@ -181,7 +181,7 @@ link
 
 linkContent
     :   LINK_TEXT+
-    |   LINK_RESERVED_CHARS { ReservedChar(); }
+    |   RESERVED_CHARS { ReservedChar(); }
     ;
 
 /**
