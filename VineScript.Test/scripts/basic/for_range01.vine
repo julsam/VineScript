@@ -1,0 +1,5 @@
+﻿<< for i in Range(5) >>{{i}}, << end >>
+<< for i in Range(0, 10, 2) >>{{i}}, << end >>
+<< for i in Range(-5, 5) >>{{i}}, << end >>
+<< for i in Range(-5) >>{{i}}, << end >>
+<< for i in Range(5, -5) >>{{i}}, << end >>

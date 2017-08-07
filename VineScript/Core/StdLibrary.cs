@@ -40,6 +40,7 @@ namespace VineScript.Core
             functions.Register("IsNull", typeof(StdLibrary));
             functions.Register("IsArray", typeof(StdLibrary));
             functions.Register("IsDict", typeof(StdLibrary));
+            functions.Register("Range", typeof(StdLibrary));
         }
 
         public void RegisterFilters()
@@ -118,6 +119,17 @@ namespace VineScript.Core
         public static bool IsDict(object context, VineVar value)
         {
             return value.IsDict;
+        }
+
+        public static VineVar Range(object context, VineVar start, VineVar stop=null, VineVar step=null)
+        {
+            if (stop == null) {
+                return Builtins.Range(start.AsInt);
+            }
+            if (step == null) {
+                return Builtins.Range(start.AsInt, stop.AsInt);
+            }
+            return Builtins.Range(start.AsInt, stop.AsInt, step.AsInt);
         }
 
         // Using c# types instead of VineVar:

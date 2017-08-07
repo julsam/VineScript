@@ -932,6 +932,31 @@ namespace VineScript.Core
             return new VineVar(val);
         }
 
+        public static implicit operator VineVar(List<int> val)
+        {
+            return VineVarUtils.ConvertList(val);
+        }
+
+        public static implicit operator VineVar(List<double> val)
+        {
+            return VineVarUtils.ConvertList(val);
+        }
+
+        public static implicit operator VineVar(List<bool> val)
+        {
+            return VineVarUtils.ConvertList(val);
+        }
+
+        public static implicit operator VineVar(List<string> val)
+        {
+            return VineVarUtils.ConvertList(val);
+        }
+
+        public static implicit operator VineVar(List<object> val)
+        {
+            return VineVarUtils.ConvertList(val);
+        }
+
         public static implicit operator VineVar(Dictionary<string, VineVar> val)
         {
             return new VineVar(val);
