@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 
 namespace VineScript.Core
 {
@@ -109,8 +110,26 @@ namespace VineScript.Core
                 }
 
                 // calling the static method by name
-                result = new VineVar(method.Invoke(null /*null for static methods*/, combinedArgs.ToArray()));
-                return true;
+                try {
+                    result = new VineVar(method.Invoke(null /*null for static methods*/, combinedArgs.ToArray()));
+                    return true;
+                } catch (TargetInvocationException e) {
+                    // Can we give the file, line, char and function name(with args) ?
+                    // Should add this message + stack trace to the InnerException.message
+                    Console.WriteLine("Exception when calling function '" + name + "'");
+                    Console.WriteLine(e?.InnerException.StackTrace ?? e.StackTrace);
+                    // This lets you capture an exception and re-throw it without losing the stack trace:
+                    ExceptionDispatchInfo.Capture(e?.InnerException ?? e).Throw();
+                    throw;
+                } catch (TargetParameterCountException e) {
+                    // Can we give the file, line, char and function name(with args) ?
+                    // Should add this message + stack trace to the InnerException.message
+                    Console.WriteLine("Exception when calling function '" + name + "'");
+                    Console.WriteLine(e.StackTrace);
+                    // This lets you capture an exception and re-throw it without losing the stack trace:
+                    ExceptionDispatchInfo.Capture(e).Throw();
+                    throw;
+                }
             } else {
                 result = VineVar.NULL;
                 return false;
