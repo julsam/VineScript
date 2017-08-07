@@ -44,19 +44,13 @@ namespace VineScript.Test
         }
 
         [TestMethod]
-        public void InlineComments01()
-        {
-            Utils.CompareFile("scripts/formatting/inline_comments01.vine");
-        }
-
-        [TestMethod]
-        public void EscapedChars01()
+        public void EscapedTags01()
         {
             Utils.CompareFile("scripts/formatting/escape_tags01.vine");
         }
 
         [TestMethod]
-        public void EscapedChars02()
+        public void EscapedTags02()
         {
             Utils.CompareFile("scripts/formatting/escape_tags02.vine");
         }
