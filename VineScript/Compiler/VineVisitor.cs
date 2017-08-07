@@ -597,7 +597,7 @@ namespace VineScript.Compiler
             str = str.Substring(1, str.Length - 2);
             
             // Unescape special chars starting with '\'. E.g. \n, \t, etc
-            str = Compiler.Util.UnescapeAuthorizedChars(str);
+            str = Compiler.Util.UnescapeStringLiteral(str);
 
             return str;
         }

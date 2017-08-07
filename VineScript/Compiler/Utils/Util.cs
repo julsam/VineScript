@@ -196,9 +196,8 @@ namespace VineScript.Compiler
             }
             return unescaped.ToString();
         }
-
-        // UnescapeStringLiteral
-        public static string UnescapeAuthorizedChars(string input)
+        
+        public static string UnescapeStringLiteral(string input)
         {
             if (string.IsNullOrEmpty(input)) {
                 return input;
