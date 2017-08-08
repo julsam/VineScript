@@ -201,18 +201,62 @@ ILLEGAL_STRING: '"' .*? '"' ;
 //STRING_SQUOTE:    '\'' (ESC_SQUOTE|.)*? '\'' ;
 //STRING_DQUOTE:    '"' (ESC_DQUOTE|.)*? '"' ;
 
-// From Harlowe:
-// This includes all forms of Unicode 6 whitespace except \n, \r, and Ogham space mark.
-//WS_CODE:    [ \f\t\v\u00a0\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+ -> skip ;
-// Unicode whitespace https://github.com/antlr/antlr4/blob/master/doc/lexer-rules.md
-// list : https://en.wikipedia.org/wiki/Whitespace_character
-//UNICODE_WS : [\p{White_Space}] -> skip; // match all Unicode whitespace (only in Antlr >= 4.6)
-WS:     [ \t\f\r\n]+ -> channel(HIDDEN) ;
 
+// Antlr defined unicode whitespace (only in Antlr >= 4.6 or 4.7)
+// https://github.com/antlr/antlr4/blob/master/doc/lexer-rules.md
+//UNICODE_WS : [\p{White_Space}] -> skip; // match all Unicode whitespace 
+WS: (WS_Restricted|WS_SpaceSeparator|WS_LineSeparator|WS_ParagraphSeparator)+ -> channel(HIDDEN) ;
+
+
+// ** WHITE SPACE DEFINITIONS **
+// http://www.unicode.org/Public/UNIDATA/UnicodeData.txt
+// https://msdn.microsoft.com/en-us/library/system.char.iswhitespace(v=vs.110).aspx
+// https://en.wikipedia.org/wiki/Whitespace_character
+
+// Contains SPACE (0020), CHARACTER TABULATION (0009), FORM FEED (U+000C),
+// CARRIAGE RETURN (U+000D) and LINE FEED (000A)
+// It's missing:
+// * LINE TABULATION (U+000B aka \v), used as a reserved char
+// * NEXT LINE (U+0085), which i'm not sure I should include
+fragment WS_Restricted:     [ \t\f\r\n] ;
+
+// SpaceSeparator "Zs" from the unicode list:
+//    0020;SPACE;Zs;0;WS;;;;;N;;;;;
+//    00A0;NO-BREAK SPACE;Zs;0;CS;<noBreak> 0020;;;;N;NON-BREAKING SPACE;;;;
+//    1680;OGHAM SPACE MARK;Zs;0;WS;;;;;N;;;;;
+//    2000;EN QUAD;Zs;0;WS;2002;;;;N;;;;;
+//    2001;EM QUAD;Zs;0;WS;2003;;;;N;;;;;
+//    2002;EN SPACE;Zs;0;WS;<compat> 0020;;;;N;;;;;
+//    2003;EM SPACE;Zs;0;WS;<compat> 0020;;;;N;;;;;
+//    2004;THREE-PER-EM SPACE;Zs;0;WS;<compat> 0020;;;;N;;;;;
+//    2005;FOUR-PER-EM SPACE;Zs;0;WS;<compat> 0020;;;;N;;;;;
+//    2006;SIX-PER-EM SPACE;Zs;0;WS;<compat> 0020;;;;N;;;;;
+//    2007;FIGURE SPACE;Zs;0;WS;<noBreak> 0020;;;;N;;;;;
+//    2008;PUNCTUATION SPACE;Zs;0;WS;<compat> 0020;;;;N;;;;;
+//    2009;THIN SPACE;Zs;0;WS;<compat> 0020;;;;N;;;;;
+//    200A;HAIR SPACE;Zs;0;WS;<compat> 0020;;;;N;;;;;
+//    202F;NARROW NO-BREAK SPACE;Zs;0;CS;<noBreak> 0020;;;;N;;;;;
+//    205F;MEDIUM MATHEMATICAL SPACE;Zs;0;WS;<compat> 0020;;;;N;;;;;
+//    3000;IDEOGRAPHIC SPACE;Zs;0;WS;<wide> 0020;;;;N;;;;;
+
+// Does not include SPACE (it's in rule WS_Restricted) 
+// and OGHAM SPACE MARK (does not look like a space)
+fragment WS_SpaceSeparator:     [\u00A0\u2000-\u200A\u202F\u205F\u3000] ;
+
+//LineSeparator "Zl" from the unicode list:
+//    2028;LINE SEPARATOR;Zl;0;WS;;;;;N;;;;;
+fragment WS_LineSeparator:      '\u2028' ;
+
+//ParagraphSeparator "Zp" from the unicode list:
+//    2029;PARAGRAPH SEPARATOR;Zp;0;B;;;;;N;;;;;
+fragment WS_ParagraphSeparator: '\u2029' ;
+
+
+// ** IDENTIFIERS **
 VAR_PREFIX: '$' ;
 
 // Unicode ID https://github.com/antlr/antlr4/blob/master/doc/lexer-rules.md
-// match full Unicode alphabetic ids (only in Antlr >= 4.6)
+// match full Unicode alphabetic ids (only in Antlr >= 4.6 or 4.7)
 //UNICODE_ID : [\p{Alpha}\p{General_Category=Other_Letter}] [\p{Alnum}\p{General_Category=Other_Letter}]* ;
 ID:         ID_LETTER (ID_LETTER | DIGIT)* ;
 INT:        DIGIT+ ;
