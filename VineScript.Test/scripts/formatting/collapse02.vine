@@ -1,0 +1,36 @@
+﻿{ contains unicode white spaces:               　end here}
+{ collapse 1 `verbatim 1` `verbatim 2` collapse 2 }
+a {`verbatim 1` `verbatim 2` collapse 2 }
+{ collapse 1 `verbatim 1` `verbatim 2` } a
+{ collapse	  
+1 `verbatim 1``verbatim 2`collapse 2}
+---
+Line returns should be interpreted even if it's in a collapsed block:
+{ a{{"\nb\n"}}c }
+---
+{ foo `verbatim   ...	aa
+br` space!
+inline comment // comment
+block comment /* comment */
+bar}
+---
+{
+foo
+}
+---
+{ collapse depth 1 | { collapse   depth   2 } | back   to	collapse depth 1 }
+} not collapsed because		we   forgot the starting `{`  foo }
+---
+{
+<< if true >>
+	{{ "foo { bar }" }}
+<< end >>
+
+}
+<< for i in [1,2,3] >>{
+	{{ i }}, [[title|link]]
+	/* comment */
+	// comment
+	`<< if >>{{ i }}, [[title|link]] /* comment */ // comment`
+}
+<< end >>

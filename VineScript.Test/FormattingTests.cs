@@ -54,5 +54,17 @@ namespace VineScript.Test
         {
             Utils.CompareFile("scripts/formatting/escape_tags02.vine");
         }
+
+        [TestMethod]
+        public void Collapse01()
+        {
+            Utils.CompareFile("scripts/formatting/collapse01.vine");
+        }
+
+        [TestMethod]
+        public void Collapse02()
+        {
+            Utils.CompareFile("scripts/formatting/collapse02.vine");
+        }
     }
 }

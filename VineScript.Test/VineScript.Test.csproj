@@ -134,6 +134,18 @@
     <None Include="scripts\basic\for01.vine">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="scripts\formatting\collapse02.cmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="scripts\formatting\collapse02.vine">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="scripts\formatting\collapse01.cmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="scripts\formatting\collapse01.vine">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="scripts\formatting\escape_tags02.cmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
