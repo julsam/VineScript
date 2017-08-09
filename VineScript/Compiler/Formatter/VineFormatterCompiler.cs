@@ -60,7 +60,7 @@ namespace VineScript.Compiler.Formatter
                 // there is no need to try full LL(*)
                 return null;
             }
-            catch (ParseCanceledException e) // thrown by BailErrorStrategy
+            catch (ParseCanceledException) // thrown by BailErrorStrategy
             {
                 // rewind input stream
                 tokens.Reset();
