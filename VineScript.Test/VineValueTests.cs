@@ -832,15 +832,6 @@ namespace VineScript.Test
         }
 
         [TestMethod]
-        public void BigNumbers()
-        {
-            // todo
-            //double.MaxValue
-            //double.MinValue
-            double a = double.NaN;
-        }
-
-        [TestMethod]
         public void LargeStrings()
         {
             StreamReader istream = File.OpenText("../../VineValueTests.cs");
