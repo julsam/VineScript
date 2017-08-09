@@ -36,7 +36,7 @@ namespace VineScript.Compiler
 #endif
             // Pre processing
             // Remove whitespace at the start & end of each lines
-            string wsRemoved = Compiler.Util.RemoveWhiteSpace(vinecode);
+            string wsRemoved = WhiteSpace.Trim(vinecode);
 
             // Compile Vine code
             PassageResult compiledResult = vineCompiler.Compile(wsRemoved, sourceName);
@@ -46,10 +46,10 @@ namespace VineScript.Compiler
             
             // Post processing
             // Unescape user input
-            string finalOutput = Util.UnescapeVineSequence(formatOutput);
+            string finalOutput = Escape.UnescapeVineSequence(formatOutput);
             // Remove whitespace at the start & end of each lines (again)
             // TODO: keep only one space between words
-            finalOutput = Compiler.Util.RemoveWhiteSpace(finalOutput);
+            finalOutput = WhiteSpace.Trim(finalOutput);
 
             PassageResult finalResult = new PassageResult(finalOutput, compiledResult.links);
 
@@ -86,14 +86,14 @@ namespace VineScript.Compiler
 #endif
 
             // Remove whitespace at the start & end of each lines
-            string wsRemoved = Compiler.Util.RemoveWhiteSpace(expr);
+            string wsRemoved = WhiteSpace.Trim(expr);
 
             // Compile Vine code
             string parsed = vineCompiler.Eval(wsRemoved, sourceName);
             
             // Remove whitespace at the start & end of each lines (again)
             // TODO: keep only one space between words
-            string finalOutput = Compiler.Util.RemoveWhiteSpace(parsed);
+            string finalOutput = WhiteSpace.Trim(parsed);
 
 #if GRAMMAR_VERBOSE
             // Stop timer

@@ -28,9 +28,18 @@ namespace VineScript.Compiler
     class VineVisitor : VineParserBaseVisitor<VineVar> 
     {
         public PassageResult passageResult { get; private set; }
+
+        private ParserOutputBuilder outputBuilder;
         private VineStory story;
 
         private ParserRuleContext lastEnteredContext;
+
+        public VineVisitor(VineStory story)
+        {
+            this.story = story;
+            passageResult = new PassageResult();
+            outputBuilder = new ParserOutputBuilder();
+        }
 
 #if GRAMMAR_VERBOSE
         public void printOutput()
@@ -42,17 +51,6 @@ namespace VineScript.Compiler
             Console.WriteLine("### END ###");
         }
 #endif
-
-        private void AddToPassageResult(string text)
-        {
-            passageResult.text += text;
-        }
-
-        public VineVisitor(VineStory story)
-        {
-            this.story = story;
-            passageResult = new PassageResult();
-        }
 
         /// <summary>
         /// Expression Evaluation Mode. Different from normal mode, it
@@ -66,14 +64,17 @@ namespace VineScript.Compiler
             lastEnteredContext = context;
 
             VineVar value = Visit(context.expr());
-            AddToPassageResult(value.AsString);
+            outputBuilder.PushText(value.AsString);
+            passageResult.text = outputBuilder.Build();
             return value;
         }
 
         public override VineVar VisitPassage(VineParser.PassageContext context)
         {
             try {
-                return VisitChildren(context);
+                var v = VisitChildren(context);
+                passageResult.text = outputBuilder.Build();
+                return v;
             }
             catch (VineRuntimeException e) {
                 // Rethrow the exception without modifications
@@ -98,7 +99,41 @@ namespace VineScript.Compiler
         {
             lastEnteredContext = context;
             VisitChildren(context);
-                AddToPassageResult(context.GetText());
+
+            if (    outputBuilder.IsCollapsed 
+                && (    context.NL() != null
+                    ||  context.BLOCK_COMMENT() != null 
+                    ||  context.LINE_COMMENT() != null
+                    )
+                ){
+                // if it's collapsed and it's a line return or a comment, we add a space
+                outputBuilder.PushText(" ");
+            } else {
+                outputBuilder.PushText(context.GetText());
+            }
+            return null;
+        }
+
+        public override VineVar VisitCollapseStmt(VineParser.CollapseStmtContext context)
+        {
+            lastEnteredContext = context;
+            outputBuilder.PushStmt("<< collapse >>");
+
+            if (context.LCOLLAPSE() != null) {
+                outputBuilder.EnterCollapse();
+            } else {
+                outputBuilder.ExitCollapse();
+            }
+            return null;
+        }
+
+        public override VineVar VisitVerbatimStmt(VineParser.VerbatimStmtContext context)
+        {
+            lastEnteredContext = context;
+            string verbatim = context.VERBATIM().GetText();
+            outputBuilder.PushVerbatim(verbatim);
+            return null;
+        }
 
         public override VineVar VisitLink(VineParser.LinkContext context)
         {
@@ -107,13 +142,13 @@ namespace VineScript.Compiler
 
             // Link Title
             string title = Visit(context.title).AsString.Trim(new char[] { '\t', ' ' });
-            title = Util.UnescapeLinkContent(title);
+            title = Escape.UnescapeLinkContent(title);
 
             // Passage Name
             string passageName = title;
             if (context.passageName != null) { 
                 passageName = Visit(context.passageName).AsString.Trim(new char[] { '\t', ' ' });
-                passageName = Util.UnescapeLinkContent(passageName);
+                passageName = Escape.UnescapeLinkContent(passageName);
             }
 
             // Check for empty title/link like [[mytitle| ]] or [[ |mylink]]
@@ -124,11 +159,11 @@ namespace VineScript.Compiler
             }
 
             // DEBUG: print in passage
-            //AddToPassageResult("title: " + title + ", link: " + passageName);
+            //AddTextToPassageResult("title: " + title + ", link: " + passageName);
 
             // Add it back to the output passage as a statement and will be treated
             // accordingly by the VineFormatter.
-            AddToPassageResult("<< " + title + " | " + passageName + " >>");
+            outputBuilder.PushStmt("<< link >>");
 
             passageResult.links.Add(
                 new PassageLink(title, passageName, passageResult.links.Count)
@@ -151,14 +186,14 @@ namespace VineScript.Compiler
         {
             lastEnteredContext = context;
             VineVar value = Visit(context.expr());
-
+            
             // marks the start of the output of the display command
-            AddToPassageResult("\u001E");
+            var display_output = "\u001E";
             // Get every lines in an array
             string[] outputLines = value.AsString.Split('\n');
             for (int i = 0; i < outputLines.Length; i++) {
                 //  add the line to the output
-                AddToPassageResult(outputLines[i]);
+                display_output += outputLines[i];
 
                 // if not the last line
                 if (i < outputLines.Length - 1) {
@@ -167,12 +202,18 @@ namespace VineScript.Compiler
                     // between line returns that are in the source code
                     // and line returns added by displaying the return value
                     // of a function containing '\n'
-                    AddToPassageResult("\u000B");
+                    display_output += "\u000B";
                 }
             }
             // marks the end of the output of the display command
-            AddToPassageResult("\u001F");
-            
+            display_output += "\u001F";
+
+            // Push it as a verbatim even if it's not one. We want the
+            // displayed text to be outputed as it is, even if it's in
+            // a collapsed block. So white spaces, line returns, etc
+            // won't be collapsed.
+            outputBuilder.PushVerbatim(display_output);
+
             return null;
         }
 
@@ -182,7 +223,7 @@ namespace VineScript.Compiler
         {
             // '<<' 'set' ID 'to' expr '>>'
             lastEnteredContext = context;
-            AddToPassageResult("<< set >>");
+            outputBuilder.PushStmt("<< set >>");
 
             var variable = Visit(context.variable());
             string id = variable.name;
@@ -218,7 +259,7 @@ namespace VineScript.Compiler
         {
             // '<<' 'unset' ID '>>'
             lastEnteredContext = context;
-            AddToPassageResult("<< unset >>");
+            outputBuilder.PushStmt("<< unset >>");
 
             foreach (var item in context.variable()) {
                 var variable = Visit(item);
@@ -242,7 +283,7 @@ namespace VineScript.Compiler
             // ID '(' expressionList? ')'
             lastEnteredContext = context;
             var funcName = context.ID().GetText();
-            AddToPassageResult(string.Format("<< call func \"{0}\" >>", funcName));
+            outputBuilder.PushStmt(string.Format("<< call func \"{0}\" >>", funcName));
 
             List<object> list = new List<object>();
             if (context.expressionList() != null)
@@ -266,23 +307,23 @@ namespace VineScript.Compiler
         {
             lastEnteredContext = context;
 
-            AddToPassageResult("<< if >>");
+            outputBuilder.PushStmt("<< if >>");
             bool ifvalue = Visit(context.ifStmt()).AsBool;
             if (!ifvalue) {
                 bool elifvalue = false;
                 for (int i = 0; i < context.elifStmt().Length; i++) {
-                    AddToPassageResult("<< elif >>");
+                    outputBuilder.PushStmt("<< elif >>");
                     elifvalue = Visit(context.elifStmt(i)).AsBool;
                     if (elifvalue) {
                         break;
                     }
                 }
                 if (!elifvalue && context.elseStmt() != null) {
-                    AddToPassageResult("<< else >>");
+                    outputBuilder.PushStmt("<< else >>");
                     Visit(context.elseStmt());
                 }
             }
-            AddToPassageResult("<< end >>");
+            outputBuilder.PushStmt("<< end >>");
             return ifvalue;
         }
 
@@ -322,9 +363,9 @@ namespace VineScript.Compiler
         public override VineVar VisitForCtrlStmt(VineParser.ForCtrlStmtContext context)
         {
             lastEnteredContext = context;
-            AddToPassageResult("<< for >>");
+            outputBuilder.PushStmt("<< for >>");
             VineVar forvalue = Visit(context.forStmt());
-            AddToPassageResult("<< end >>");
+            outputBuilder.PushStmt("<< end >>");
             return null;
         }
 
@@ -597,7 +638,7 @@ namespace VineScript.Compiler
             str = str.Substring(1, str.Length - 2);
             
             // Unescape special chars starting with '\'. E.g. \n, \t, etc
-            str = Compiler.Util.UnescapeStringLiteral(str);
+            str = Escape.UnescapeStringLiteral(str);
 
             return str;
         }

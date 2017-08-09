@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace VineScript.Core
 {
-
     public class PassageResult
     {
         public string text { get; internal set; }

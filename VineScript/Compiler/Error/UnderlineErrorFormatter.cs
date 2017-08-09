@@ -119,7 +119,7 @@ namespace VineScript.Compiler
         {
             return string.Format(
                 "[Parser] Invalid Expression '{0}' in {1} at line {2}:{3}:\n{4}\n{5}",
-                Compiler.Util.EscapeWhiteSpace(offendingSymbol.Text),
+                Escape.EscapeWhiteSpace(offendingSymbol.Text),
                 sourceName, line, column, underline, errmsg
             );
         }

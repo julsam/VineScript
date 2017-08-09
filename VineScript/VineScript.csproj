@@ -55,6 +55,10 @@
     <Compile Include="Compiler\Error\UnderlineErrorFormatter.cs" />
     <Compile Include="Compiler\Formatter\VineFormatterCompiler.cs" />
     <Compile Include="Compiler\Formatter\VineFormatterVisitor.cs" />
+    <Compile Include="Compiler\Helpers\CollapseManager.cs" />
+    <Compile Include="Compiler\Helpers\ParserOutputBuilder.cs" />
+    <Compile Include="Compiler\Utils\Escape.cs" />
+    <Compile Include="Compiler\Utils\WhiteSpace.cs" />
     <Compile Include="Compiler\VineCompiler.cs" />
     <Compile Include="Compiler\Error\LexerErrorListener.cs" />
     <Compile Include="Compiler\Utils\Util.cs" />

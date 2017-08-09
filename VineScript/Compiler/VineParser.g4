@@ -152,12 +152,13 @@ evalExprMode
 // The output will then be parsed by the formatter.
 block
     :   NL              # directOutput
-    |   VERBATIM        # directOutput
+    |   verbatimStmt    # noOutput      // `as it is, escape << tags >> too`
     |   text            # directOutput  // foobar
     |   display         # noOutput      // {{ foo }}
     |   controlStmt     # noOutput      // << open stmt >> something << close stmt >>
     |   simpleStmtBlock # noOutput      // << set foo = 0 >>
     |   link            # noOutput      // [[label|link]]
+    |   collapseStmt    # noOutput      // { foo\nbar } => foobar
     |   BLOCK_COMMENT   # directOutput  // /* comment */
     |   LINE_COMMENT    # directOutput  // // inline comment
     |   RESERVED_CHARS { ReservedChar(); } # blockError
@@ -183,6 +184,16 @@ link
 linkContent
     :   LINK_TEXT+
     |   RESERVED_CHARS { ReservedChar(); }
+    ;
+
+verbatimStmt
+    :   VERBATIM
+    ;
+
+collapseStmt
+    :   LCOLLAPSE
+    |   RCOLLAPSE
+    //|   LCOLLAPSE block* RCOLLAPSE // could use this rule if we want to be more strict
     ;
 
 /**

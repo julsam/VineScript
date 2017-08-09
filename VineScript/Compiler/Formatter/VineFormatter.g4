@@ -67,9 +67,9 @@ NL:     '\r'? '\n' ;
 WS:     [ \t]+ ;
 
 TXT_SPECIALS
-    :   [`\\/<>{}] -> type(TXT)
+    :   [`\\/<>*{}] -> type(TXT)
     ;
-TXT :   ~[`\\<>{}/\r\n\u001E\u001F]+
+TXT :   ~[`\\<>*{}/\r\n\u001E\u001F]+
     ;
 
 ERROR_CHAR: . ;

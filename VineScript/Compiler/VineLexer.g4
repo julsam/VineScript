@@ -31,13 +31,13 @@ using System;
     {
         try {
             while ( str.Length >= 3 && str.StartsWith("`") && str.EndsWith("`")
-                &&  !Util.IsCharAtEscaped(str, str.Length - 1)
+                &&  !Escape.IsCharAtEscaped(str, str.Length - 1)
                 ) {
                 str = str.Remove(0, 1);
                 str = str.Remove(str.Length - 1, 1);
             }
             if  (   str.Length > 0 && !str.StartsWith("`")
-                &&  (!str.EndsWith("`") ||  Util.IsCharAtEscaped(str, str.Length - 1))
+                &&  (!str.EndsWith("`") ||  Escape.IsCharAtEscaped(str, str.Length - 1))
                 ) {
                 return str;
             } else {
@@ -71,7 +71,17 @@ LLINK:          '[[' -> pushMode(LinkMode) ;
 BLOCK_COMMENT:  '/*' .*? '*/' ;
 LINE_COMMENT:   '//' ~[\r\n]* ;
 
+CLOSE_STMT
+    :   '}}'
+    |   '>>'
+    |   ']]'
+    |   '*/'
+    ;
+
 NL:     '\r'? '\n' ;
+
+LCOLLAPSE:  '{' ;
+RCOLLAPSE:  '}' ;
 
 // Reserved / illegal characters:
 //  * '\u000B': \v vertical tabulation, marks '\n' in strings returned by a function
@@ -83,9 +93,9 @@ fragment
 ALL_BUT_RESERVED_CHARS: ~[\u000B\u001E\u001F] ;
 
 TXT_SPECIALS
-    :   [`\\<\[{/] -> type(TXT)
+    :   [`\\<>*\[\]/] -> type(TXT)
     ;
-TXT :   ~[`\\<\[{/\r\n\u000B\u001E\u001F]+
+TXT :   ~[`\\<>*\[\]{}/\r\n\u000B\u001E\u001F]+
     ;
 
 ERROR_CHAR: . ;
