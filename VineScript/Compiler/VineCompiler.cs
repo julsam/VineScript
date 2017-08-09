@@ -77,6 +77,9 @@ namespace VineScript.Compiler
             }
             catch (ParseCanceledException) // thrown by BailErrorStrategy
             {
+#if GRAMMAR_VERBOSE
+                Console.WriteLine("*** VineCompiler: SSL(*) failed, trying with LL(*) ***");
+#endif
                 // rewind input stream
                 tokens.Reset();
                 parser.Reset();
