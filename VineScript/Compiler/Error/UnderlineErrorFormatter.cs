@@ -37,6 +37,10 @@ namespace VineScript.Compiler
             // underline the error
             if (offendingSymbolStart >= 0 && offendingSymbolStop >= 0) {
                 for (int i = offendingSymbolStart; i <= offendingSymbolStop; i++) {
+                    if (input[i] == '\n') {
+                        // break on first line return
+                        break;
+                    }
                     underline += "^";
                 }
             }
