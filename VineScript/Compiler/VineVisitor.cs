@@ -374,12 +374,13 @@ namespace VineScript.Compiler
             lastEnteredContext = context;
             
             // TODO scope with temp vars
-            VineVar iterator = null;
+            ParserRuleContext iteratorCtx = null;
             if (context.expr() != null) {
-                iterator = Visit(context.expr());
+                iteratorCtx = context.expr();
             } else {
-                iterator = Visit(context.interval());
+                iteratorCtx = context.interval();
             }
+            VineVar iterator = Visit(iteratorCtx);
 
             if (iterator.IsArray || iterator.IsDict || iterator.IsString) {
                 var tempVarValue = Visit(context.variable());
@@ -396,7 +397,7 @@ namespace VineScript.Compiler
                 }
             } else {
                 throw new VineRuntimeException(
-                    "'" + iterator.type + "' is not iterable", context
+                    "'" + iterator.type + "' is not iterable", iteratorCtx
                 );
             }
 
@@ -407,10 +408,8 @@ namespace VineScript.Compiler
         {
             lastEnteredContext = context;
             
-            VineVar iterator = null;
-            if (context.expr() != null) {
-                iterator = Visit(context.expr());
-            }
+            ParserRuleContext iteratorCtx = context.expr();
+            VineVar iterator = Visit(iteratorCtx);
             
             // TODO scope with temp vars
             VineVar tempVarKey = Visit(context.key);
@@ -443,7 +442,7 @@ namespace VineScript.Compiler
             else
             {
                 throw new VineRuntimeException(
-                    "'" + iterator.type + "' is not iterable", context
+                    "'" + iterator.type + "' is not iterable", iteratorCtx
                 );
             }
 
