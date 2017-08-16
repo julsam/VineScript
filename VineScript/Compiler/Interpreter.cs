@@ -37,6 +37,7 @@ namespace VineScript.Compiler
             // Pre processing
             // Remove whitespace at the start & end of each lines
             string wsRemoved = WhiteSpace.Trim(vinecode);
+            wsRemoved = wsRemoved.Replace("\r", "");
 
             // Compile Vine code
             PassageResult compiledResult = vineCompiler.Compile(wsRemoved, sourceName);
