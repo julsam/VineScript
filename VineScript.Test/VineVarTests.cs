@@ -12,9 +12,9 @@ namespace VineScript.Test
     /// Summary description for VineValueTests
     /// </summary>
     [TestClass]
-    public class VineValueTests
+    public class VineVarTests
     {
-        public VineValueTests()
+        public VineVarTests()
         {
         }
 
@@ -834,7 +834,7 @@ namespace VineScript.Test
         [TestMethod]
         public void LargeStrings()
         {
-            StreamReader istream = File.OpenText("../../VineValueTests.cs");
+            StreamReader istream = File.OpenText("../../VineVarTests.cs");
             string input = istream.ReadToEnd();
             var str_val = new VineVar(input);
             Assert.AreEqual(input, str_val);

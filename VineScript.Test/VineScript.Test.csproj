@@ -59,7 +59,7 @@
     <Compile Include="SequencesTest.cs" />
     <Compile Include="LinksTest.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="VineValueTests.cs" />
+    <Compile Include="VineVarTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\basic\for_range01.cmp">
