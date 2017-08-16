@@ -60,10 +60,18 @@ namespace VineScript.Compiler
             string underline = Underline(
                 input, line, column, start, stop
             );
-            
+
+            string offending = "";
+            if (start >= 0 && stop >= 0) {
+                for (int i = start; i <= stop; i++) {
+                    offending += input[i];
+                }
+            }
+
             return string.Format(
                 "{0}: {1}\n  File \"{2}\", in line {3}:{4} at '{5}':\n{6}", 
-                cls.Name, msg, srcName, line, column, ctx.GetText(), underline
+                cls.Name, msg, srcName, line, column,
+                Escape.EscapeWhiteSpace(offending), underline
             );
         }
     }
