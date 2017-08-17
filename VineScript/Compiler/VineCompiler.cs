@@ -46,6 +46,12 @@ namespace VineScript.Compiler
             parsed = false;
         }
 
+        public void ClearCache()
+        {
+            lexer.Interpreter.ClearDFA();
+            parser.Interpreter.ClearDFA();
+        }
+
         public List<SyntaxErrorReport> CheckSyntax(string vinecode, string sourceName)
         {
             Init(vinecode, sourceName);
