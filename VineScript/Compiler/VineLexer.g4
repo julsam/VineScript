@@ -279,4 +279,6 @@ fragment ESC:       '\\"' | '\\\\' ; // 2-char sequences \" and \\
 //fragment ESC_SQUOTE:    '\\\'' | '\\\\' ; // 2-char sequences \" and \\
 //fragment ESC_DQUOTE:    '\\"' | '\\\\' ; // 2-char sequences \" and \\
 fragment DIGIT:     [0-9] ;
-fragment ID_LETTER: [A-Za-z\u0080-\uFFFF_] ; // goes from 41 ('A') to z then 128 to 65535 (unicode)
+// From Harlowe:
+// https://bitbucket.org/_L_/harlowe/src/e6e8f2e0382f716c64a124db360f6095e230db9e/js/markup/patterns.js?at=v2.0.1&fileviewer=file-view-default#patterns.js-81
+fragment ID_LETTER: [A-Za-z\u00C0-\u00DE\u00DF-\u00FF\u0150\u0170\u0151\u0171\uD800-\uDFFF_] ;
