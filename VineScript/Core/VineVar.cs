@@ -59,12 +59,20 @@ namespace VineScript.Core
             : base(msg, innerException) { }
 
         public VineConversionException(VineVar.Type from, VineVar.Type to) 
-            : base(string.Format("Cannot convert type '{0}' to '{1}'", from, to)) { }
+            : base(string.Format("Cannot convert type 'VineVar.{0}' to 'VineVar.{1}'", from, to)) { }
 
         public VineConversionException(VineVar from, VineVar to) 
-            : base(string.Format("Cannot convert type '{0}' to '{1}'", from.type, to.type)) { }
-    }
+            : base(string.Format("Cannot convert type 'VineVar.{0}' to 'VineVar.{1}'", from.type, to.type)) { }
+        
+        public VineConversionException(Type from, Type to) 
+            : base(string.Format("Cannot convert type '{0}' to '{1}'", from, to)) { }
 
+        public VineConversionException(Type from, VineVar.Type to) 
+            : base(string.Format("Cannot convert type '{0}' to 'VineVar.{1}'", from, to)) { }
+
+        public VineConversionException(VineVar.Type from, Type to) 
+            : base(string.Format("Cannot convert type 'VineVar.{0}' to '{1}'", from, to)) { }
+    }
 
     /// <summary>
     /// VineScript's main variable. Can be an int, a double, a bool, a string,
