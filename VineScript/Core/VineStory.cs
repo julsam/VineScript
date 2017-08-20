@@ -18,7 +18,7 @@ namespace VineScript.Core
         private IVineLibrary userlib;
 
         // Vars
-        public Dictionary<string, VineVar> vars { get; private set; }
+        public RuntimeVars vars { get; private set; }
 
         public PassageResult currentPassage;
         public List<PassageResult> history { get; private set; }
@@ -31,7 +31,7 @@ namespace VineScript.Core
             std.RegisterFilters();
             
             // vars
-            vars = new Dictionary<string, VineVar>();
+            vars = new RuntimeVars();
             
             history = new List<PassageResult>();
 

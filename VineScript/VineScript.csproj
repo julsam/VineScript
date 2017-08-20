@@ -66,6 +66,7 @@
     <Compile Include="Core\FunctionsCollection.cs" />
     <Compile Include="Core\PassageLink.cs" />
     <Compile Include="Core\PassageResult.cs" />
+    <Compile Include="Core\RuntimeVars.cs" />
     <Compile Include="Core\StdLibrary.cs" />
     <Compile Include="Core\VineStory.cs" />
     <Compile Include="Core\VineVar.cs" />
