@@ -49,7 +49,6 @@ namespace VineScript.Compiler
             // Unescape user input
             string finalOutput = Escape.UnescapeVineSequence(formatOutput);
             // Remove whitespace at the start & end of each lines (again)
-            // TODO: keep only one space between words
             finalOutput = WhiteSpace.Trim(finalOutput);
 
             PassageResult finalResult = new PassageResult(finalOutput, compiledResult.links);

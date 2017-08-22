@@ -86,10 +86,10 @@ namespace VineScript.Core
             vars.Add(name, value);
         }
 
-        public void RegisterFunction(string name, Type cls)
-        {
-            userlib.functions.Register(name, cls);
-        }
+        //public void RegisterFunction(string name, Type cls)
+        //{
+        //    userlib.functions.Register(name, cls);
+        //}
 
         public VineVar CallFunction(string name, params object[] args)
         {
