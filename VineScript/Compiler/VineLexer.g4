@@ -18,6 +18,9 @@ using System;
     //    }
     //}
 
+    // Nested dictionary declaration, like { "a": true, "b": { "c": false }}
+    private static int nestedDictionaryDecl = 0;
+
     public static bool IsVerbatim(string str)
     {
         if (ToVerbatim(str) != null) {
@@ -128,7 +131,7 @@ LinkMode_ERROR_CHAR: ERROR_CHAR -> type(ERROR_CHAR) ;
 
 // ----------------------------------------------------------
 mode VineCode;
-ROUTPUT:    '}}' -> popMode ;
+ROUTPUT:    '}}' { nestedDictionaryDecl == 0 }? -> popMode ;
 RSTMT:      '>>' -> popMode ;
 
 // Parentheses, square brackets, curly braces
@@ -136,8 +139,8 @@ LPAREN:     '(' ;
 RPAREN:     ')' ;
 LBRACK:     '[' ;
 RBRACK:     ']' ;
-LBRACE:     '{' ;
-RBRACE:     '}' ;
+LBRACE:     '{' { nestedDictionaryDecl++; } ;
+RBRACE:     '}' { nestedDictionaryDecl--; } ;
 
 // Reserved keywords
 IF:     'if' ;
