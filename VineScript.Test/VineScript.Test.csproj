@@ -58,6 +58,7 @@
     <Compile Include="FormattingTests.cs" />
     <Compile Include="SequencesTest.cs" />
     <Compile Include="LinksTest.cs" />
+    <Compile Include="VineValueTests.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="VineVarTests.cs" />
   </ItemGroup>
