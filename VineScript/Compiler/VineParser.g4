@@ -200,7 +200,7 @@ collapseStmt
  * Display something in the text (variable, expression, function return, ...)
  **/
 display
-    :   '{{' expr '}}'
+    :   LOUTPUT expr ROUTPUT
     ;
 
 setStmt
