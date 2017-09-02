@@ -69,12 +69,20 @@
     <Compile Include="Core\RuntimeVars.cs" />
     <Compile Include="Core\StdLibrary.cs" />
     <Compile Include="Core\VineStory.cs" />
+    <Compile Include="Core\Converter.cs" />
+    <Compile Include="Core\VineValue\VineDictionary.cs" />
+    <Compile Include="Core\VineValue\VineArray.cs" />
+    <Compile Include="Core\VineValue\VineString.cs" />
+    <Compile Include="Core\VineValue\VineNumber.cs" />
+    <Compile Include="Core\VineValue\VineInt.cs" />
+    <Compile Include="Core\VineValue\VineBool.cs" />
     <Compile Include="Core\VineVar.cs" />
     <Compile Include="Core\VineVarUtils.cs" />
     <Compile Include="Compiler\Interpreter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Compiler\Error\ParserErrorListener.cs" />
-    <Compile Include="Builtins.cs" />
+    <Compile Include="Core\Builtins.cs" />
+    <Compile Include="Core\VineValue\VineValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <Antlr4 Include="Compiler\VineLexer.g4">

@@ -23,7 +23,7 @@ namespace VineScript.Core
         /// <returns>`true` if none of the operands is null/Null. 
         /// `false` if at least one of them is null/Null; in that case,
         /// `e` will contain an exception that should be thrown</returns>
-        public static bool CheckNullOp(string op, VineVar a, VineVar b,
+        internal static bool CheckNullOp(string op, VineVar a, VineVar b,
             out Exception e)
         {
             e = null;
@@ -55,7 +55,7 @@ namespace VineScript.Core
         /// <returns>`true` if the operand is not null/Null. 
         /// `false` if the operand is null/Null; in that case, `e` will 
         /// contain an exception that should be thrown</returns>
-        public static bool CheckNullOp(string op, VineVar a, out Exception e)
+        internal static bool CheckNullOp(string op, VineVar a, out Exception e)
         {
             e = null;
 
@@ -69,15 +69,6 @@ namespace VineScript.Core
             } 
 
             return true;
-        }
-
-        public static List<VineVar> ConvertList<T>(List<T> list)
-        {
-            var converted = new List<VineVar>(list.Count);
-            foreach (var el in list) {
-                converted.Add(new VineVar(el));
-            }
-            return converted;
         }
 
         public static string Stringify(List<VineVar> list)

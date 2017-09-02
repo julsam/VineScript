@@ -429,14 +429,14 @@ namespace VineScript.Core
                 boolValue = (bool)value;
                 return;
             }
-            if (value.GetType() == typeof(List<VineVar>)) {
+            if (value is IList) {
                 type = Type.Array;
-                arrayValue = (List<VineVar>)value;
+                arrayValue = Converter.ToListOfVineVars((IList)value);
                 return;
             }
-            if (value.GetType() == typeof(Dictionary<string, VineVar>)) {
+            if (value is IDictionary) {
                 type = Type.Dict;
-                dictValue = (Dictionary<string, VineVar>)value;
+                dictValue = Converter.ToDictOfVineVars((IDictionary)value);
                 return;
             }
             var error = string.Format("Attempted to create a Value using a {0}; currently, " +
@@ -940,34 +940,64 @@ namespace VineScript.Core
             return new VineVar(val);
         }
 
+        public static implicit operator VineVar(List<bool> val)
+        {
+            return Converter.ToVineVar(val);
+        }
+
         public static implicit operator VineVar(List<int> val)
         {
-            return VineVarUtils.ConvertList(val);
+            return Converter.ToVineVar(val);
         }
 
         public static implicit operator VineVar(List<double> val)
         {
-            return VineVarUtils.ConvertList(val);
-        }
-
-        public static implicit operator VineVar(List<bool> val)
-        {
-            return VineVarUtils.ConvertList(val);
+            return Converter.ToVineVar(val);
         }
 
         public static implicit operator VineVar(List<string> val)
         {
-            return VineVarUtils.ConvertList(val);
+            return Converter.ToVineVar(val);
         }
 
-        public static implicit operator VineVar(List<object> val)
+        public static implicit operator VineVar(List<dynamic> val)
         {
-            return VineVarUtils.ConvertList(val);
+            return Converter.ToVineVar(val);
         }
 
         public static implicit operator VineVar(Dictionary<string, VineVar> val)
         {
             return new VineVar(val);
+        }
+
+        public static implicit operator VineVar(Dictionary<string, bool> val)
+        {
+            return Converter.ToVineVar(val);
+        }
+
+        public static implicit operator VineVar(Dictionary<string, int> val)
+        {
+            return Converter.ToVineVar(val);
+        }
+
+        public static implicit operator VineVar(Dictionary<string, double> val)
+        {
+            return Converter.ToVineVar(val);
+        }
+
+        public static implicit operator VineVar(Dictionary<string, float> val)
+        {
+            return Converter.ToVineVar(val);
+        }
+
+        public static implicit operator VineVar(Dictionary<string, string> val)
+        {
+            return Converter.ToVineVar(val);
+        }
+
+        public static implicit operator VineVar(Dictionary<string, dynamic> val)
+        {
+            return Converter.ToVineVar(val);
         }
 
         //public static implicit operator bool(VineVar val)

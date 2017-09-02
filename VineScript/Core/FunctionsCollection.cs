@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using System.Runtime.ExceptionServices;
+using VineScript.Core.VineValue;
 
 namespace VineScript.Core
 {
@@ -75,26 +76,25 @@ namespace VineScript.Core
                 // If VineVar is expected, do nothing. Else, converts to bool, int, float,
                 // double, string.
                 // (skip the first argument because it's the context)
-                for (int i = 1; i < parameters.Length; i++) {
-                    if (parameters[i].ParameterType != typeof(VineVar)) {
-                        if (parameters[i].ParameterType == typeof(bool)) {
-                            combinedArgs[i] = ((VineVar)combinedArgs[i]).AsBool;
-                        }
-                        else if (parameters[i].ParameterType == typeof(string)) {
-                            combinedArgs[i] = ((VineVar)combinedArgs[i]).AsString;
-                        }
-                        else if (parameters[i].ParameterType == typeof(int)) {
-                            combinedArgs[i] = ((VineVar)combinedArgs[i]).AsInt;
-                        }
-                        else if (   parameters[i].ParameterType == typeof(double)
-                                ||  parameters[i].ParameterType == typeof(float)
-                        ) {
-                            combinedArgs[i] = ((VineVar)combinedArgs[i]).AsNumber;
-                        }
-                        else if (parameters[i].ParameterType.Equals(Type.Missing)) {
-                            break;
-                        }
-                        else {
+                for (int i = 1; i < parameters.Length; i++)
+                {
+                    if (    parameters[i].ParameterType != typeof(VineVar)
+                        &&  combinedArgs[i].GetType() != typeof(Missing))
+                    {
+                        var vinevar = ((VineVar)combinedArgs[i]);
+                        if (parameters[i].ParameterType == typeof(VineBool)) {
+                            combinedArgs[i] = new VineBool(vinevar);
+                        } else if (parameters[i].ParameterType == typeof(VineInt)) {
+                            combinedArgs[i] = new VineInt(vinevar);
+                        } else if (parameters[i].ParameterType == typeof(VineNumber)) {
+                            combinedArgs[i] = new VineNumber(vinevar);
+                        } else if (parameters[i].ParameterType == typeof(VineString)) {
+                            combinedArgs[i] = new VineString(vinevar);
+                        } else if (parameters[i].ParameterType == typeof(VineArray)) {
+                            combinedArgs[i] = new VineArray(vinevar);
+                        } else if (parameters[i].ParameterType == typeof(VineDictionary)) {
+                            combinedArgs[i] = new VineDictionary(vinevar);
+                        } else {
                             // TODO: should throw a custom exception
                             // TODO: we should do this check on library loading and inform the 
                             //       user right away.
@@ -103,8 +103,10 @@ namespace VineScript.Core
                             //       function definition that should be fixed.
                             throw new Exception(string.Format("Error calling function \"{0}\""
                                 + "\nThe argument type \"{1}\" is not a recognized type by VineScript."
-                                + "\nExpected types are: VineVar, bool, int, float, double, string",
-                                name, parameters[i].ParameterType.Name));
+                                + "\nExpected types are: VineVar, VineBool, VineInt, VineNumber,"
+                                + "VineString, VineArray or VineDictionary",
+                                name, parameters[i].ParameterType.Name
+                            ));
                         }
                     }
                 }
