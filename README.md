@@ -11,7 +11,7 @@ This is a multiline comment
 
 // this is a line comment
 
-This is text.
+This is a simple text.
 
 // Here's a variable definition:
 << set myvar to 42 >>
