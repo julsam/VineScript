@@ -64,7 +64,7 @@
     <Compile Include="Compiler\Utils\Util.cs" />
     <Compile Include="Compiler\VineVisitor.cs" />
     <Compile Include="Core\FunctionsCollection.cs" />
-    <Compile Include="Core\LoadedScript.cs" />
+    <Compile Include="Core\PassageScript.cs" />
     <Compile Include="Core\Loader.cs" />
     <Compile Include="Core\PassageLink.cs" />
     <Compile Include="Core\PassageResult.cs" />

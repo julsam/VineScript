@@ -6,7 +6,7 @@ using Antlr4.Runtime;
 
 namespace VineScript.Core
 {
-    class LoadedScript
+    public class PassageScript
     {
         private string _name;
         public string Name {
@@ -30,5 +30,29 @@ namespace VineScript.Core
         }
 
         public bool RecordStats { get; set; }
+
+        public PassageScript(string scriptname, string filename, ParserRuleContext tree)
+        {
+            _name = scriptname;
+            _filename = filename;
+            _tree = tree;
+        }
+
+        public bool Loaded { get; private set; }
+
+        public void Load()
+        {
+
+        }
+
+        public void Unload()
+        {
+
+        }
+
+        public void Run()
+        {
+
+        }
     }
 }

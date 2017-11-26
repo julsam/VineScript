@@ -24,8 +24,12 @@ namespace VineScript.Compiler
             this.story = story;
         }
 
-        private void Init(string vinecode, string sourceName)
+        public void Init(string vinecode, string sourceName)
         {
+#if GRAMMAR_VERBOSE
+            var initTimer = System.Diagnostics.Stopwatch.StartNew();
+#endif
+
             if (!inited)
             {
                 inputStream = new AntlrInputStream(vinecode);
@@ -44,27 +48,22 @@ namespace VineScript.Compiler
                 parser.SetInputStream(tokens);
             }
             parsed = false;
+            
+#if GRAMMAR_VERBOSE
+            initTimer.Stop();
+            Console.WriteLine(string.Format(
+                "Init in: {0} ms", initTimer.ElapsedMilliseconds.ToString("0.00")
+            ));
+#endif
         }
 
         public void ClearCache()
         {
-            lexer.Interpreter.ClearDFA();
-            parser.Interpreter.ClearDFA();
+            lexer?.Interpreter.ClearDFA();
+            parser?.Interpreter.ClearDFA();
         }
 
-        public List<SyntaxErrorReport> CheckSyntax(string vinecode, string sourceName)
-        {
-            Init(vinecode, sourceName);
-
-            // Parse
-            parser.BuildParseTree = false;
-            var errorReports = Parse(vinecode);
-            //compiler.parser.AddParseListener();
-
-            return errorReports;
-        }
-
-        private List<SyntaxErrorReport> Parse(string vinecode)
+        private List<SyntaxErrorReport> Parse()
         {
             // try with simpler/faster SLL(*)
             parser.Interpreter.PredictionMode = PredictionMode.Sll;
@@ -109,25 +108,72 @@ namespace VineScript.Compiler
             }
         }
 
-        public PassageResult Compile(string vinecode, string sourceName, bool checkSyntax=true)
+        public List<SyntaxErrorReport> CheckSyntax(string vinecode, string sourceName)
         {
             Init(vinecode, sourceName);
-            
-            parser.BuildParseTree = true;
-            var errorReports = Parse(vinecode);
 
+            // Parse
+            parser.BuildParseTree = false;
+            var errorReports = Parse();
+            //compiler.parser.AddParseListener();
+
+            return errorReports;
+        }
+
+        public ParserRuleContext BuildTree()
+        {
+            // Parsing
+#if GRAMMAR_VERBOSE
+            var parseTimer = System.Diagnostics.Stopwatch.StartNew();
+#endif
+            parser.BuildParseTree = true;
+            var errorReports = Parse();
+#if GRAMMAR_VERBOSE
+            parseTimer.Stop();
+            Console.WriteLine(string.Format(
+                "Parsed in: {0} ms", parseTimer.ElapsedMilliseconds.ToString("0.00")
+            ));
+#endif
+            
             // Check for errors
             //parser.NumberOfSyntaxErrors
             if (errorReports?.Count > 0) {
                 throw new VineParseException(errorReports);
             }
 
+            return tree;
+        }
+
+        public PassageResult CompileTree(ParserRuleContext tree)
+        {
+            var eval = new VineVisitor(story);
+            eval.Visit(tree);
+            
+#if GRAMMAR_VERBOSE
+            eval.printOutput();
+#endif
+            return eval.passageResult;
+        }
+
+        public PassageResult Compile(string vinecode, string sourceName)
+        {
+            // Setup
+            Init(vinecode, sourceName);
+
+            // Tree
+            BuildTree();
+
 #if GRAMMAR_TREE || GRAMMAR_VERBOSE
             Console.WriteLine(Util.PrettyGrammarTree(tree.ToStringTree(parser)));
 #endif
-
+            
+            var evalTimer = System.Diagnostics.Stopwatch.StartNew();
             var eval = new VineVisitor(story);
             eval.Visit(tree);
+            evalTimer.Stop();
+            Console.WriteLine(string.Format(
+                "Evaluated in: {0} ms", evalTimer.ElapsedMilliseconds.ToString("0.00")
+            ));
 
 #if GRAMMAR_VERBOSE
             eval.printOutput();
