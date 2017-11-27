@@ -30,29 +30,33 @@ namespace VineScript.Core
         }
 
         public bool RecordStats { get; set; }
-
-        public PassageScript(string scriptname, string filename, ParserRuleContext tree)
+        
+        public PassageScript(string scriptname, string filename)
         {
             _name = scriptname;
             _filename = filename;
-            _tree = tree;
         }
 
-        public bool Loaded { get; private set; }
+        public bool Loaded {
+            get {
+                return _tree != null;
+            }
+        }
 
-        public void Load()
+        public bool Load(ParserRuleContext tree)
         {
-
+            _tree = tree;
+            return true;
         }
 
         public void Unload()
         {
-
+            _tree = null;
         }
 
         public void Run()
         {
-
+            throw new NotImplementedException();
         }
     }
 }

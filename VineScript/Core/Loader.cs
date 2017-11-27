@@ -9,10 +9,11 @@ namespace VineScript.Core
 {
     public class Loader
     {
-        private Dictionary<string, PassageScript> loadedScripts = new Dictionary<string, PassageScript>();
-        private Dictionary<string, string> unloadedScripts = new Dictionary<string, string>();
+        private Dictionary<string, PassageScript> passageScripts = new Dictionary<string, PassageScript>();
 
         private Compiler.VineCompiler compiler;
+        
+        public string BaseDir { get ; set; } = "./";
 
         public Loader()
         {
@@ -21,7 +22,9 @@ namespace VineScript.Core
 
         public PassageScript Get(string scriptname)
         {
-            throw new NotImplementedException();
+            PassageScript passage;
+            passageScripts.TryGetValue(scriptname, out passage);
+            return passage;
         }
 
         /// <summary>
@@ -46,7 +49,7 @@ namespace VineScript.Core
 
                 foreach (string fn in filenames) {
                     string scriptname = GetScriptNameFromFile(fn, dirfullpath);
-                    AddFile(fn, scriptname, dirfullpath);
+                    AddFile(fn, ref scriptname, dirfullpath);
                 }
                 added = filenames.Length > 0;
             }
@@ -58,18 +61,29 @@ namespace VineScript.Core
 
         public bool AddFile(string filename, string scriptname="")
         {
-            string dirfullpath = Path.GetFullPath(filename);
-            return AddFile(filename, scriptname, dirfullpath);
+            string filefullpath = Path.GetFullPath(filename);
+            string dirfullpath = Path.GetFullPath(BaseDir);
+            return AddFile(filefullpath, ref scriptname, dirfullpath);
         }
 
-        private bool AddFile(string filename, string scriptname, string dir_root)
+        public bool LoadFile(string filename, string scriptname="")
+        {
+            string filefullpath = Path.GetFullPath(filename);
+            string dirfullpath = Path.GetFullPath(BaseDir);
+            if (AddFile(filefullpath, ref scriptname, dirfullpath)) {
+                return LoadPassage(scriptname);
+            }
+            return false;
+        }
+
+        private bool AddFile(string filename, ref string scriptname, string dir_root)
         {
             if (string.IsNullOrWhiteSpace(scriptname)) {
                 // Give the script a name based on the filename
                 scriptname = GetScriptNameFromFile(filename, dir_root);
             }
 
-            if (unloadedScripts.ContainsKey(scriptname)) {
+            if (passageScripts.ContainsKey(scriptname)) {
                 throw new Exception(string.Format(
                     "'{0}' can't be added because another script has the same name!",
                     scriptname
@@ -80,84 +94,101 @@ namespace VineScript.Core
             Console.WriteLine(string.Format(
                 "Added '{0}':{1} {2}", scriptname, System.Environment.NewLine, fullpath
             ));
-            unloadedScripts.Add(scriptname, fullpath);
+            passageScripts.Add(scriptname, new PassageScript(scriptname, fullpath));
             return true;
         }
 
-        public bool Load(string scriptname)
+        public bool LoadPassage(string scriptname)
         {
-            if (loadedScripts.ContainsKey(scriptname)) {
-                throw new Exception(string.Format(
-                    "'{0}' can't be loaded because it's already loaded!", scriptname
-                ));
-            }
+            PassageScript passage;
+            if (passageScripts.TryGetValue(scriptname, out passage))
+            {
+                if (passage.Loaded) {
+                    throw new Exception(string.Format(
+                        "'{0}' can't be loaded because it's already loaded!", scriptname
+                    ));
+                }
 
-            string filename;
-            if (unloadedScripts.TryGetValue(scriptname, out filename)) {
-                StreamReader istream = File.OpenText(filename);
+                StreamReader istream = File.OpenText(passage.Filename);
                 string code = istream.ReadToEnd();
-                compiler.Init(code, filename);
+                compiler.Init(code, passage.Filename);
                 var tree = compiler.BuildTree();
-                PassageScript loadedScript = new PassageScript(scriptname, filename, tree);
-                loadedScripts.Add(scriptname, loadedScript);
+                Get(scriptname).Load(tree);
                 return true;
             }
 
             throw new Exception(string.Format("'{0}' doesn't exist!", scriptname));
         }
 
+        public bool LoadFilesFromDir(string dirname, string ext="*.vine|*", bool recursive=true)
+        {
+            if (AddFilesFromDir(dirname, ext, recursive)) {
+                return LoadAll();
+            }
+            return false;
+
+        }
+
         public bool LoadAll()
         {
             bool parseError = false;
-            if (unloadedScripts.Count == 0) {
+            if (passageScripts.Count == 0) {
                 return false;
             }
-            foreach (var el in unloadedScripts) {
+            foreach (var el in passageScripts) {
                 try {
-                    if (!Load(el.Key)) {
+                    if (el.Value.Loaded || !LoadPassage(el.Key)) {
                         return false;
                     }
                 } catch (Compiler.VineParseException e) {
+                    // Print the parse error but doesn't stop the loop here.
+                    // Continue loading more files to print more potential
+                    // parse errors
                     Console.Write(e.Message);
+                    // we mark the function to return an error though
                     parseError = true;
                 }
             }
-            // TODO if parse errors throw exception?
             return !parseError;
         }
 
         public bool Unload(string scriptname)
         {
-            return loadedScripts.Remove(scriptname);
+            PassageScript passage = Get(scriptname);
+            if (passage != null) {
+                passage.Unload();
+                return true;
+            }
+            return false;
         }
 
         public bool UnloadAll()
         {
-            foreach (var el in loadedScripts) {
+            foreach (var el in passageScripts) {
                 if (!Unload(el.Key)) {
                     return false;
                 }
             }
-            return loadedScripts.Count == 0;
+            return passageScripts.Count == 0;
         }
 
         public bool Remove(string scriptname)
         {
             bool unloaded = true;
-            if (loadedScripts.ContainsKey(scriptname)) {
+            if (passageScripts.ContainsKey(scriptname)) {
                 unloaded = Unload(scriptname);
             }
-            return unloaded && unloadedScripts.Remove(scriptname);
+            return unloaded && passageScripts.Remove(scriptname);
         }
 
         public bool RemoveAll()
         {
-            for (int i = unloadedScripts.Count - 1; i >= 0; i--) {
-                if (!Remove(unloadedScripts.ElementAt(i).Key)) {
+            for (int i = passageScripts.Count - 1; i >= 0; i--) {
+                if (!Remove(passageScripts.ElementAt(i).Key)) {
                     return false;
                 }
             }
-            return unloadedScripts.Count == 0 && loadedScripts.Count == 0;
+            return passageScripts.Count == 0;
         }
 
         public void ClearMemory()
@@ -173,8 +204,10 @@ namespace VineScript.Core
         {
             // TODO replace folder separator '\' on windows by '/'
             // so it's the same name on every os.
-            string without_path = filename.Substring(dir_root.Length + 1);
+            int overflow = dir_root.Last() == Path.DirectorySeparatorChar ? 0 : 1;
+            string without_path = filename.Substring(dir_root.Length + overflow);
             string with_ext = Path.GetExtension(filename);
+            // remove the extension
             return without_path.Substring(0, without_path.Length - with_ext.Length);
         }
 
