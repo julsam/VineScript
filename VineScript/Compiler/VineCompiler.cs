@@ -146,9 +146,19 @@ namespace VineScript.Compiler
 
         public PassageResult CompileTree(ParserRuleContext tree)
         {
+
+#if GRAMMAR_TREE || GRAMMAR_VERBOSE
+            Console.WriteLine(Util.PrettyGrammarTree(tree.ToStringTree(parser)));
+#endif
+
+            var evalTimer = System.Diagnostics.Stopwatch.StartNew();
             var eval = new VineVisitor(story);
             eval.Visit(tree);
-            
+            evalTimer.Stop();
+            Console.WriteLine(string.Format(
+                "Evaluated in: {0} ms", evalTimer.ElapsedMilliseconds.ToString("0.00")
+            ));
+
 #if GRAMMAR_VERBOSE
             eval.printOutput();
 #endif
@@ -163,22 +173,7 @@ namespace VineScript.Compiler
             // Tree
             BuildTree();
 
-#if GRAMMAR_TREE || GRAMMAR_VERBOSE
-            Console.WriteLine(Util.PrettyGrammarTree(tree.ToStringTree(parser)));
-#endif
-            
-            var evalTimer = System.Diagnostics.Stopwatch.StartNew();
-            var eval = new VineVisitor(story);
-            eval.Visit(tree);
-            evalTimer.Stop();
-            Console.WriteLine(string.Format(
-                "Evaluated in: {0} ms", evalTimer.ElapsedMilliseconds.ToString("0.00")
-            ));
-
-#if GRAMMAR_VERBOSE
-            eval.printOutput();
-#endif
-            return eval.passageResult;
+            return CompileTree(tree);
         }
 
         public string Eval(string expr, string sourceName)
