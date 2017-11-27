@@ -30,7 +30,8 @@ namespace VineScript.Compiler
 #if GRAMMAR_VERBOSE
             // Print input
             Console.WriteLine(vinecode);
-
+#endif
+#if TIME_STATS
             // Start timer
             var watch = System.Diagnostics.Stopwatch.StartNew();
 #endif
@@ -53,19 +54,23 @@ namespace VineScript.Compiler
 
             PassageResult finalResult = new PassageResult(finalOutput, compiledResult.links);
 
-#if GRAMMAR_VERBOSE
+#if TIME_STATS
             // Stop timer
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
-            
+#endif
+#if GRAMMAR_VERBOSE
             // Final output
             Console.WriteLine("### FORMATTED OUTPUT: ###");
             if (finalResult.text.Length > 0)
                 Console.WriteLine(finalResult.text);
             Console.WriteLine("### END ###");
-
+#endif
+#if TIME_STATS
             // Timer output
-            Console.WriteLine(string.Format("Time elapsed: {0} ms", elapsedMs.ToString("0.00")));
+            Console.WriteLine(string.Format(
+                "Parsed & Executed in: {0} ms", elapsedMs.ToString("0.00")
+            ));
 #endif
             return finalResult;
         }
@@ -80,7 +85,8 @@ namespace VineScript.Compiler
 #if GRAMMAR_VERBOSE
             // Print input
             Console.WriteLine(expr);
-
+#endif
+#if TIME_STATS
             // Start timer
             var watch = System.Diagnostics.Stopwatch.StartNew();
 #endif
@@ -95,7 +101,7 @@ namespace VineScript.Compiler
             // TODO: keep only one space between words
             string finalOutput = WhiteSpace.Trim(parsed);
 
-#if GRAMMAR_VERBOSE
+#if TIME_STATS
             // Stop timer
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;

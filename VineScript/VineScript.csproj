@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;GRAMMAR_TREE;GRAMMAR_VERBOSE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;GRAMMAR_TREE;GRAMMAR_VERBOSE;TIME_STATS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>

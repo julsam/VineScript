@@ -26,7 +26,7 @@ namespace VineScript.Compiler
 
         public void Init(string vinecode, string sourceName)
         {
-#if GRAMMAR_VERBOSE
+#if TIME_STATS
             var initTimer = System.Diagnostics.Stopwatch.StartNew();
 #endif
 
@@ -49,7 +49,7 @@ namespace VineScript.Compiler
             }
             parsed = false;
             
-#if GRAMMAR_VERBOSE
+#if TIME_STATS
             initTimer.Stop();
             Console.WriteLine(string.Format(
                 "Init in: {0} ms", initTimer.ElapsedMilliseconds.ToString("0.00")
@@ -123,12 +123,12 @@ namespace VineScript.Compiler
         public ParserRuleContext BuildTree()
         {
             // Parsing
-#if GRAMMAR_VERBOSE
+#if TIME_STATS
             var parseTimer = System.Diagnostics.Stopwatch.StartNew();
 #endif
             parser.BuildParseTree = true;
             var errorReports = Parse();
-#if GRAMMAR_VERBOSE
+#if TIME_STATS
             parseTimer.Stop();
             Console.WriteLine(string.Format(
                 "Parsed in: {0} ms", parseTimer.ElapsedMilliseconds.ToString("0.00")
@@ -151,13 +151,17 @@ namespace VineScript.Compiler
             Console.WriteLine(Util.PrettyGrammarTree(tree.ToStringTree(parser)));
 #endif
 
+#if TIME_STATS
             var evalTimer = System.Diagnostics.Stopwatch.StartNew();
+#endif
             var eval = new VineVisitor(story);
             eval.Visit(tree);
+#if TIME_STATS
             evalTimer.Stop();
             Console.WriteLine(string.Format(
                 "Evaluated in: {0} ms", evalTimer.ElapsedMilliseconds.ToString("0.00")
             ));
+#endif
 
 #if GRAMMAR_VERBOSE
             eval.printOutput();
