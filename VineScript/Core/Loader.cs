@@ -53,7 +53,9 @@ namespace VineScript.Core
         {
             bool added = false;
             try {
-                BaseDir = Path.GetFullPath(dirname);
+                if (string.IsNullOrWhiteSpace(dirname)) {
+                    BaseDir = Path.GetFullPath(dirname);
+                }
                 string[] filenames = GetFiles(BaseDir, ext,
                     recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly
                  );
@@ -146,7 +148,11 @@ namespace VineScript.Core
         /// loader.Get("hello");
         /// loader.Get("sub/lorem");
         /// </summary>
-        public bool LoadFromDir(string dirname, string ext="*.vine", bool recursive=true)
+        /// <param name="dirname"></param>
+        /// <param name="ext"></param>
+        /// <param name="recursive"></param>
+        /// <returns></returns>
+        public bool LoadFromDir(string dirname="", string ext="*.vine", bool recursive=true)
         {
             if (AddFilesFromDir(dirname, ext, recursive)) {
                 return LoadAll();
