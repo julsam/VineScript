@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using VineScript.Compiler;
 
 namespace VineScript.Core
 {
@@ -11,13 +12,20 @@ namespace VineScript.Core
     {
         private Dictionary<string, PassageScript> passageScripts = new Dictionary<string, PassageScript>();
 
-        private Compiler.VineCompiler compiler;
+        private VineCompiler compiler;
         
-        public string BaseDir { get ; set; } = "./";
+        private const string CURRENT_DIR = "./";
+
+        /// <summary>
+        /// Base directory containing the scripts. By default it uses the
+        /// directory in which the program is launched. Calling LoadFromDir()
+        /// will change its value.
+        /// </summary>
+        public string BaseDir { get ; set; } = CURRENT_DIR;
 
         public Loader()
         {
-            compiler = new Compiler.VineCompiler(null);
+            compiler = new VineCompiler(null);
         }
 
         public PassageScript Get(string scriptname)
@@ -28,7 +36,8 @@ namespace VineScript.Core
         }
 
         /// <summary>
-        /// Add files from a given directory.
+        /// Add files from a given directory. That directory will become the
+        /// root directory for the scripts.
         /// </summary>
         /// <param name="dirname">Directory name</param>
         /// <param name="ext">Files extensions (not case sensitive).
@@ -38,18 +47,17 @@ namespace VineScript.Core
         /// <param name="recursive">Include the current `dirname` directory 
         /// and all its subdirectories in the search.</param>
         /// <returns></returns>
-        public bool AddFilesFromDir(string dirname, string ext="*.vine|*", bool recursive=true)
+        private bool AddFilesFromDir(string dirname, string ext="*.vine", bool recursive=true)
         {
             bool added = false;
             try {
-                string dirfullpath = Path.GetFullPath(dirname);
-                string[] filenames = GetFiles(dirfullpath, ext,
+                BaseDir = Path.GetFullPath(dirname);
+                string[] filenames = GetFiles(BaseDir, ext,
                     recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly
                  );
 
                 foreach (string fn in filenames) {
-                    string scriptname = GetScriptNameFromFile(fn, dirfullpath);
-                    AddFile(fn, ref scriptname, dirfullpath);
+                    AddFile(fn);
                 }
                 added = filenames.Length > 0;
             }
@@ -59,21 +67,11 @@ namespace VineScript.Core
             return added;
         }
 
-        public bool AddFile(string filename, string scriptname="")
+        private bool AddFile(string filename, string scriptname="")
         {
             string filefullpath = Path.GetFullPath(filename);
             string dirfullpath = Path.GetFullPath(BaseDir);
             return AddFile(filefullpath, ref scriptname, dirfullpath);
-        }
-
-        public bool LoadFile(string filename, string scriptname="")
-        {
-            string filefullpath = Path.GetFullPath(filename);
-            string dirfullpath = Path.GetFullPath(BaseDir);
-            if (AddFile(filefullpath, ref scriptname, dirfullpath)) {
-                return LoadPassage(scriptname);
-            }
-            return false;
         }
 
         private bool AddFile(string filename, ref string scriptname, string dir_root)
@@ -98,7 +96,7 @@ namespace VineScript.Core
             return true;
         }
 
-        public bool LoadPassage(string scriptname)
+        private bool LoadPassage(string scriptname)
         {
             PassageScript passage;
             if (passageScripts.TryGetValue(scriptname, out passage))
@@ -120,16 +118,41 @@ namespace VineScript.Core
             throw new Exception(string.Format("'{0}' doesn't exist!", scriptname));
         }
 
-        public bool LoadFilesFromDir(string dirname, string ext="*.vine|*", bool recursive=true)
+        public bool Load(string filename, string scriptname="")
+        {
+            string filefullpath = Path.GetFullPath(filename);
+            string dirfullpath = Path.GetFullPath(BaseDir);
+            if (AddFile(filefullpath, ref scriptname, dirfullpath)) {
+                return LoadPassage(scriptname);
+            }
+            return false;
+        }
+        
+        /// <summary>
+        /// Load files from a given directory. That directory will become the
+        /// implicit root directory, and all scripts path will be relative to
+        /// it, meaning that you won't need to specify it when calling scripts.
+        /// E.g:
+        /// You have the directory "./scripts/foo" containing the files:
+        ///     * hello.vine
+        ///     * bar.vine
+        ///     * sub/lorem.vine
+        /// You can call:
+        /// loader.LoadFromDir("./scripts/foo/bar");
+        /// But you don't need to specify the path again, it's now the base
+        /// directory for the scripts.
+        /// loader.Get("hello");
+        /// loader.Get("sub/lorem");
+        /// </summary>
+        public bool LoadFromDir(string dirname, string ext="*.vine", bool recursive=true)
         {
             if (AddFilesFromDir(dirname, ext, recursive)) {
                 return LoadAll();
             }
             return false;
-
         }
 
-        public bool LoadAll()
+        private bool LoadAll()
         {
             bool parseError = false;
             if (passageScripts.Count == 0) {
@@ -140,7 +163,7 @@ namespace VineScript.Core
                     if (el.Value.Loaded || !LoadPassage(el.Key)) {
                         return false;
                     }
-                } catch (Compiler.VineParseException e) {
+                } catch (VineParseException e) {
                     // Print the parse error but doesn't stop the loop here.
                     // Continue loading more files to print more potential
                     // parse errors
@@ -152,7 +175,7 @@ namespace VineScript.Core
             return !parseError;
         }
 
-        public bool Unload(string scriptname)
+        private bool Unload(string scriptname)
         {
             PassageScript passage = Get(scriptname);
             if (passage != null) {
@@ -162,7 +185,7 @@ namespace VineScript.Core
             return false;
         }
 
-        public bool UnloadAll()
+        private bool UnloadAll()
         {
             foreach (var el in passageScripts) {
                 if (!Unload(el.Key)) {
