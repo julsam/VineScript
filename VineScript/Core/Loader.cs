@@ -31,7 +31,9 @@ namespace VineScript.Core
         public PassageScript Get(string scriptname)
         {
             PassageScript passage;
-            passageScripts.TryGetValue(scriptname, out passage);
+            if (!passageScripts.TryGetValue(scriptname, out passage)) {
+                Console.WriteLine(string.Format("'{0}' doesn't exist!", scriptname));
+            }
             return passage;
         }
 
@@ -47,7 +49,7 @@ namespace VineScript.Core
         /// <param name="recursive">Include the current `dirname` directory 
         /// and all its subdirectories in the search.</param>
         /// <returns></returns>
-        private bool AddFilesFromDir(string dirname, string ext="*.vine", bool recursive=true)
+        private bool AddFilesFromDir(string dirname, string ext, bool recursive=true)
         {
             bool added = false;
             try {
@@ -225,15 +227,51 @@ namespace VineScript.Core
 
         private static string GetScriptNameFromFile(string filename, string dir_root)
         {
-            // TODO replace folder separator '\' on windows by '/'
-            // so it's the same name on every os.
-            int overflow = dir_root.Last() == Path.DirectorySeparatorChar ? 0 : 1;
-            string without_path = filename.Substring(dir_root.Length + overflow);
-            string with_ext = Path.GetExtension(filename);
+            // Parts of the script's name can be directories. It is needed to
+            // change the directory separator char in order to be portable
+            // on every OS. Otherwise the name would be different:
+            //  * Windows => "scripts\foo\bar"
+            //  * Unix => "scripts/foo/bar"
+            // I chose the Unix one "/" as the standard directory separator 
+            // char when calling a script
+            var scriptPart = PathParts(filename);
+            var basePart = PathParts(dir_root);
+            string scriptname = "";
+            for (int i = basePart.Count; i < scriptPart.Count; i++) {
+                scriptname += scriptPart[i].Name;
+                if (i < scriptPart.Count - 1) {
+                    scriptname += "/";
+                }
+            }
+            string extension = Path.GetExtension(scriptname);
             // remove the extension
-            return without_path.Substring(0, without_path.Length - with_ext.Length);
+            return scriptname.Substring(0, scriptname.Length - extension.Length);
         }
 
+        /// <summary>
+        /// Get a list of each parts of a path. Can contain a filename.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private static List<DirectoryInfo> PathParts(string path)
+        {
+            DirectoryInfo current = new DirectoryInfo(path);
+            var parts = new List<DirectoryInfo>();
+            while (current != null) {
+                parts.Add(current);
+                current = current.Parent;
+            }
+            parts.Reverse();
+            return parts;
+        }
+
+        /// <summary>
+        /// Get a list of files for a given path.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="patterns"></param>
+        /// <param name="opt"></param>
+        /// <returns></returns>
         private static string[] GetFiles(string path, string patterns, SearchOption opt)
         {
             // Escape the dot between the filename and extension
