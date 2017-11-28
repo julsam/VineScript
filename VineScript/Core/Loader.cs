@@ -94,9 +94,33 @@ namespace VineScript.Core
 
             string fullpath = Path.GetFullPath(filename);
             Console.WriteLine(string.Format(
-                "Added '{0}':{1} {2}", scriptname, System.Environment.NewLine, fullpath
+                "Added '{0}':{1} {2}", scriptname, Environment.NewLine, fullpath
             ));
-            passageScripts.Add(scriptname, new PassageScript(scriptname, fullpath));
+            StreamReader istream = File.OpenText(fullpath);
+            string code = istream.ReadToEnd();
+            PassageScript passage = new PassageScript(scriptname, code, fullpath);
+            passageScripts.Add(scriptname, passage);
+            return true;
+        }
+
+        private bool AddCode(string sourceCode, string scriptname)
+        {
+            if (string.IsNullOrWhiteSpace(scriptname)) {
+                throw new Exception("Can't add code with no script name associated!");
+            }
+
+            if (passageScripts.ContainsKey(scriptname)) {
+                throw new Exception(string.Format(
+                    "'{0}' can't be added because another script has the same name!",
+                    scriptname
+                ));
+            }
+            
+            Console.WriteLine(string.Format(
+                "Added '{0}':{1} {2}", scriptname, Environment.NewLine, PassageScript.STDIN
+            ));
+            PassageScript passage = new PassageScript(scriptname, sourceCode);
+            passageScripts.Add(scriptname, passage);
             return true;
         }
 
@@ -110,10 +134,7 @@ namespace VineScript.Core
                         "'{0}' can't be loaded because it's already loaded!", scriptname
                     ));
                 }
-
-                StreamReader istream = File.OpenText(passage.Filename);
-                string code = istream.ReadToEnd();
-                compiler.Init(code, passage.Filename);
+                compiler.Init(passage.SourceCode, passage.Filename);
                 var tree = compiler.BuildTree();
                 Get(scriptname).Load(tree);
                 return true;
@@ -122,11 +143,19 @@ namespace VineScript.Core
             throw new Exception(string.Format("'{0}' doesn't exist!", scriptname));
         }
 
-        public bool Load(string filename, string scriptname="")
+        public bool LoadFile(string filename, string scriptname="")
         {
             string filefullpath = Path.GetFullPath(filename);
             string dirfullpath = Path.GetFullPath(BaseDir);
             if (AddFile(filefullpath, ref scriptname, dirfullpath)) {
+                return LoadPassage(scriptname);
+            }
+            return false;
+        }
+
+        public bool LoadCode(string sourceCode, string scriptname)
+        {
+            if (AddCode(sourceCode, scriptname)) {
                 return LoadPassage(scriptname);
             }
             return false;
@@ -160,6 +189,10 @@ namespace VineScript.Core
             return false;
         }
 
+        /// <summary>
+        /// Load all added scripts.
+        /// </summary>
+        /// <returns>true if all the added scripts were loaded.</returns>
         private bool LoadAll()
         {
             bool parseError = false;

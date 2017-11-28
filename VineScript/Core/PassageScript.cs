@@ -6,8 +6,17 @@ using Antlr4.Runtime;
 
 namespace VineScript.Core
 {
+    public enum PassageScriptSource {
+        File,
+        Stdin
+    }
+
     public class PassageScript
     {
+        public const string STDIN = "<stdin>";
+
+        public readonly PassageScriptSource Source;
+
         private string _name;
         public string Name {
             get {
@@ -22,6 +31,13 @@ namespace VineScript.Core
             }
         }
         
+        private string _sourceCode;
+        public string SourceCode {
+            get {
+                return _sourceCode;
+            }
+        }
+        
         private ParserRuleContext _tree;
         public ParserRuleContext Tree {
             get {
@@ -31,10 +47,20 @@ namespace VineScript.Core
 
         public bool RecordStats { get; set; }
         
-        public PassageScript(string scriptname, string filename)
+        public PassageScript(string scriptname, string sourceCode)
+        {
+            _name = scriptname;
+            _filename = STDIN;
+            Source = PassageScriptSource.Stdin;
+            _sourceCode = sourceCode;
+        }
+        
+        public PassageScript(string scriptname, string sourceCode, string filename)
         {
             _name = scriptname;
             _filename = filename;
+            Source = PassageScriptSource.File;
+            _sourceCode = sourceCode;
         }
 
         public bool Loaded {
