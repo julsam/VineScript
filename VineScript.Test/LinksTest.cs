@@ -11,12 +11,18 @@ namespace VineScriptTest
     [TestClass]
     public class LinksTest
     {
+        VineStory story;
+
+        public LinksTest()
+        {
+            story = new VineStory("");
+        }
+
         [TestMethod]
         public void LinksBasic01()
         {
-            StreamReader input = File.OpenText("scripts/links/basic01.vine");
+            string input = "scripts/links/basic01";
 
-            VineStory story = new VineStory();
             PassageResult result = story.RunPassage(input);
 
             Assert.AreEqual("my title 01", result.links[0].title);
@@ -35,12 +41,10 @@ namespace VineScriptTest
         [TestMethod]
         public void LinksEscapeText01()
         {
-            StreamReader input = File.OpenText("scripts/links/escape_text01.vine");
+            string input = "scripts/links/escape_text01";
 
-            VineStory story = new VineStory();
             PassageResult result = story.RunPassage(input);
 
-            
             Assert.AreEqual("not need to escape this \\ >]-<", result.links[0].title);
             Assert.AreEqual("link", result.links[0].passageName);
 

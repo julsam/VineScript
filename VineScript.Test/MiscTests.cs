@@ -18,9 +18,9 @@ namespace VineScript.Test
             // the first character (sometimes displayed as a whitespace)
             // is '\u000B' (vertical tabulation) and is not allowed in text
             string input = "{{ 1 }}";
-            VineStory story = new VineStory();
             try {
-                story.RunPassage(input);
+                Loader loader = new Loader();
+                loader.LoadCode(input, "test");
                 Assert.Fail();
             } catch (VineParseException e) {
                 if (e.errorReport.ErrorMessage != VineParser.errReservedChar000B) {
@@ -37,9 +37,9 @@ namespace VineScript.Test
             // the character between 'foo' and 'bar'(sometimes displayed as a whitespace)
             // is '\u000B' (vertical tabulation) and is not in a string literal
             string input = "{{ \"foobar\" }}";
-            VineStory story = new VineStory();
             try {
-                story.RunPassage(input);
+                Loader loader = new Loader();
+                loader.LoadCode(input, "test");
                 Assert.Fail();
             } catch (VineParseException e) {
                 if (e.errorReport.ErrorMessage != VineParser.errReservedChar000B) {
@@ -56,9 +56,9 @@ namespace VineScript.Test
             // the character between 'foo' and 'bar'(sometimes displayed as a whitespace)
             // is '\u000B' (vertical tabulation) and is not in a string literal
             string input = "[[ foobar ]]";
-            VineStory story = new VineStory();
             try {
-                story.RunPassage(input);
+                Loader loader = new Loader();
+                loader.LoadCode(input, "test");
                 Assert.Fail();
             } catch (VineParseException e) {
                 if (e.errorReport.ErrorMessage != VineParser.errReservedChar000B) {
@@ -74,9 +74,9 @@ namespace VineScript.Test
         {
             // the character \u001E (record separator): ''
             string input = "Record separator: '' (invisible in most editors)";
-            VineStory story = new VineStory();
             try {
-                story.RunPassage(input);
+                Loader loader = new Loader();
+                loader.LoadCode(input, "test");
                 Assert.Fail();
             } catch (VineParseException e) {
                 if (e.errorReport.ErrorMessage != VineParser.errReservedChar001E) {
@@ -92,9 +92,9 @@ namespace VineScript.Test
         {
             // the character \u001E (record separator): ''
             string input = "Record separator: {{ \"''\" }} (invisible in most editors)";
-            VineStory story = new VineStory();
             try {
-                story.RunPassage(input);
+                Loader loader = new Loader();
+                loader.LoadCode(input, "test");
                 Assert.Fail();
             } catch (VineParseException e) {
                 if (e.errorReport.ErrorMessage != VineParser.errReservedChar001E) {
@@ -110,9 +110,9 @@ namespace VineScript.Test
         {
             // the character \u001E (record separator): ''
             string input = "Record separator: [[ foo''bar ]] (invisible in most editors)";
-            VineStory story = new VineStory();
             try {
-                story.RunPassage(input);
+                Loader loader = new Loader();
+                loader.LoadCode(input, "test");
                 Assert.Fail();
             } catch (VineParseException e) {
                 if (e.errorReport.ErrorMessage != VineParser.errReservedChar001E) {
@@ -128,9 +128,9 @@ namespace VineScript.Test
         {
             // the character \u001F (unit separator): ''
             string input = "Unit separator: '' (invisible in most editors)";
-            VineStory story = new VineStory();
             try {
-                story.RunPassage(input);
+                Loader loader = new Loader();
+                loader.LoadCode(input, "test");
                 Assert.Fail();
             } catch (VineParseException e) {
                 if (e.errorReport.ErrorMessage != VineParser.errReservedChar001F) {
@@ -146,9 +146,9 @@ namespace VineScript.Test
         {
             // the character \u001F (unit separator): ''
             string input = "Unit separator: {{ \"''\" }} (invisible in most editors)";
-            VineStory story = new VineStory();
             try {
-                story.RunPassage(input);
+                Loader loader = new Loader();
+                loader.LoadCode(input, "test");
                 Assert.Fail();
             } catch (VineParseException e) {
                 if (e.errorReport.ErrorMessage != VineParser.errReservedChar001F) {
@@ -164,9 +164,9 @@ namespace VineScript.Test
         {
             // the character \u001F (unit separator): ''
             string input = "Unit separator: [[ foo''bar ]] (invisible in most editors)";
-            VineStory story = new VineStory();
             try {
-                story.RunPassage(input);
+                Loader loader = new Loader();
+                loader.LoadCode(input, "test");
                 Assert.Fail();
             } catch (VineParseException e) {
                 if (e.errorReport.ErrorMessage != VineParser.errReservedChar001F) {
@@ -191,10 +191,10 @@ namespace VineScript.Test
             string errMsg3 = VineParser.errMissingSpaceBefore + "'or'";
             //  4. space after 'or'
             string errMsg4 = VineParser.errMissingSpaceAfter + "'or'";
-
-            VineStory story = new VineStory();
+            
             try {
-                story.RunPassage(input);
+                Loader loader = new Loader();
+                loader.LoadCode(input, "test");
                 Assert.Fail();
             } catch (VineParseException e) {
                 if (e.errorReports[0].ErrorMessage != errMsg1) {

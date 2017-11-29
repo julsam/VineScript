@@ -14,19 +14,23 @@ namespace VineScript.Test
     [TestClass]
     public class BasicTests
     {
+        VineStory story;
+
         public BasicTests()
         {
-            //
-            // TODO: Add constructor logic here
-            //
+            story = new VineStory("");
         }
 
         [TestMethod]
         public void Empty()
         {
             string input = "";
-            VineStory story = new VineStory();
-            string output = story.RunPassage(input).text;
+
+            Loader loader = new Loader();
+            loader.LoadCode(input, "test");
+            VineStory newstory = new VineStory(loader);
+
+            string output = newstory.RunPassage("test").text;
             Assert.AreEqual("", output);
         }
 
@@ -34,48 +38,58 @@ namespace VineScript.Test
         public void SimpleComment()
         {
             string input = "/* comment */";
-            VineStory story = new VineStory();
-            string output = story.RunPassage(input).text;
+
+            Loader loader = new Loader();
+            loader.LoadCode(input, "test");
+            VineStory newstory = new VineStory(loader);
+
+            string output = newstory.RunPassage("test").text;
             Assert.AreEqual("", output);
         }
 
         [TestMethod]
         public void SimplePrintInt()
         {
-            VineStory story = new VineStory();
-            story.vars["var1"] = 42;
             string input = "{{ $var1 }}";
-            string output = story.RunPassage(input).text;
+
+            Loader loader = new Loader();
+            loader.LoadCode(input, "test");
+            VineStory newstory = new VineStory(loader);
+
+            newstory.vars["var1"] = 42;
+            string output = newstory.RunPassage("test").text;
             Assert.AreEqual("42", output);
         }
 
         [TestMethod]
         public void PrintDefinedVars()
         {
-            VineStory story = new VineStory();
-            story.vars["varStr"] = "Foo bar";
-            story.vars["varInt"] = 42;
-            story.vars["varNumber"] = 4.669;
-            story.vars["varBool"] = true;
-            story.vars["varNull"] = VineVar.NULL;
-
             string input = "{{ $varStr }}";
             input += " {{ $varInt }}";
             input += " {{ $varNumber }}";
             input += " {{ $varBool }}";
             input += " {{ $varNull }}";
+            
+            Loader loader = new Loader();
+            loader.LoadCode(input, "test");
+            VineStory newstory = new VineStory(loader);
 
-            string output = story.RunPassage(input).text;
+            newstory.vars["varStr"] = "Foo bar";
+            newstory.vars["varInt"] = 42;
+            newstory.vars["varNumber"] = 4.669;
+            newstory.vars["varBool"] = true;
+            newstory.vars["varNull"] = VineVar.NULL;
+            
+            string output = newstory.RunPassage("test").text;
             Assert.AreEqual("Foo bar 42 4.669 True", output);
         }
 
         [TestMethod]
         public void CmpFilePrint01()
         {
-            StreamReader input = File.OpenText("scripts/basic/print01.vine");
+            string input = "scripts/basic/print01";
             StreamReader cmp = File.OpenText("scripts/basic/print01.cmp");
-
-            VineStory story = new VineStory();
+            
             string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
@@ -84,10 +98,9 @@ namespace VineScript.Test
         [TestMethod]
         public void CmpFileSet01()
         {
-            StreamReader input = File.OpenText("scripts/basic/set01.vine");
+            string input = "scripts/basic/set01";
             StreamReader cmp = File.OpenText("scripts/basic/set01.cmp");
-
-            VineStory story = new VineStory();
+            
             string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
@@ -97,10 +110,9 @@ namespace VineScript.Test
         public void CmpFileSet02()
         {
             // Var reassign
-            StreamReader input = File.OpenText("scripts/basic/set02.vine");
+            string input = "scripts/basic/set02";
             StreamReader cmp = File.OpenText("scripts/basic/set02.cmp");
-
-            VineStory story = new VineStory();
+            
             string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
@@ -110,10 +122,9 @@ namespace VineScript.Test
         public void CmpFileSet03()
         {
             // +=, -=, *=, /=, %=
-            StreamReader input = File.OpenText("scripts/basic/set03.vine");
+            string input = "scripts/basic/set03";
             StreamReader cmp = File.OpenText("scripts/basic/set03.cmp");
-
-            VineStory story = new VineStory();
+            
             string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
@@ -122,28 +133,29 @@ namespace VineScript.Test
         [TestMethod]
         public void AssignList()
         {
-            VineStory story = new VineStory();
-
             string input = "<< set v1 = 12, v2 = 2.0, v3 = true, v4 = null, ";
             input += "v5 = \"Foo\", v6 = [1,2,3], v7 = {\"a\": 4, \"b\": 5 } >>";
-
-            string output = story.RunPassage(input).text;
             
-            Assert.AreEqual(12, story.vars["v1"]);
-            Assert.AreEqual(2.0, story.vars["v2"]);
-            Assert.AreEqual(true, story.vars["v3"]);
-            Assert.AreEqual(VineVar.NULL, story.vars["v4"]);
-            Assert.AreEqual("Foo", story.vars["v5"]);
-            Assert.AreEqual(3, story.vars["v6"][2]);
-            Assert.AreEqual(4, story.vars["v7"]["a"]);
+            Loader loader = new Loader();
+            loader.LoadCode(input, "test");
+            VineStory newstory = new VineStory(loader);
+
+            string output = newstory.RunPassage("test").text;
+            
+            Assert.AreEqual(12, newstory.vars["v1"]);
+            Assert.AreEqual(2.0, newstory.vars["v2"]);
+            Assert.AreEqual(true, newstory.vars["v3"]);
+            Assert.AreEqual(VineVar.NULL, newstory.vars["v4"]);
+            Assert.AreEqual("Foo", newstory.vars["v5"]);
+            Assert.AreEqual(3, newstory.vars["v6"][2]);
+            Assert.AreEqual(4, newstory.vars["v7"]["a"]);
         }
 
         [TestMethod]
         public void Unset01()
         {
-            string input = File.OpenText("scripts/basic/unset01.vine").ReadToEnd();
+            string input = "scripts/basic/unset01";
             
-            VineStory story = new VineStory();
             string output = story.RunPassage(input).text;
             
             Assert.IsFalse(story.vars.ContainsKey("a"));
@@ -158,39 +170,43 @@ namespace VineScript.Test
         [TestMethod]
         public void SimpleIf()
         {
-            VineStory story = new VineStory();
-            story.vars["var"] = 42;
             string input = "<< if $var == 0 >>Zero<< elif $var == 42>>Forty Two<< else >>Other<< end >>";
-            string output = story.RunPassage(input).text;
+            
+            Loader loader = new Loader();
+            loader.LoadCode(input, "test");
+            VineStory newstory = new VineStory(loader);
+
+            newstory.vars["var"] = 42;
+            string output = newstory.RunPassage("test").text;
             Assert.AreEqual("Forty Two", output);
         }
 
         [TestMethod]
         public void FileIf01()
         {
-            VineStory story = new VineStory();
-            
-            story.RunPassage(File.OpenText("scripts/basic/if01.vine"));
+            story.vars.Clear();
+
+            story.RunPassage("scripts/basic/if01");
             Assert.AreEqual("var is null", story.vars["result"]);
 
             story.vars["var"] = "str";
-            story.RunPassage(File.OpenText("scripts/basic/if01.vine"));
+            story.RunPassage("scripts/basic/if01");
             Assert.AreEqual("var is a string", story.vars["result"]);
 
             story.vars["var"] = 42;
-            story.RunPassage(File.OpenText("scripts/basic/if01.vine"));
+            story.RunPassage("scripts/basic/if01");
             Assert.AreEqual("var is an int", story.vars["result"]);
 
             story.vars["var"] = 4.669;
-            story.RunPassage(File.OpenText("scripts/basic/if01.vine"));
+            story.RunPassage("scripts/basic/if01");
             Assert.AreEqual("var is a number", story.vars["result"]);
 
             story.vars["var"] = true;
-            story.RunPassage(File.OpenText("scripts/basic/if01.vine"));
+            story.RunPassage("scripts/basic/if01");
             Assert.AreEqual("var is a bool", story.vars["result"]);
 
             story.vars["var"] = false;
-            story.RunPassage(File.OpenText("scripts/basic/if01.vine"));
+            story.RunPassage("scripts/basic/if01");
             Assert.AreEqual("var is a bool", story.vars["result"]);
         }
 
@@ -202,33 +218,30 @@ namespace VineScript.Test
                 and (0 < 1) && $my_int >= 42 && $my_int != "42"
             >>
             */
-            string filename = "scripts/basic/if02.vine";
-
-            VineStory story = new VineStory();
+            string filename = "scripts/basic/if02";
             
             story.vars["hello_world"] = "Hello, World!";
             story.vars["my_int"] = 0;
-            story.RunPassage(File.OpenText(filename));
+            story.RunPassage(filename);
             Assert.AreEqual(new VineVar(false), story.vars["result"]);
             
             story.vars["hello_world"] = "abc";
             story.vars["my_int"] = 43;
-            story.RunPassage(File.OpenText(filename));
+            story.RunPassage(filename);
             Assert.AreEqual(new VineVar(false), story.vars["result"]);
             
             story.vars["hello_world"] = "Hello, World!";
             story.vars["my_int"] = 43;
-            story.RunPassage(File.OpenText(filename));
+            story.RunPassage(filename);
             Assert.AreEqual(new VineVar(true), story.vars["result"]);
         }
 
         [TestMethod]
         public void CmpFileLangChars01()
         {
-            StreamReader input = File.OpenText("scripts/basic/lang_chars01.vine");
+            string input = "scripts/basic/lang_chars01";
             StreamReader cmp = File.OpenText("scripts/basic/lang_chars01.cmp");
-
-            VineStory story = new VineStory();
+            
             string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
@@ -239,7 +252,7 @@ namespace VineScript.Test
         {
             VineStory story = new VineStory();
 
-            story.RunPassage(File.OpenText("scripts/basic/comments01.vine"));
+            story.RunPassage("scripts/basic/comments01");
 
             // TODO checks syntax error when implemented
             // If there's not error reading this file, we're good.
@@ -248,11 +261,6 @@ namespace VineScript.Test
         [TestMethod]
         public void DisplayAdditionPriority()
         {
-            VineStory story = new VineStory();
-            story.vars["varInt1"] = 1;
-            story.vars["varInt2"] = 2;
-            story.vars["varStr"] = "Foo";
-
             string input = "{{ \"Foo\" + 1 + 2 }}";
             input += " {{ 1 + 2 + \"Foo\" }}";
             input += " {{ varStr + varInt1 + varInt2 }}";
@@ -261,54 +269,65 @@ namespace VineScript.Test
             input += " {{ 1.0 + 2.0 + \"Foo\" }}";
             input += " {{ \"Foo\" + 1.5 + 2.5 }}";
             input += " {{ 1.5 + 2.5 + \"Foo\" }}";
+            
+            Loader loader = new Loader();
+            loader.LoadCode(input, "test");
+            VineStory newstory = new VineStory(loader);
 
-            string output = story.RunPassage(input).text;
+            newstory.vars["varInt1"] = 1;
+            newstory.vars["varInt2"] = 2;
+            newstory.vars["varStr"] = "Foo";
+
+            string output = newstory.RunPassage("test").text;
             Assert.AreEqual("Foo12 3Foo Foo12 3Foo Foo1.02.0 3.0Foo Foo1.52.5 4.0Foo", output);
         }
 
         [TestMethod]
         public void ArrayCreation01()
         {
-            VineStory story = new VineStory();
-
             string input = "<< set $arr = [1, 2.0, \"Three\", false, null] >>";
-
-            string output = story.RunPassage(input).text;
             
-            Assert.IsNotNull(story.vars["arr"]);
-            Assert.IsTrue(story.vars["arr"].IsArray);
-            Assert.AreEqual(1, story.vars["arr"][0]);
-            Assert.AreEqual(2.0, story.vars["arr"][1]);
-            Assert.AreEqual("Three", story.vars["arr"][2]);
-            Assert.AreEqual(false, story.vars["arr"][3]);
-            Assert.AreEqual(VineVar.NULL, story.vars["arr"][4]);
+            Loader loader = new Loader();
+            loader.LoadCode(input, "test");
+            VineStory newstory = new VineStory(loader);
+
+            string output = newstory.RunPassage("test").text;
+            
+            Assert.IsNotNull(newstory.vars["arr"]);
+            Assert.IsTrue(newstory.vars["arr"].IsArray);
+            Assert.AreEqual(1, newstory.vars["arr"][0]);
+            Assert.AreEqual(2.0, newstory.vars["arr"][1]);
+            Assert.AreEqual("Three", newstory.vars["arr"][2]);
+            Assert.AreEqual(false, newstory.vars["arr"][3]);
+            Assert.AreEqual(VineVar.NULL, newstory.vars["arr"][4]);
         }
 
         [TestMethod]
         public void DictCreation01()
         {
-            VineStory story = new VineStory();
-
             string input = "<< set $dict = { \"a\": 1, \"b\": 2.0, \"c\": \"Three\", \"d\": false, \"e\": null } >>";
-
-            string output = story.RunPassage(input).text;
             
-            Assert.IsNotNull(story.vars["dict"]);
-            Assert.IsTrue(story.vars["dict"].IsDict);
-            Assert.AreEqual(1, story.vars["dict"]["a"]);
-            Assert.AreEqual(2.0, story.vars["dict"]["b"]);
-            Assert.AreEqual("Three", story.vars["dict"]["c"]);
-            Assert.AreEqual(false, story.vars["dict"]["d"]);
-            Assert.AreEqual(VineVar.NULL, story.vars["dict"]["e"]);
+            Loader loader = new Loader();
+            loader.LoadCode(input, "test");
+            VineStory newstory = new VineStory(loader);
+
+            string output = newstory.RunPassage("test").text;
+            
+            Assert.IsNotNull(newstory.vars["dict"]);
+            Assert.IsTrue(newstory.vars["dict"].IsDict);
+            Assert.AreEqual(1, newstory.vars["dict"]["a"]);
+            Assert.AreEqual(2.0, newstory.vars["dict"]["b"]);
+            Assert.AreEqual("Three", newstory.vars["dict"]["c"]);
+            Assert.AreEqual(false, newstory.vars["dict"]["d"]);
+            Assert.AreEqual(VineVar.NULL, newstory.vars["dict"]["e"]);
         }
 
         [TestMethod]
         public void CmpFileFor01()
         {
-            StreamReader input = File.OpenText("scripts/basic/for01.vine");
+            string input = "scripts/basic/for01";
             StreamReader cmp = File.OpenText("scripts/basic/for01.cmp");
-
-            VineStory story = new VineStory();
+            
             string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
@@ -317,10 +336,9 @@ namespace VineScript.Test
         [TestMethod]
         public void CmpFileFor02()
         {
-            StreamReader input = File.OpenText("scripts/basic/for02.vine");
+            string input = "scripts/basic/for02";
             StreamReader cmp = File.OpenText("scripts/basic/for02.cmp");
-
-            VineStory story = new VineStory();
+            
             string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
@@ -329,10 +347,9 @@ namespace VineScript.Test
         [TestMethod]
         public void CmpFileFor03()
         {
-            StreamReader input = File.OpenText("scripts/basic/for03.vine");
+            string input = "scripts/basic/for03";
             StreamReader cmp = File.OpenText("scripts/basic/for03.cmp");
-
-            VineStory story = new VineStory();
+            
             string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
@@ -341,10 +358,9 @@ namespace VineScript.Test
         [TestMethod]
         public void CmpFileFor04()
         {
-            StreamReader input = File.OpenText("scripts/basic/for04.vine");
+            string input = "scripts/basic/for04";
             StreamReader cmp = File.OpenText("scripts/basic/for04.cmp");
-
-            VineStory story = new VineStory();
+            
             string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
@@ -353,10 +369,9 @@ namespace VineScript.Test
         [TestMethod]
         public void CmpFileForKeyValue01()
         {
-            StreamReader input = File.OpenText("scripts/basic/forkeyvalue01.vine");
+            string input = "scripts/basic/forkeyvalue01";
             StreamReader cmp = File.OpenText("scripts/basic/forkeyvalue01.cmp");
-
-            VineStory story = new VineStory();
+            
             string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
@@ -365,10 +380,9 @@ namespace VineScript.Test
         [TestMethod]
         public void CmpFileForRange01()
         {
-            StreamReader input = File.OpenText("scripts/basic/for_range01.vine");
+            string input = "scripts/basic/for_range01";
             StreamReader cmp = File.OpenText("scripts/basic/for_range01.cmp");
-
-            VineStory story = new VineStory();
+            
             string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
@@ -377,10 +391,9 @@ namespace VineScript.Test
         [TestMethod]
         public void CmpFileInterval01()
         {
-            StreamReader input = File.OpenText("scripts/basic/interval01.vine");
+            string input = "scripts/basic/interval01";
             StreamReader cmp = File.OpenText("scripts/basic/interval01.cmp");
-
-            VineStory story = new VineStory();
+            
             string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
@@ -389,10 +402,9 @@ namespace VineScript.Test
         [TestMethod]
         public void CmpFileUnescapeStringLiteral01()
         {
-            StreamReader input = File.OpenText("scripts/basic/unescape_string01.vine");
+            string input = "scripts/basic/unescape_string01";
             StreamReader cmp = File.OpenText("scripts/basic/unescape_string01.cmp");
-
-            VineStory story = new VineStory();
+            
             string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
@@ -402,8 +414,7 @@ namespace VineScript.Test
         public void CmpFileUnescapeStringLiteral02()
         {
             try {
-                StreamReader input = File.OpenText("scripts/basic/unescape_string02.vine");
-                VineStory story = new VineStory();
+                string input = "scripts/basic/unescape_string02";
                 string output = story.RunPassage(input).text;
                 Assert.Fail();
             }
@@ -415,10 +426,9 @@ namespace VineScript.Test
         [TestMethod]
         public void CmpFileUnescapeStringLiteral03()
         {
-            StreamReader input = File.OpenText("scripts/basic/unescape_string03.vine");
+            string input = "scripts/basic/unescape_string03";
             StreamReader cmp = File.OpenText("scripts/basic/unescape_string03.cmp");
-
-            VineStory story = new VineStory();
+            
             string output = story.RunPassage(input).text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
