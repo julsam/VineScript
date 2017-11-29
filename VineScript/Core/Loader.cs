@@ -5,15 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using VineScript.Compiler;
+using System.Collections;
 
 namespace VineScript.Core
 {
     public class Loader
     {
-        private Dictionary<string, PassageScript> passageScripts = new Dictionary<string, PassageScript>();
+        public Dictionary<string, PassageScript> passageScripts = new Dictionary<string, PassageScript>();
 
-        private VineCompiler compiler;
-        
         private const string CURRENT_DIR = "./";
 
         /// <summary>
@@ -23,9 +22,21 @@ namespace VineScript.Core
         /// </summary>
         public string BaseDir { get ; set; } = CURRENT_DIR;
 
-        public Loader()
+        public IEnumerable<string> LoadedScripts
         {
-            compiler = new VineCompiler(null);
+            get {
+                foreach (var item in this.passageScripts) {
+                    yield return item.Key;
+                }
+                yield break;
+            }
+        }
+
+        public Loader(string basedir="")
+        {
+            if (!string.IsNullOrWhiteSpace(basedir)) {
+                BaseDir = basedir;
+            }
         }
 
         public PassageScript Get(string scriptname)
@@ -53,7 +64,7 @@ namespace VineScript.Core
         {
             bool added = false;
             try {
-                if (string.IsNullOrWhiteSpace(dirname)) {
+                if (!string.IsNullOrWhiteSpace(dirname)) {
                     BaseDir = Path.GetFullPath(dirname);
                 }
                 string[] filenames = GetFiles(BaseDir, ext,
@@ -134,9 +145,7 @@ namespace VineScript.Core
                         "'{0}' can't be loaded because it's already loaded!", scriptname
                     ));
                 }
-                compiler.Init(passage.SourceCode, passage.Filename);
-                var tree = compiler.BuildTree();
-                Get(scriptname).Load(tree);
+                passage.Load();
                 return true;
             }
 

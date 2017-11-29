@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Antlr4.Runtime;
+using VineScript.Compiler;
 
 namespace VineScript.Core
 {
@@ -46,13 +47,16 @@ namespace VineScript.Core
         }
 
         public bool RecordStats { get; set; }
+
+        private VineCompiler compiler;
         
         public PassageScript(string scriptname, string sourceCode)
         {
             _name = scriptname;
-            _filename = STDIN;
+            _filename = scriptname;
             Source = PassageScriptSource.Stdin;
             _sourceCode = sourceCode;
+            compiler = new VineCompiler(null);
         }
         
         public PassageScript(string scriptname, string sourceCode, string filename)
@@ -61,6 +65,7 @@ namespace VineScript.Core
             _filename = filename;
             Source = PassageScriptSource.File;
             _sourceCode = sourceCode;
+            compiler = new VineCompiler(null);
         }
 
         public bool Loaded {
@@ -69,20 +74,24 @@ namespace VineScript.Core
             }
         }
 
-        public bool Load(ParserRuleContext tree)
+        public bool Load()
         {
-            _tree = tree;
+            string preprocessed = compiler.PreProcessing(SourceCode);
+            compiler.Init(preprocessed, Filename);
+            _tree = compiler.BuildTree();
             return true;
         }
 
         public void Unload()
         {
+            //compiler.ClearCache();
             _tree = null;
+            compiler = null;
         }
 
-        public void Run()
+        public PassageResult Run(VineStory story)
         {
-            throw new NotImplementedException();
+            return compiler.CompileTree(_tree, story);
         }
     }
 }

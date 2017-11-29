@@ -59,8 +59,17 @@ namespace VineScript.Compiler
 
         public void ClearCache()
         {
+            // Clearing the DFA too often will hurt performance
+            // (if possible, do not clear the DFA at all)
             lexer?.Interpreter.ClearDFA();
             parser?.Interpreter.ClearDFA();
+        }
+
+        public string PreProcessing(string input)
+        {
+            // Remove whitespace at the start & end of each lines
+            string wsRemoved = WhiteSpace.Trim(input);
+            return wsRemoved.Replace("\r", "");
         }
 
         private List<SyntaxErrorReport> Parse()
@@ -144,9 +153,14 @@ namespace VineScript.Compiler
             return tree;
         }
 
+        public PassageResult CompileTree(ParserRuleContext tree, VineStory story)
+        {
+            this.story = story;
+            return CompileTree(tree);
+        }
+
         public PassageResult CompileTree(ParserRuleContext tree)
         {
-
 #if GRAMMAR_TREE || GRAMMAR_VERBOSE
             Console.WriteLine(Util.PrettyGrammarTree(tree.ToStringTree(parser)));
 #endif

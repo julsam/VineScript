@@ -9,10 +9,10 @@ namespace VineScriptConsole
     {
         static void Main(string[] args)
         {
-            VineStory story = new VineStory();
             try {
                 if (args.Length <= 0)
                 {
+                    VineStory story = new VineStory();
                     StreamReader br = new StreamReader(Console.OpenStandardInput());
                     string input = br.ReadLine();
                     while (!string.IsNullOrWhiteSpace(input))
@@ -30,9 +30,29 @@ namespace VineScriptConsole
                     }
                     else
                     {
-                        string inputFile = args[0];
-                        StreamReader istream = File.OpenText(inputFile);
-                        PassageResult result = story.RunPassage(istream, Path.GetFileName(inputFile));
+                        if (!File.Exists(args[0])) {
+                            // Should we let File.GetAttributes handle it or handle it here?
+                        }
+                        Loader loader = new Loader();
+                        FileAttributes attr = File.GetAttributes(args[0]);
+                        if (attr.HasFlag(FileAttributes.Directory)) {
+                            loader.LoadFromDir(args[0]);
+                            // should specify a main file in arg[1] and run it
+                            // then, either:
+                            //  1. propose a choice between links if there's any
+                            //  2. terminate the program
+                            throw new NotImplementedException();
+                        }
+                        else {
+                            // Load the given file and name the passage
+                            loader.LoadFile(args[0], PassageScript.STDIN);
+                        }
+
+                        // Load story
+                        VineStory story = new VineStory(loader);
+
+                        // Run the passage loaded
+                        PassageResult result = story.RunPassage(PassageScript.STDIN);
 
                         // Final output
                         Console.WriteLine("### FINAL OUTPUT: ###");

@@ -20,31 +20,22 @@ namespace VineScript.Compiler
             this.formatCompiler = new VineFormatterCompiler();
         }
 
-        public PassageResult Execute(StreamReader istream, string sourceName)
-        {
-            return Execute(istream.ReadToEnd(), sourceName);
-        }
-
-        public PassageResult Execute(string vinecode, string sourceName)
+        public PassageResult Execute(PassageScript script)
         {
 #if GRAMMAR_VERBOSE
             // Print input
-            Console.WriteLine(vinecode);
+            Console.WriteLine(script.SourceCode);
 #endif
 #if TIME_STATS
             // Start timer
             var watch = System.Diagnostics.Stopwatch.StartNew();
 #endif
-            // Pre processing
-            // Remove whitespace at the start & end of each lines
-            string wsRemoved = WhiteSpace.Trim(vinecode);
-            wsRemoved = wsRemoved.Replace("\r", "");
 
             // Compile Vine code
-            PassageResult compiledResult = vineCompiler.Compile(wsRemoved, sourceName);
+            PassageResult compiledResult = script.Run(story);
 
             // Formatting lines (removes empty lines containing Vine code)
-            string formatOutput = formatCompiler.FormatLines(compiledResult.text, sourceName);
+            string formatOutput = formatCompiler.FormatLines(compiledResult.text, script.Filename);
             
             // Post processing
             // Unescape user input

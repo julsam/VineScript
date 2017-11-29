@@ -9,6 +9,7 @@ namespace VineScript.Core
 
     public class VineStory
     {
+        private Loader loader;
         private Interpreter interpreter;
 
         // Std Lib
@@ -23,7 +24,19 @@ namespace VineScript.Core
         public PassageResult currentPassage;
         public List<PassageResult> history { get; private set; }
 
-        public VineStory(IVineLibrary userlib=null)
+        public VineStory(string loadDir, IVineLibrary userlib=null)
+        {
+            var loader = new Loader(loadDir);
+            loader.LoadFromDir();
+            Init(loader, userlib);
+        }
+
+        public VineStory(Loader loader=null, IVineLibrary userlib=null)
+        {
+            Init(loader, userlib);
+        }
+
+        private void Init(Loader loader, IVineLibrary userlib)
         {
             // std
             std = new StdLibrary();
@@ -37,20 +50,24 @@ namespace VineScript.Core
 
             interpreter = new Interpreter(this);
 
+            if (loader != null) {
+                this.loader = loader;
+            } else {
+                this.loader = new Loader();
+                this.loader.LoadFromDir();
+            }
+
             if (userlib != null) {
                 Register(userlib);
             }
         }
 
-        public PassageResult RunPassage(StreamReader istream, string sourceName="<stdin>")
+        public PassageResult RunPassage(string scriptname)
         {
-            return RunPassage(istream.ReadToEnd(), sourceName);
-        }
+            PassageScript script = loader.Get(scriptname);
 
-        public PassageResult RunPassage(string vinecode, string sourceName="<stdin>")
-        {
             currentPassage = new PassageResult();
-            currentPassage = interpreter.Execute(vinecode, sourceName);
+            currentPassage = interpreter.Execute(script);
             history.Add(currentPassage);
             return currentPassage;
         }
