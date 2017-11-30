@@ -42,6 +42,7 @@ namespace VineScript.Compiler
             string finalOutput = Escape.UnescapeVineSequence(formatOutput);
             // Remove whitespace at the start & end of each lines (again)
             finalOutput = WhiteSpace.Trim(finalOutput);
+            // TODO add \r if on windows
 
             PassageResult finalResult = new PassageResult(finalOutput, compiledResult.links);
 

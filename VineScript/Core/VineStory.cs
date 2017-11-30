@@ -19,6 +19,7 @@ namespace VineScript.Core
         private IVineLibrary userlib;
 
         // Vars
+        // Change the type to dynamic to have the DynamicObject feature to work
         public RuntimeVars vars { get; private set; }
 
         public PassageResult currentPassage;
