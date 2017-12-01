@@ -20,7 +20,18 @@ namespace VineScript.Core
         /// directory in which the program is launched. Calling LoadFromDir()
         /// will change its value.
         /// </summary>
-        public string BaseDir { get ; set; } = CURRENT_DIR;
+        public string BaseDir {
+            get {
+                return _basedir;
+            }
+            set {
+                if (string.IsNullOrWhiteSpace(value)) {
+                    throw new Exception("BaseDir can't be empty!");
+                }
+                _basedir = Path.GetFullPath(value);
+            }
+        }
+        private string _basedir;
 
         /// <summary>
         /// List the name of the loaded scripts
@@ -35,13 +46,40 @@ namespace VineScript.Core
             }
         }
 
+        /// <summary>
+        /// Vine Loader to add scripts.
+        /// </summary>
+        /// <param name="basedir">
+        /// The root directory when calling scripts. The scripts' path become
+        /// relative to BaseDir, meaning that you won't need
+        /// to specify it when calling scripts.
+        /// E.g:
+        /// You have the directory "./scripts/foo" containing the files:
+        ///     hello.vine, bar.vine, sub/lorem.vine
+        /// You can load the whole directory:
+        ///     Loader loader = new Loader("./scripts/foo");
+        /// But you don't need to specify that path again, when you need
+        /// to call a script:
+        ///     loader.Get("hello");
+        ///     story.RunPassage("sub/lorem");
+        /// 
+        /// By default, it'll use the directory in which the program is
+        /// launched as the root directory.
+        /// </param>
         public Loader(string basedir="")
         {
             if (!string.IsNullOrWhiteSpace(basedir)) {
                 BaseDir = basedir;
+            } else {
+                BaseDir = CURRENT_DIR;
             }
         }
 
+        /// <summary>
+        /// Get a loaded script.
+        /// </summary>
+        /// <param name="scriptname">The name of the script to load.</param>
+        /// <returns>Returns the script if it is found, otherwise null.</returns>
         public PassageScript Get(string scriptname)
         {
             PassageScript passage;
@@ -52,10 +90,9 @@ namespace VineScript.Core
         }
 
         /// <summary>
-        /// Add files from a given directory. That directory will become the
-        /// root directory for the scripts.
+        /// Add files from a given directory.
         /// </summary>
-        /// <param name="dirname">Directory name</param>
+        /// <param name="dirname">Relative directory name</param>
         /// <param name="ext">Files extensions (not case sensitive).
         /// Can add more than one extension with a pipe. E.g: "*.vine|*.txt".
         /// Files can also be searched by pattern. Eg: all files starting with 'foo':
@@ -67,10 +104,15 @@ namespace VineScript.Core
         {
             bool added = false;
             try {
-                if (!string.IsNullOrWhiteSpace(dirname)) {
-                    BaseDir = Path.GetFullPath(dirname);
+                string combinedDir = CombinePaths(BaseDir, dirname);
+                
+                if (!Directory.Exists(combinedDir)) {
+                    throw new Exception(string.Format(
+                        "'{0}' is not a valid directory path!", combinedDir
+                    ));
                 }
-                string[] filenames = GetFiles(BaseDir, ext,
+
+                string[] filenames = GetFiles(combinedDir, ext,
                     recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly
                  );
 
@@ -87,16 +129,15 @@ namespace VineScript.Core
 
         private bool AddFile(string filename, string scriptname="")
         {
-            string filefullpath = Path.GetFullPath(filename);
-            string dirfullpath = Path.GetFullPath(BaseDir);
-            return AddFile(filefullpath, ref scriptname, dirfullpath);
+            return AddFile(filename, ref scriptname, BaseDir);
         }
 
         private bool AddFile(string filename, ref string scriptname, string dir_root)
         {
+            string filefullpath = Path.GetFullPath(filename);
             if (string.IsNullOrWhiteSpace(scriptname)) {
                 // Give the script a name based on the filename
-                scriptname = GetScriptNameFromFile(filename, dir_root);
+                scriptname = GetScriptNameFromFile(filefullpath, dir_root);
             }
 
             if (passageScripts.ContainsKey(scriptname)) {
@@ -105,14 +146,13 @@ namespace VineScript.Core
                     scriptname
                 ));
             }
-
-            string fullpath = Path.GetFullPath(filename);
+            
             Console.WriteLine(string.Format(
-                "Added '{0}':{1} {2}", scriptname, Environment.NewLine, fullpath
+                "Added '{0}':{1} {2}", scriptname, Environment.NewLine, filefullpath
             ));
-            StreamReader istream = File.OpenText(fullpath);
+            StreamReader istream = File.OpenText(filefullpath);
             string code = istream.ReadToEnd();
-            PassageScript passage = new PassageScript(scriptname, code, fullpath);
+            PassageScript passage = new PassageScript(scriptname, code, filefullpath);
             passageScripts.Add(scriptname, passage);
             return true;
         }
@@ -155,16 +195,30 @@ namespace VineScript.Core
             throw new Exception(string.Format("'{0}' doesn't exist!", scriptname));
         }
 
+        /// <summary>
+        /// Load a VineScript file.
+        /// </summary>
+        /// <param name="filename">The file path, relative to the BaseDir.</param>
+        /// <param name="scriptname">Rename the script. By default it'll use the filename
+        /// (without the extension) and the path (relative to BaseDir).</param>
+        /// <returns>True if the file was successfully loaded.</returns>
         public bool LoadFile(string filename, string scriptname="")
         {
-            string filefullpath = Path.GetFullPath(filename);
+            //string filefullpath = Path.GetFullPath(filename);
+            string combined = CombinePaths(BaseDir, filename);
             string dirfullpath = Path.GetFullPath(BaseDir);
-            if (AddFile(filefullpath, ref scriptname, dirfullpath)) {
+            if (AddFile(combined, ref scriptname, dirfullpath)) {
                 return LoadPassage(scriptname);
             }
             return false;
         }
 
+        /// <summary>
+        /// Load a VineScript source code.
+        /// </summary>
+        /// <param name="filename">The source code to load.</param>
+        /// <param name="scriptname">Name the source code.</param>
+        /// <returns>True if the code was successfully loaded.</returns>
         public bool LoadCode(string sourceCode, string scriptname)
         {
             if (AddCode(sourceCode, scriptname)) {
@@ -174,20 +228,7 @@ namespace VineScript.Core
         }
         
         /// <summary>
-        /// Load files from a given directory. That directory will become the
-        /// implicit root directory, and all scripts path will be relative to
-        /// it, meaning that you won't need to specify it when calling scripts.
-        /// E.g:
-        /// You have the directory "./scripts/foo" containing the files:
-        ///     * hello.vine
-        ///     * bar.vine
-        ///     * sub/lorem.vine
-        /// You can call:
-        /// loader.LoadFromDir("./scripts/foo/bar");
-        /// But you don't need to specify the path again, it's now the base
-        /// directory for the scripts.
-        /// loader.Get("hello");
-        /// loader.Get("sub/lorem");
+        /// Load files from a given directory. 
         /// </summary>
         /// <param name="dirname"></param>
         /// <param name="ext"></param>
@@ -225,6 +266,8 @@ namespace VineScript.Core
                     parseError = true;
                 }
             }
+
+            // TODO "there is n errors on n scripts" message
             return !parseError;
         }
 
@@ -248,6 +291,11 @@ namespace VineScript.Core
             return passageScripts.Count == 0;
         }
 
+        /// <summary>
+        /// Unload and remove a script <paramref name="scriptname"/>.
+        /// </summary>
+        /// <param name="scriptname">Script to remove.</param>
+        /// <returns>True if successfully unloaded and removed.</returns>
         public bool Remove(string scriptname)
         {
             bool unloaded = true;
@@ -257,6 +305,10 @@ namespace VineScript.Core
             return unloaded && passageScripts.Remove(scriptname);
         }
 
+        /// <summary>
+        /// Unload and remove all scripts.
+        /// </summary>
+        /// <returns>True if successfully unloaded and removed.</returns>
         public bool RemoveAll()
         {
             for (int i = passageScripts.Count - 1; i >= 0; i--) {
@@ -278,13 +330,27 @@ namespace VineScript.Core
 
         private static string GetScriptNameFromFile(string filename, string dir_root)
         {
+            // First, check that the given file is not out of BaseDir or its subdirectories
+            StringComparison comparison = StringComparison.Ordinal;
+            if (Environment.OSVersion.Platform != PlatformID.Unix
+                && Environment.OSVersion.Platform != PlatformID.MacOSX) {
+                // ignore case on windows
+                comparison = StringComparison.OrdinalIgnoreCase;
+            }
+            if (!filename.StartsWith(dir_root, comparison)) {
+                throw new Exception(string.Format(
+                    "'{0}' can't be loaded because it's out of the defined base directory!",
+                    filename
+                ));
+            }
+            
             // Parts of the script's name can be directories. It is needed to
             // change the directory separator char in order to be portable
             // on every OS. Otherwise the name would be different:
             //  * Windows => "scripts\foo\bar"
             //  * Unix => "scripts/foo/bar"
             // I chose the Unix one "/" as the standard directory separator 
-            // char when calling a script
+            // char when calling a script.
             var scriptPart = PathParts(filename);
             var basePart = PathParts(dir_root);
             string scriptname = "";
@@ -337,6 +403,20 @@ namespace VineScript.Core
                 // Get the ones that match the patterns
                 .Where(file => reSearchPattern.IsMatch(Path.GetFileName(file)));
             return files.ToArray();
+        }
+
+        /// <summary>
+        /// Combine 2 paths
+        /// </summary>
+        /// <param name="path1"></param>
+        /// <param name="path2"></param>
+        /// <returns></returns>
+        private static string CombinePaths(string path1, string path2)
+        {
+            string combined = path1.TrimEnd(Path.DirectorySeparatorChar)
+                + Path.DirectorySeparatorChar
+                + path2.TrimStart(Path.DirectorySeparatorChar);
+            return combined;
         }
     }
 }
