@@ -11,7 +11,7 @@ namespace VineScript.Core
 {
     public class Loader
     {
-        public Dictionary<string, PassageScript> passageScripts = new Dictionary<string, PassageScript>();
+        private Dictionary<string, PassageScript> passageScripts = new Dictionary<string, PassageScript>();
 
         private const string CURRENT_DIR = "./";
 
@@ -22,6 +22,9 @@ namespace VineScript.Core
         /// </summary>
         public string BaseDir { get ; set; } = CURRENT_DIR;
 
+        /// <summary>
+        /// List the name of the loaded scripts
+        /// </summary>
         public IEnumerable<string> LoadedScripts
         {
             get {
