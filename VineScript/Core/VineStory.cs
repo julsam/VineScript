@@ -67,10 +67,14 @@ namespace VineScript.Core
         {
             PassageScript script = loader.Get(scriptname);
 
-            currentPassage = new PassageResult();
-            currentPassage = interpreter.Execute(script);
-            history.Add(currentPassage);
-            return currentPassage;
+            if (script != null) {
+                currentPassage = new PassageResult();
+                currentPassage = interpreter.Execute(script);
+                history.Add(currentPassage);
+                return currentPassage;
+            } else {
+                throw new Exception("Couldn't find " + scriptname);
+            }
         }
 
         public string Eval(StreamReader istream, string sourceName="<stdin>")
