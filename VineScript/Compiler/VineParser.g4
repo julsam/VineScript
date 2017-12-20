@@ -175,10 +175,9 @@ simpleStmtBlock
     ;
 
 link
-    :   '[[' title=linkContent+ ']]'
-    |   '[[' title=linkContent+ '|' passageName=linkContent+ ']]'
-    |   '[[' title=linkContent+ '->' passageName=linkContent+ ']]'
-    |   '[[' passageName=linkContent+ '<-' title=linkContent+ ']]'
+    :   LLINK title=linkContent+ RLINK
+    |   LLINK title=linkContent+ '|' destination=linkContent+ RLINK
+    |   LLINK title=linkContent+ '|' destination=linkContent+ '|' code=block* CLOSE_LINK
     ;
 
 linkContent

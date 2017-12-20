@@ -137,36 +137,60 @@ namespace VineScript.Compiler
 
         public override VineVar VisitLink(VineParser.LinkContext context)
         {
-            // '[[' title=linkContent+ '|' passageName=linkContent+ ']]'
+            // '[[' title=linkContent+ '|' address=linkContent+ '|' block* ']]'
             lastEnteredContext = context;
 
             // Link Title
             string title = Visit(context.title).AsString.Trim(new char[] { '\t', ' ' });
             title = Escape.UnescapeLinkContent(title);
 
-            // Passage Name
-            string passageName = title;
-            if (context.passageName != null) { 
-                passageName = Visit(context.passageName).AsString.Trim(new char[] { '\t', ' ' });
-                passageName = Escape.UnescapeLinkContent(passageName);
+            // Link Destination
+            string destination = title;
+            if (context.destination != null) { 
+                destination = Visit(context.destination).AsString.Trim(new char[] { '\t', ' ' });
+                destination = Escape.UnescapeLinkContent(destination);
             }
 
             // Check for empty title/link like [[mytitle| ]] or [[ |mylink]]
             if (string.IsNullOrWhiteSpace(title)) {
                 throw new VineRuntimeException("The title of a link can't be empty!", context);
-            } else if (string.IsNullOrWhiteSpace(passageName)) {
+            } else if (string.IsNullOrWhiteSpace(destination)) {
                 throw new VineRuntimeException("A link can't be empty!", context);
             }
 
+            // Get the optional code content
+            string linkcode = "";
+            foreach (var block in context.block()) {
+                string input = block.Start.InputStream.ToString();
+                int start = block.Start.StartIndex;
+                int stop = block.Stop.StopIndex;
+                string blockText = "";
+                if (start >= 0 && stop >= 0) {
+                    for (int i = start; i <= stop; i++) {
+                        blockText += input[i];
+                    }
+                }
+                linkcode += blockText;
+            }
+
             // DEBUG: print in passage
-            //AddTextToPassageResult("title: " + title + ", link: " + passageName);
+            //outputBuilder.PushText(
+            //    "title: " + title
+            //    + ", link: " + passageName
+            //    + ", code: `" + linkcode + "`"
+            //);
+            //Console.WriteLine(
+            //    "title: " + title 
+            //    + ", link: " + destination
+            //    + ", code: \"" + linkcode + "\""
+            //);
 
             // Add it back to the output passage as a statement and will be treated
             // accordingly by the VineFormatter.
             outputBuilder.PushStmt("<< link >>");
 
             passageResult.links.Add(
-                new PassageLink(title, passageName, passageResult.links.Count)
+                new PassageLink(title, destination, linkcode, passageResult.links.Count)
             );
 
             return null;

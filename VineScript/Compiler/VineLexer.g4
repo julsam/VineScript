@@ -20,6 +20,27 @@ using System;
 
     // Nested dictionary declaration, like { "a": true, "b": { "c": false }}
     private static int nestedDictionaryDecl = 0;
+    
+    // Pipe counter for Link Mode
+    private static int linkSeparatorsCount = 0;
+
+    // Called when an unescaped pipe '|' is found in Link Mode.
+    // On the second pipe found, it means that what follows is a link code
+    // and the mode should be pop back to normal mode.
+    public void IncLinkSeparators()
+    {
+        linkSeparatorsCount++;
+        if (linkSeparatorsCount >= 2) {
+            linkSeparatorsCount = 0;
+            PopMode();
+        }
+    }
+
+    // Reset link sep count when entering or exiting a link
+    public void ResetLinkSeparators()
+    {
+        linkSeparatorsCount = 0;
+    }
 
     public static bool IsVerbatim(string str)
     {
@@ -70,15 +91,17 @@ VERBATIM
 
 LOUTPUT:        '{{' -> pushMode(VineCode) ;
 LSTMT:          '<<' -> pushMode(VineCode) ;
-LLINK:          '[[' -> pushMode(LinkMode) ;
+LLINK:          '[['  { ResetLinkSeparators(); } -> pushMode(LinkMode) ;
 BLOCK_COMMENT:  '/*' .*? '*/' ;
 LINE_COMMENT:   '//' ~[\r\n]* ;
 
 CLOSE_STMT
     :   '}}'
     |   '>>'
-    |   ']]'
     |   '*/'
+    ;
+CLOSE_LINK
+    :   ']]'
     ;
 
 NL:     '\r'? '\n' ;
@@ -110,24 +133,21 @@ LINK_ESC
     :   (   '\\\\'  // [[my \\ title|mylink]]
         |   '\\]'   // [[my [[own\]] title|mylink]]
         |   '\\|'   // [[my \| title|mylink]]
-        |   '\\<'   // [[mylink<-my \<- title]]
-        |   '\\-'   // [[my \-> title->mylink]]
         )
         -> type(LINK_TEXT)
     ;
 
-RLINK: ']]' -> popMode ;
+RLINK: ']]' { ResetLinkSeparators(); } -> popMode ;
 
 LINK_RESERVED_CHARS: RESERVED_CHARS -> type(RESERVED_CHARS) ;
 
-LINK_PIPE:  '|' ;
-LINK_LEFT:  '<-' ;
-LINK_RIGHT: '->' ;
+LINK_PIPE:  '|' { IncLinkSeparators(); } ;
 
-LINK_TEXT_SPECIALS: [\\<\]-] -> type(LINK_TEXT) ;
-LINK_TEXT:  ~[\\|<\]\r\n\u000B\u001E\u001F-]+ ;
+LINK_TEXT_SPECIALS: [\\\]] -> type(LINK_TEXT) ;
+LINK_TEXT:  ~[\\|\]\r\n\u000B\u001E\u001F]+ ;
 
 LinkMode_ERROR_CHAR: ERROR_CHAR -> type(ERROR_CHAR) ;
+
 
 // ----------------------------------------------------------
 mode VineCode;
