@@ -65,6 +65,10 @@ namespace VineScript.Core
 
         public PassageResult RunPassage(string scriptname)
         {
+            if (loader.LoadedScriptsCount == 0) {
+                throw new Exception("The Loader doesn't contain any scripts!");
+            }
+
             PassageScript script = loader.Get(scriptname);
 
             if (script != null) {

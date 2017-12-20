@@ -47,6 +47,15 @@ namespace VineScript.Core
         }
 
         /// <summary>
+        /// Number of loaded scripts
+        /// </summary>
+        public int LoadedScriptsCount {
+            get {
+                return this.passageScripts?.Count ?? 0;
+            }
+        }
+
+        /// <summary>
         /// Vine Loader to add scripts.
         /// </summary>
         /// <param name="basedir">
