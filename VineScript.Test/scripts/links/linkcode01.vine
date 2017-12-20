@@ -1,0 +1,11 @@
+﻿[[title|mylink|
+	This won't be executed or displayed.
+	<< if true >>
+		{{ 1 + 1}}
+		[[1+1|nestedlink1]]
+	<< else >>
+		{{ 2 + 2}}
+		[[2+2|nestedlink2]]
+	<< end >>
+	[[3+3|nestedlink3|nested code {{1+2}}]]
+]]
