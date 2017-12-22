@@ -741,7 +741,7 @@ namespace VineScript.Compiler
                 value = lastSequence.AsString.Substring(lastIndex.AsInt, 1);
             } else if (lastSequence.IsArray) {
                 value = lastSequence[lastIndex.AsInt];
-            } else if (lastSequence.IsString) {
+            } else if (lastSequence.IsDict) {
                 value = lastSequence[lastIndex.AsString];
             } else {
                 throw new VineRuntimeException(
