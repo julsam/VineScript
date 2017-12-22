@@ -717,6 +717,24 @@ namespace VineScript.Compiler
             return vineDict;
         }
 
+        /// <summary>
+        /// Error message when trying to access a sequence element.
+        /// </summary>
+        /// <param name="varname">The variable's name in which the lookup takes place.
+        /// This can be empty because some variable are anonymous, for e.g. when
+        /// trying to access an element of a function return {{ foo()[0] }}.</param>
+        /// <returns>Formatted error message.</returns>
+        private string SequenceTypeError(string varname)
+        {
+            string str = "";
+            if (!string.IsNullOrWhiteSpace(varname)) {
+                str = " '" + varname + "'";
+            }
+            return "Can't access element with [] because the sequence"
+                    + str + " is neither an array nor a dictionnary"
+                    + " nor a string.";
+        }
+
         private VineVar GetValueInSequence(VineVar startingVar, 
             VineParser.SequenceAccessContext[] sequences)
         {
@@ -745,9 +763,7 @@ namespace VineScript.Compiler
                 value = lastSequence[lastIndex.AsString];
             } else {
                 throw new VineRuntimeException(
-                    "Can't access element with [] because the variable '"
-                    + lastSequence.name + "' is neither an array nor a dictionnary"
-                    + " nor a string",
+                    SequenceTypeError(lastSequence.name),
                     sequences[0]
                 );
             }
@@ -800,9 +816,7 @@ namespace VineScript.Compiler
             else
             {
                 throw new VineRuntimeException(
-                    "Can't access element with [] because the variable '"
-                    + lastSequence.name + "' is neither an array nor a dictionnary"
-                    + " nor a string",
+                    SequenceTypeError(lastSequence.name),
                     sequences[0]
                 );
             }
@@ -864,9 +878,7 @@ namespace VineScript.Compiler
                     lastSequence = lastSequence[indexExpr.AsString];
                 } else {
                     throw new VineRuntimeException(
-                        "Can't access element with [] because the variable '"
-                        + lastSequence.name + "' is neither an array nor a dictionnary "
-                        + " nor a string",
+                        SequenceTypeError(lastSequence.name),
                         sequences[0]
                     );
                 }
