@@ -290,6 +290,7 @@ expr
     |   left=expr ('||'|wsb 'or' wsa) right=expr    # orExpr
     |   '(' expr ')'                                # parensExpr
     |   newSequence                                 # sequenceExpr
+    |   expr (sequenceAccess)+                      # anonymSequence
     |   funcCall                                    # funcCallExpr
     |   atom                                        # atomExpr
     |   variable (sequenceAccess)*                  # varExpr

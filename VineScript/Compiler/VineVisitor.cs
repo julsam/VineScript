@@ -602,6 +602,15 @@ namespace VineScript.Compiler
             return value;
         }
 
+        public override VineVar VisitAnonymSequence(VineParser.AnonymSequenceContext context)
+        {
+            lastEnteredContext = context;
+
+            VineVar expr = Visit(context.expr());
+            VineVar value = GetValueInSequence(expr, context.sequenceAccess());
+            return value;
+        }
+
         public override VineVar VisitVarExpr(VineParser.VarExprContext context)
         {
             lastEnteredContext = context;
