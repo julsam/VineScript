@@ -2,8 +2,6 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using VineScript.Compiler;
 using System.Collections;
 
@@ -400,17 +398,12 @@ namespace VineScript.Core
         /// <returns></returns>
         private static string[] GetFiles(string path, string patterns, SearchOption opt)
         {
-            // Escape the dot between the filename and extension
-            patterns = patterns.Replace(".", "\\.");
-            // Replace the "all" pattern to the regex equivalent
-            patterns = patterns.Replace('*', '.');
-
-            Regex reSearchPattern = new Regex(patterns, RegexOptions.IgnoreCase);
-
-            // Search all files in the given dir (and subdirs)
-            var files = Directory.EnumerateFiles(path, "*", opt)
-                // Get the ones that match the patterns
-                .Where(file => reSearchPattern.IsMatch(Path.GetFileName(file)));
+            string[] searchPatterns = patterns.Split('|');
+            List<string> files = new List<string>();
+            foreach (string sp in searchPatterns) {
+                files.AddRange(Directory.GetFiles(path, sp, opt));
+            }
+            files.Sort();
             return files.ToArray();
         }
 
