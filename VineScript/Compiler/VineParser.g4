@@ -176,6 +176,7 @@ simpleStmtBlock
 
 link
     :   LLINK title=linkContent+ RLINK
+    |   LLINK title=linkContent+ '|' '|' code=block* CLOSE_LINK
     |   LLINK title=linkContent+ '|' destination=linkContent+ RLINK
     |   LLINK title=linkContent+ '|' destination=linkContent+ '|' code=block* CLOSE_LINK
     ;
