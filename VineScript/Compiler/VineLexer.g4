@@ -215,7 +215,7 @@ LTE:    '<=' ;
 GTE:    '>=' ;
 
 // TODO complete list. Commands are built-in functions
-COMMAND:    'array' | 'TODO' ;
+//COMMAND:    'array' | 'TODO' ;
 
 // Atoms
 TRUE:       'true' ;
