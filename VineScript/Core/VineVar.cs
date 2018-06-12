@@ -440,7 +440,8 @@ namespace VineScript.Core
                 return;
             }
             var error = string.Format("Attempted to create a Value using a {0}; currently, " +
-                "Values can only be ints, numbers, strings, bools or null.", value.GetType().Name);
+                "Values can only be ints, numbers, strings, bools, lists, dictionaries, " +
+                "or null.", value.GetType().Name);
             throw new Exception(error);
         }
 
