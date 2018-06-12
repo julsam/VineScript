@@ -22,9 +22,14 @@ namespace VineScript.Core.VineValue
             }
         }
 
-        public VineDictionary(VineVar value) : base(value, VineVar.Type.Dict)
+        public VineDictionary(VineVar value) : base(value ?? VineVar.newDict, VineVar.Type.Dict)
         {
-            mirroredDict = value.AsDict;
+            mirroredDict = vinevar.AsDict;
+        }
+
+        public VineDictionary() : base(VineVar.newDict, VineVar.Type.Dict)
+        {
+            mirroredDict = vinevar.AsDict;
         }
         
         #region implicit conversion

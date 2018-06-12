@@ -21,9 +21,14 @@ namespace VineScript.Core.VineValue
             }
         }
 
-        public VineArray(VineVar value) : base(value, VineVar.Type.Array)
+        public VineArray(VineVar value) : base(value ?? VineVar.newArray, VineVar.Type.Array)
         {
-            mirroredList = value.AsArray;
+            mirroredList = vinevar.AsArray;
+        }
+
+        public VineArray() : base(VineVar.newArray, VineVar.Type.Array)
+        {
+            mirroredList = vinevar.AsArray;
         }
 
         #region implicit conversion
