@@ -61,12 +61,26 @@ namespace VineScript.Core.VineValue
 
         public static bool operator == (VineValue a, object b)
         {
-            return a.Equals(b);
+            if (!object.ReferenceEquals(a, null)) {
+                return a.Equals(b);
+            }
+            if (!object.ReferenceEquals(b, null)) {
+                return b.Equals(a);
+            }
+            // they're both null
+            return true;
         }
 
         public static bool operator != (VineValue a, object b)
         {
-            return !a.Equals(b);
+            if (!object.ReferenceEquals(a, null)) {
+                return !a.Equals(b);
+            }
+            if (!object.ReferenceEquals(b, null)) {
+                return !b.Equals(a);
+            }
+            // they're both null: they're not different
+            return false;
         }
     }
 
