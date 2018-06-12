@@ -39,6 +39,10 @@ namespace VineScript.Core.VineValue
 
         public override bool Equals(object obj)
         {
+            if (obj == null) {
+                return false;
+            }
+
             if (obj is VineValue == false) {
                 obj = Converter.ToVineValue(obj);
             }
