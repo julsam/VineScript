@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace VineScript.Compiler
 {
+    /// <summary>
+    /// Manage collapsing text when using the Collapse Statement (with '{' and '}').
+    /// </summary>
     internal class CollapseManager
     {
         private string textBuffer = "";
