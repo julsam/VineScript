@@ -245,7 +245,7 @@ WS: (WS_Restricted|WS_SpaceSeparator|WS_LineSeparator|WS_ParagraphSeparator)+ ->
 // http://www.unicode.org/Public/UNIDATA/UnicodeData.txt
 // https://msdn.microsoft.com/en-us/library/system.char.iswhitespace(v=vs.110).aspx
 // https://en.wikipedia.org/wiki/Whitespace_character
-
+//
 // Contains SPACE (0020), CHARACTER TABULATION (0009), FORM FEED (U+000C),
 // CARRIAGE RETURN (U+000D) and LINE FEED (000A)
 // It's missing:

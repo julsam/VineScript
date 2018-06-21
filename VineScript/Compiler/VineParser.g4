@@ -99,7 +99,11 @@ stmt:    conditionStmt
         
     internal static readonly string errMissingSpaceBefore = "Missing space before ";
     internal static readonly string errMissingSpaceAfter = "Missing space after ";
-    
+
+    internal static readonly string errAssignMissingSet =
+        "Are you trying to assign a value to a variable without using the keyword 'set'?"
+        + System.Environment.NewLine + "Here's a example of assignation: << set myvar = 0 >>";
+
     private void ReservedChar()
     {
         var token = _input.Lt(-1);
@@ -153,7 +157,7 @@ evalExprMode
 block
     :   NL              # directOutput
     |   verbatimStmt    # noOutput      // `as it is, escape << tags >> too`
-    |   text            # directOutput  // foobar
+    |   text            # directOutput  // everything else
     |   display         # noOutput      // {{ foo }}
     |   controlStmt     # noOutput      // << open stmt >> something << close stmt >>
     |   simpleStmtBlock # noOutput      // << set foo = 0 >>
@@ -205,6 +209,10 @@ display
 
 setStmt
     :   'set' assignList
+    |   { NotifyErrorListeners(errAssignMissingSet); }
+        // using assignList creates too much problems (because of reservedKeywords
+        // defined in the 'variable' rule). It's easier to specify it this way:
+        ('$')? ID (sequenceAccess)* op=('='|'to'|'+='|'-='|'*='|'/='|'%=') expr
     ;
 
 assignList
@@ -216,9 +224,13 @@ assignList
 assign
     :   variable (sequenceAccess)* op=('='|'to') expr
     |   variable (sequenceAccess)* op=('+='|'-='|'*='|'/='|'%=') expr
-    |   variable (sequenceAccess)* { NotifyErrorListeners("Missing assignation operator"); } expr
-    |   variable (sequenceAccess)* op=('='|'to'|'+='|'-='|'*='|'/='|'%=')
-        { NotifyErrorListeners("Missing expression after the operator"); }
+    |   { NotifyErrorListeners("Missing assignation operator and expression after the variable"); }
+        variable (sequenceAccess)* // this could be allowed to declare a var <<set myvar>>
+    |   variable (sequenceAccess)*
+        { NotifyErrorListeners("Missing assignation operator before expression"); } expr
+    |   variable (sequenceAccess)* { NotifyErrorListeners("Missing expression after the operator"); }
+        op=('='|'to'|'+='|'-='|'*='|'/='|'%=')
+        
     ;
 
 unsetStmt
