@@ -14,6 +14,8 @@ namespace VineScript.Core
         /// <summary>Links contained in this passage, after it's been interpreted.</summary>
         public List<PassageLink> Links { get; internal set; }
 
+        // Should this also contains passages errors?
+
         public PassageResult(string text="")
         {
             this.Text = text;

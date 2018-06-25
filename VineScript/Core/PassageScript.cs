@@ -7,6 +7,7 @@ using VineScript.Compiler;
 
 namespace VineScript.Core
 {
+    /// <summary>Type of the script's source: either from stdin or from a file.</summary>
     public enum PassageScriptSource {
         File,
         Stdin
@@ -15,39 +16,47 @@ namespace VineScript.Core
     public class PassageScript
     {
         public const string STDIN = "<stdin>";
-
+        
+        /// <summary>Source of the script.</summary>
         public readonly PassageScriptSource Source;
 
-        private string _name;
+        /// <summary>Name of the script.</summary>
         public string Name {
             get {
                 return _name;
             }
         }
-
-        private string _filename;
+        private string _name;
+        
+        /// <summary>Filename of the script.</summary>
         public string Filename {
             get {
                 return _filename;
             }
         }
+        private string _filename;
         
-        private string _sourceCode;
+        /// <summary>Source code of the script.</summary>
         public string SourceCode {
             get {
                 return _sourceCode;
             }
         }
+        private string _sourceCode;
         
-        private ParserRuleContext _tree;
+        /// <summary>Tree for the parser.</summary>
         public ParserRuleContext Tree {
             get {
                 return _tree;
             }
         }
+        private ParserRuleContext _tree;
 
-        public bool RecordStats { get; set; }
-
+        // TODO Should keep track of some sort of CompilationInstance
+        // instead of the whole compiler. CompilationInstance would
+        // be produced when VineCompiler load the script and passed
+        // back to VineCompiler when we want to execute it.
+        /// <summary>Compiler for this script.</summary>
         private VineCompiler compiler;
         
         public PassageScript(string scriptname, string sourceCode)

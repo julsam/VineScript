@@ -1,83 +1,5 @@
 parser grammar VineParser;
-/*
-// django syntax: https://docs.djangoproject.com/en/1.10/topics/templates/#the-django-template-language
-// django:
-// * var:        {{ foo }}
-// * code:        {% if foo %}
-// * comment:    {# comment #}
-// detail: https://github.com/benjohnson/atom-django-templates/blob/master/grammars/html%20(django).cson
 
-grammar VineScript;
-
-script: sequence+ EOF;
-
-sequence:    text
-        |    code
-        |    
-        ;
-
-code:    stmt
-    |    text
-    ;
-
-// conditionStmt or controlStmt (control structure)
-stmt:    conditionStmt
-    |    assign
-    |    print
-    |    stmt ';'
-    |    variable
-    ;
-
-// {{ foo }} is equal to << print foo >>
-
-
-// built-in filters:
-// * upper
-// * lower
-// * truncatechars:8
-// * truncatewords:2
-// * pluralize
-// * default:"nothing"
-// * length
-// * random
-// * stringformat:"#.0"
-// * yesno:"yeah,no,maybe"
-// ---- added by myself: ----
-// * min
-// * max
-
-
-// built-in functions:
-//  * ParseInt(string)
-//  * ParseNumber(string)
-//  * Range(int):[]
-
-
-// custom template tags
-// https://docs.djangoproject.com/en/1.10/howto/custom-template-tags/#howto-writing-custom-template-tags
-// custom template filters : 
-// https://docs.djangoproject.com/en/1.10/howto/custom-template-tags/#howto-writing-custom-template-filters
-
-
-//<< autoescape off >>
-//    {{ body }}
-//    << autoescape on >>
-//        {{ foo }}
-//    << endautoescape >>
-//<< endautoescape >>
-
-// preformatted: (on by default)
-<< formatted on >>
-<< formatted off >>
-// or like html:
-<< pre on >>
-<< pre off >>
-// maybe:
-<< tab >>
-<< br >>
-
-'<<' 'set' ID ('='|'to') expr '>>'
-*/
 @members{
     public enum EVineParseMode {
         SINGLE_PASSAGE,
@@ -103,7 +25,7 @@ stmt:    conditionStmt
     internal static readonly string errAssignMissingSet =
         "Are you trying to assign a value to a variable without using the keyword 'set'?"
         + System.Environment.NewLine + "Here's a example of assignation: << set myvar = 0 >>";
-
+        
     private void ReservedChar()
     {
         var token = _input.Lt(-1);
@@ -340,7 +262,7 @@ stringLiteral
 
 // Variable access. The '$' prefix is optional
 variable
-    :   '$'? ID ('.' ID)*           
+    :   '$'? ID ('.' ID)* 
     |   { NotifyErrorListeners(errVarDefReservedKw); }
         reservedKeyword
     ;

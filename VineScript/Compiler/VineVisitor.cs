@@ -257,7 +257,7 @@ namespace VineScript.Compiler
             if (story.vars.ContainsKey(id)) {
                 Console.WriteLine(string.Format(
                     "[!!] Warning, the variable '{0}' is already defined!"
-                    + " Its value '{1}' will be overridden.", id, value
+                    + " Its value '{1}' will be overwritten.", id, value
                 ));
             }
 #endif
