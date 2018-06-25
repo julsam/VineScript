@@ -13,7 +13,7 @@ namespace VineScript.Test
             Loader loader = new Loader("");
             loader.LoadFile(input + ".vine");
             VineStory story = new VineStory(loader);
-            string output = story.RunPassage(input).text;
+            string output = story.RunPassage(input).Text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
         }

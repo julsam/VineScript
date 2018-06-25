@@ -56,8 +56,8 @@ namespace VineScriptConsole
 
                         // Final output
                         Console.WriteLine("### FINAL OUTPUT: ###");
-                        if (result.text.Length > 0)
-                            Console.WriteLine(result.text);
+                        if (result.Text.Length > 0)
+                            Console.WriteLine(result.Text);
                         Console.WriteLine("### END ###");
                     }
                 }

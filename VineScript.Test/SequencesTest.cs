@@ -24,7 +24,7 @@ namespace VineScript.Test
             string input = "scripts/sequences/arraygetset01";
             StreamReader cmp = File.OpenText("scripts/sequences/arraygetset01.cmp");
             
-            string output = story.RunPassage(input).text;
+            string output = story.RunPassage(input).Text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
         }
@@ -35,7 +35,7 @@ namespace VineScript.Test
             string input = "scripts/sequences/arraygetset02";
             StreamReader cmp = File.OpenText("scripts/sequences/arraygetset02.cmp");
             
-            string output = story.RunPassage(input).text;
+            string output = story.RunPassage(input).Text;
 
             Assert.AreEqual(cmp.ReadToEnd(), output);
         }
@@ -52,7 +52,7 @@ namespace VineScript.Test
                 loader.LoadCode(input, "test");
                 VineStory newstory = new VineStory(loader);
 
-                string output = newstory.RunPassage("test").text;
+                string output = newstory.RunPassage("test").Text;
                 Assert.Fail();
             } catch (Exception) {
                 // It's ok
@@ -67,7 +67,7 @@ namespace VineScript.Test
                 loader.LoadCode(input, "test");
                 VineStory newstory = new VineStory(loader);
 
-                string output = newstory.RunPassage("test").text;
+                string output = newstory.RunPassage("test").Text;
                 Assert.Fail();
             } catch (Exception) {
                 // It's ok
@@ -87,7 +87,7 @@ namespace VineScript.Test
             Loader loader = new Loader();
             loader.LoadCode(input, "test");
             VineStory newstory = new VineStory(loader);
-            string output = newstory.RunPassage("test").text;
+            string output = newstory.RunPassage("test").Text;
 
             Assert.AreEqual("FooBar, F, o, o, B", output);
         }
@@ -104,7 +104,7 @@ namespace VineScript.Test
                 loader.LoadCode(input, "test");
                 VineStory newstory = new VineStory(loader);
                 
-                string output = newstory.RunPassage("test").text;
+                string output = newstory.RunPassage("test").Text;
                 Assert.Fail();
             } catch (Exception) {
                 // It's ok
@@ -126,7 +126,7 @@ namespace VineScript.Test
 
             string input = "scripts/sequences/array2d_set_for01";
             
-            string output = story.RunPassage(input).text;
+            string output = story.RunPassage(input).Text;
 
             Assert.AreEqual(1, story.vars["arr"][0][0]);
             Assert.AreEqual(2, story.vars["arr"][0][1]);
@@ -152,7 +152,7 @@ namespace VineScript.Test
 
             string input = "scripts/sequences/array2d_set_for02";
             
-            string output = story.RunPassage(input).text;
+            string output = story.RunPassage(input).Text;
 
             Assert.AreEqual(0, story.vars["arr"][0][0]);
             Assert.AreEqual(1, story.vars["arr"][0][1]);

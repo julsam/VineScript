@@ -218,7 +218,7 @@ namespace VineScript.Compiler
             eval.printOutput();
 #endif
 
-            return eval.passageResult.text;
+            return eval.passageResult.Text;
         }
     }
 }

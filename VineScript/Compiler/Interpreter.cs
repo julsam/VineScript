@@ -35,7 +35,7 @@ namespace VineScript.Compiler
             PassageResult compiledResult = script.Run(story);
 
             // Formatting lines (removes empty lines containing Vine code)
-            string formatOutput = formatCompiler.FormatLines(compiledResult.text, script.Filename);
+            string formatOutput = formatCompiler.FormatLines(compiledResult.Text, script.Filename);
             
             // Post processing
             // Unescape user input
@@ -44,7 +44,7 @@ namespace VineScript.Compiler
             finalOutput = WhiteSpace.Trim(finalOutput);
             // TODO add \r if on windows
 
-            PassageResult finalResult = new PassageResult(finalOutput, compiledResult.links);
+            PassageResult finalResult = new PassageResult(finalOutput, compiledResult.Links);
 
 #if TIME_STATS
             // Stop timer
@@ -54,8 +54,8 @@ namespace VineScript.Compiler
 #if GRAMMAR_VERBOSE
             // Final output
             Console.WriteLine("### FORMATTED OUTPUT: ###");
-            if (finalResult.text.Length > 0)
-                Console.WriteLine(finalResult.text);
+            if (finalResult.Text.Length > 0)
+                Console.WriteLine(finalResult.Text);
             Console.WriteLine("### END ###");
 #endif
 #if TIME_STATS

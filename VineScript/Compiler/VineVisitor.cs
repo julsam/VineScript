@@ -45,8 +45,8 @@ namespace VineScript.Compiler
         public void printOutput()
         {
             Console.WriteLine("### EVALUATE OUTPUT: ###");
-            if (passageResult.text.Length > 0) {
-                Console.WriteLine(passageResult.text);
+            if (passageResult.Text.Length > 0) {
+                Console.WriteLine(passageResult.Text);
             }
             Console.WriteLine("### END ###");
         }
@@ -65,7 +65,7 @@ namespace VineScript.Compiler
 
             VineVar value = Visit(context.expr());
             outputBuilder.PushText(value.AsString);
-            passageResult.text = outputBuilder.Build();
+            passageResult.Text = outputBuilder.Build();
             return value;
         }
 
@@ -73,7 +73,7 @@ namespace VineScript.Compiler
         {
             try {
                 var v = VisitChildren(context);
-                passageResult.text = outputBuilder.Build();
+                passageResult.Text = outputBuilder.Build();
                 return v;
             }
             catch (VineRuntimeException e) {
@@ -189,8 +189,8 @@ namespace VineScript.Compiler
             // accordingly by the VineFormatter.
             outputBuilder.PushStmt("<< link >>");
 
-            passageResult.links.Add(
-                new PassageLink(title, destination, linkcode, passageResult.links.Count)
+            passageResult.Links.Add(
+                new PassageLink(title, destination, linkcode, passageResult.Links.Count)
             );
 
             return null;
