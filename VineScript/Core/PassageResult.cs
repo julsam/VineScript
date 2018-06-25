@@ -8,6 +8,9 @@ namespace VineScript.Core
 {
     public class PassageResult
     {
+        /// <summary>Passage name.</summary>
+        public string PassageName { get; internal set; }
+
         /// <summary>Result of the passage, after it's been interpreted.</summary>
         public string Text { get; internal set; }
 
@@ -16,14 +19,16 @@ namespace VineScript.Core
 
         // Should this also contains passages errors?
 
-        public PassageResult(string text="")
+        public PassageResult(string passageName, string text="")
         {
+            this.PassageName = passageName;
             this.Text = text;
             this.Links = new List<PassageLink>();
         }
 
-        public PassageResult(string otherText, List<PassageLink> otherLinks)
+        public PassageResult(string passageName, string otherText, List<PassageLink> otherLinks)
         {
+            this.PassageName = passageName;
             this.Text = otherText;
             this.Links = otherLinks.ConvertAll(
                 val => val

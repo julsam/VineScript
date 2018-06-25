@@ -44,7 +44,7 @@ namespace VineScript.Compiler
             finalOutput = WhiteSpace.Trim(finalOutput);
             // TODO add \r if on windows
 
-            PassageResult finalResult = new PassageResult(finalOutput, compiledResult.Links);
+            PassageResult finalResult = new PassageResult(script.Name, finalOutput, compiledResult.Links);
 
 #if TIME_STATS
             // Stop timer

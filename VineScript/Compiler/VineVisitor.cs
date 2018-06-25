@@ -37,7 +37,7 @@ namespace VineScript.Compiler
         public VineVisitor(VineStory story)
         {
             this.story = story;
-            passageResult = new PassageResult();
+            passageResult = new PassageResult(story.currentScript.Name);
             outputBuilder = new ParserOutputBuilder();
         }
 

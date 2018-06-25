@@ -22,7 +22,9 @@ namespace VineScript.Core
         // Change the type to dynamic to have the DynamicObject feature to work
         public RuntimeVars vars { get; private set; }
 
-        public PassageResult currentPassage;
+        public PassageScript currentScript { get; private set; }
+
+        public PassageResult currentPassage { get; private set; }
         public List<PassageResult> history { get; private set; }
 
         public VineStory(string loadDir, IVineLibrary userlib=null)
@@ -69,11 +71,11 @@ namespace VineScript.Core
                 throw new Exception("The Loader doesn't contain any scripts!");
             }
 
-            PassageScript script = loader.Get(scriptname);
+            currentPassage = null;
 
-            if (script != null) {
-                currentPassage = new PassageResult();
-                currentPassage = interpreter.Execute(script);
+            currentScript = loader.Get(scriptname);
+            if (currentScript != null) {
+                currentPassage = interpreter.Execute(currentScript);
                 history.Add(currentPassage);
                 return currentPassage;
             } else {
