@@ -162,28 +162,10 @@ namespace VineScript.Test
             Assert.AreEqual(5, story.vars["arr"][2][1]);
         }
 
-        class AnonymSequenceTestLib : IVineLibrary
+        public class AnonymSequenceTestLib
         {
-            public FunctionsCollection functions { get; set; }
-            public FunctionsCollection filters { get; set; }
-
-            public AnonymSequenceTestLib()
-            {
-                functions = new FunctionsCollection();
-                filters = new FunctionsCollection();
-            }
-
-            public void RegisterFunctions()
-            {
-                functions.Register("ReturnsArray", typeof(AnonymSequenceTestLib));
-                functions.Register("ReturnsDict", typeof(AnonymSequenceTestLib));
-            }
-
-            public void RegisterFilters()
-            {
-            }
-
-            public static VineVar ReturnsArray(object context)
+            [Binding.VineBinding]
+            public static VineVar ReturnsArray()
             {
                 var a = VineVar.newArray;
                 a.AsArray.Add(1);
@@ -193,7 +175,8 @@ namespace VineScript.Test
                 return a;
             }
 
-            public static VineVar ReturnsDict(object context)
+            [Binding.VineBinding]
+            public static VineVar ReturnsDict()
             {
                 var a = VineVar.newDict;
                 a.AsDict.Add("a", "a");
@@ -209,12 +192,13 @@ namespace VineScript.Test
         {
             string input = "{{ ReturnsArray()[0] }}";
 
-            AnonymSequenceTestLib lib = new AnonymSequenceTestLib();
+            UserLib lib = new UserLib();
+            lib.Bind(typeof(AnonymSequenceTestLib));
             Loader loader = new Loader();
             loader.LoadCode(input, "test");
             VineStory newstory = new VineStory(loader, lib);
-                
-            string output = newstory.RunPassage("test").text;
+
+            string output = newstory.RunPassage("test").Text;
 
             Assert.AreEqual("1", output);
         }
@@ -223,14 +207,15 @@ namespace VineScript.Test
         public void AnonymSequenceAccess02()
         {
             string input = "<< set c = \"c\" >>"
-                + "{{ ReturnDict()[ReturnDict()[c]][0] }}";
+                + "{{ ReturnsDict()[ReturnsDict()[c]][0] }}";
 
-            AnonymSequenceTestLib lib = new AnonymSequenceTestLib();
+            UserLib lib = new UserLib();
+            lib.Bind(typeof(AnonymSequenceTestLib));
             Loader loader = new Loader();
             loader.LoadCode(input, "test");
             VineStory newstory = new VineStory(loader, lib);
-                
-            string output = newstory.RunPassage("test").text;
+
+            string output = newstory.RunPassage("test").Text;
 
             Assert.AreEqual("c", output);
         }

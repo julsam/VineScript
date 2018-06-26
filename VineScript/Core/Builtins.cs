@@ -78,6 +78,16 @@ namespace VineScript.Core
             }
         }
 
+        public static string LowercaseFirst(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s)) {
+                return string.Empty;
+            }
+            char[] a = s.ToCharArray();
+            a[0] = char.ToLower(a[0]);
+            return new string(a);
+        }
+
         public static string UppercaseFirst(string s)
         {
             if (string.IsNullOrWhiteSpace(s)) {
@@ -86,6 +96,15 @@ namespace VineScript.Core
             char[] a = s.ToCharArray();
             a[0] = char.ToUpper(a[0]);
             return new string(a);
+        }
+
+        public static char[] ToCharArray(params string[] strings)
+        {
+            List<char> chars = new List<char>();
+            foreach (var word in strings) {
+                chars.AddRange(word.ToCharArray());
+            }
+            return chars.ToArray();
         }
     }
 }

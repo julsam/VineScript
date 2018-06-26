@@ -936,7 +936,37 @@ namespace VineScript.Core
             return new VineVar(val);
         }
 
+        public static implicit operator VineVar(bool[] val)
+        {
+            return new VineVar(val);
+        }
+
+        public static implicit operator VineVar(int[] val)
+        {
+            return new VineVar(val);
+        }
+
+        public static implicit operator VineVar(double[] val)
+        {
+            return new VineVar(val);
+        }
+
+        public static implicit operator VineVar(float[] val)
+        {
+            return new VineVar(val);
+        }
+
+        public static implicit operator VineVar(string[] val)
+        {
+            return new VineVar(val);
+        }
+
         public static implicit operator VineVar(List<VineVar> val)
+        {
+            return new VineVar(val);
+        }
+
+        public static implicit operator VineVar(VineVar[] val)
         {
             return new VineVar(val);
         }

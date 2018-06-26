@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -7,6 +7,11 @@ using VineScript.Core.VineValue;
 
 namespace VineScript.Core
 {
+    //public class VineFunctionCallException : Exception
+    //{
+    //    public VineFunctionCallException(string msg) : base(msg) { }
+    //}
+
     interface IFunctionsCollection
     {
         void Register(string name, Type cls);
@@ -22,6 +27,11 @@ namespace VineScript.Core
         public void Register(string name, Type cls)
         {
             functions.Add(name, cls);
+        }
+
+        public void Register(string name, object cls)
+        {
+            functions.Add(name, cls.GetType());
         }
 
         public bool Unregister(string name)
@@ -40,7 +50,27 @@ namespace VineScript.Core
             // http://stackoverflow.com/questions/6484651/calling-a-function-using-reflection-that-has-a-params-parameter-methodbase
             
             Type cls;
-            if (functions.TryGetValue(name, out cls)) {
+            if (functions.TryGetValue(name, out cls))
+            {
+                //var inst = Activator.CreateInstance(cls);
+                MethodInfo[] methods = cls.GetMethods();
+#if GRAMMAR_VERBOSE
+                foreach (var el in methods) {
+                    //Console.WriteLine(el.Name);
+                }
+#endif
+
+                List<Type> methodArgs = new List<Type>();
+                methodArgs.Add(context.GetType());
+                foreach (var el in args) {
+                    methodArgs.Add(el.GetType());
+                }
+
+#if GRAMMAR_VERBOSE
+                foreach (var el in methodArgs) {
+                    //Console.WriteLine(el.ToString() + "");
+                }
+#endif
                 // get static method info by name from it's type
                 MethodInfo method = cls.GetMethod(name);
 
@@ -103,7 +133,7 @@ namespace VineScript.Core
                             //       function definition that should be fixed.
                             throw new Exception(string.Format("Error calling function \"{0}\""
                                 + "\nThe argument type \"{1}\" is not a recognized type by VineScript."
-                                + "\nExpected types are: VineVar, VineBool, VineInt, VineNumber,"
+                                + "\nExpected types are: VineVar, VineBool, VineInt, VineNumber, "
                                 + "VineString, VineArray or VineDictionary",
                                 name, parameters[i].ParameterType.Name
                             ));
@@ -113,7 +143,22 @@ namespace VineScript.Core
 
                 // calling the static method by name
                 try {
-                    result = new VineVar(method.Invoke(null /*null for static methods*/, combinedArgs.ToArray()));
+                    dynamic r = method.Invoke(null, combinedArgs.ToArray());
+                    if (r == null) {
+                        result = null;
+                    } 
+                    else
+                    {
+                        if (typeof(IVineValue).IsAssignableFrom(r.GetType())) {
+                            result = r.ToVineVar();
+                        } else if (r.GetType() == typeof(VineVar)) {
+                            result = new VineVar(r);
+                        } else {
+                            result = new VineVar(r);
+                            //throw new Exception("Vine Function returning an unauthorized type");
+                        }
+                    }
+                    //result = new VineVar(method.Invoke(null , combinedArgs.ToArray()));
                     return true;
                 } catch (TargetInvocationException e) {
                     // Can we give the file, line, char and function name(with args) ?
@@ -131,6 +176,14 @@ namespace VineScript.Core
                     // This lets you capture an exception and re-throw it without losing the stack trace:
                     ExceptionDispatchInfo.Capture(e).Throw();
                     throw;
+                } catch (Exception e) {
+                    // Can we give the file, line, char and function name(with args) ?
+                    // Should add this message + stack trace to the InnerException.message
+                    Console.WriteLine("Exception when calling function '" + name + "'");
+                    Console.WriteLine(e?.InnerException?.StackTrace ?? e.StackTrace);
+                    // This lets you capture an exception and re-throw it without losing the stack trace:
+                    ExceptionDispatchInfo.Capture(e?.InnerException ?? e).Throw();
+                    throw;
                 }
             } else {
                 result = VineVar.NULL;
@@ -139,3 +192,4 @@ namespace VineScript.Core
         }
     }
 }
+*/

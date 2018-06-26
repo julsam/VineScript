@@ -2,165 +2,86 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VineScript.Binding;
+using VineScript.Core.VineValue;
 
 namespace VineScript.Core
 {
     public interface IVineLibrary
     {
-        FunctionsCollection functions { get; set; }
-        FunctionsCollection filters { get; set; }
-        void RegisterFunctions();
-        void RegisterFilters();
+        void RegisterLib();
+        void Bind(object instance, string methodName, params Type[] paramsType);
+        //bool Bind(Type cls, object instance, string module);
+        void Bind(Type cls, string module);
     }
 
-    public class StdLibrary : IVineLibrary
+    public abstract class VineLibrary : IVineLibrary
     {
-        public FunctionsCollection functions { get; set; }
-        public FunctionsCollection filters { get; set; }
+        public VineMethodResolver resolver { get; protected set; }
+         
+        protected List<Tuple<Type, string>> staticsList
+            = new List<Tuple<Type, string>>();
 
-        public StdLibrary()
-        {
-            functions = new FunctionsCollection();
-            filters = new FunctionsCollection();
-        }
+        protected List<Tuple<object, string, Type[]>> instancesList 
+            = new List<Tuple<object, string, Type[]>>();
 
-        public void RegisterFunctions()
+        public VineLibrary()
         {
-            functions.Register("Hello", typeof(StdLibrary));
-            functions.Register("Add", typeof(StdLibrary));
-            functions.Register("Upper", typeof(StdLibrary));
-            functions.Register("Clone", typeof(StdLibrary));
-            functions.Register("Int", typeof(StdLibrary));
-            functions.Register("Number", typeof(StdLibrary));
-            functions.Register("String", typeof(StdLibrary));
-            functions.Register("IsString", typeof(StdLibrary));
-            functions.Register("IsBool", typeof(StdLibrary));
-            functions.Register("IsInt", typeof(StdLibrary));
-            functions.Register("IsNumber", typeof(StdLibrary));
-            functions.Register("IsNull", typeof(StdLibrary));
-            functions.Register("IsArray", typeof(StdLibrary));
-            functions.Register("IsDict", typeof(StdLibrary));
-            functions.Register("Range", typeof(StdLibrary));
+            resolver = new VineMethodResolver();
         }
 
-        public void RegisterFilters()
+        public void Bind(Type cls, string module="")
         {
-            filters.Register("Upper", typeof(StdLibrary));
+            staticsList.Add(new Tuple<Type, string>(cls, module));
         }
 
-        public static VineVar Hello(object context)
+        public void Bind(object instance, string methodName, params Type[] paramsType)
         {
-            return "Hello, World!";
+            instancesList.Add(new Tuple<object, string, Type[]>(
+                instance, methodName, paramsType
+            ));
         }
 
-        public static VineVar Add(object context, VineVar a, VineVar b)
+        /// <summary>
+        /// Starts the registration.
+        /// </summary>
+        public void RegisterLib()
         {
-            return a + b;
-        }
-        
-        public static VineVar Upper(object context, VineVar value)
-        {
-            return value.AsString.ToUpper();
-        }
-        
-        public static VineVar Clone(object context, VineVar value)
-        {
-            if (value == null) {
-                throw new Exception("Can't clone Null value");
+            foreach (var def in staticsList) {
+                //                class,     module
+                resolver.Register(def.Item1, def.Item2);
             }
-            return value.Clone();
-        }
-
-        public static int Int(object context, VineVar value)
-        {
-            return value.AsInt;
-        }
-
-        public static double Number(object context, VineVar value)
-        {
-            return value.AsNumber;
-        }
-
-        public static string String(object context, VineVar value)
-        {
-            return value.AsString;
-        }
-
-        public static bool IsBool(object context, VineVar value)
-        {
-            return value.IsBool;
-        }
-
-        public static bool IsInt(object context, VineVar value)
-        {
-            return value.IsInt;
-        }
-
-        public static bool IsNumber(object context, VineVar value)
-        {
-            return value.IsNumber;
-        }
-
-        public static bool IsString(object context, VineVar value)
-        {
-            return value.IsString;
-        }
-
-        public static bool IsNull(object context, VineVar value)
-        {
-            return value.IsNull;
-        }
-
-        public static bool IsArray(object context, VineVar value)
-        {
-            return value.IsArray;
-        }
-
-        public static bool IsDict(object context, VineVar value)
-        {
-            return value.IsDict;
-        }
-
-        public static VineVar Range(object context, VineVar start, VineVar stop=null, VineVar step=null)
-        {
-            if (stop == null) {
-                return Builtins.Range(start.AsInt);
+            foreach (var def in instancesList) {
+                //                instance,  methodname, paramsType
+                resolver.Register(def.Item1, def.Item2, def.Item3);
             }
-            if (step == null) {
-                return Builtins.Range(start.AsInt, stop.AsInt);
-            }
-            return Builtins.Range(start.AsInt, stop.AsInt, step.AsInt);
         }
-
-        // Using c# types instead of VineVar:
-
-        //public static string Upper(object context, string value)
-        //{
-        //    return value.ToUpper();
-        //}
-
-        //public static int DebugArgsInt(object context, int value)
-        //{
-        //    return value;
-        //}
     }
 
-    public class UserLib : IVineLibrary
+    public sealed class StdLibrary : VineLibrary
     {
-        public FunctionsCollection functions { get; set; }
-        public FunctionsCollection filters { get; set; }
+        Lib.StoryState storyStateLib;
 
+        public StdLibrary(VineStory story)
+        {
+            storyStateLib = new Lib.StoryState(story);
+            
+            resolver.Register(typeof(Lib.Rand));
+            resolver.Register(typeof(Lib.Std));
+            resolver.Register(typeof(Lib.Date));
+            resolver.Register(typeof(Lib.Math));
+            resolver.Register(typeof(Lib.Sequence));
+            resolver.Register(typeof(Lib.Array));
+            resolver.Register(typeof(Lib.Dictionary));
+            resolver.Register(typeof(Lib.String));
+            resolver.Register(storyStateLib, "History");
+            resolver.Register(storyStateLib, "CurrentPassage");
+        }
+    }
+
+    public class UserLib : VineLibrary
+    {
         public UserLib()
-        {
-            functions = new FunctionsCollection();
-            filters = new FunctionsCollection();
-        }
-
-        public virtual void RegisterFunctions()
-        {
-        }
-
-        public virtual void RegisterFilters()
         {
         }
     }
