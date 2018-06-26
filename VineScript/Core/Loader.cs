@@ -334,6 +334,14 @@ namespace VineScript.Core
         //
         // UTILS
         //
+        
+        public string MakeScriptNameFromFile(string filename, string scriptsDir="")
+        {
+            if (string.IsNullOrWhiteSpace(scriptsDir)) {
+                scriptsDir = BaseDir;
+            }
+            return GetScriptNameFromFile(filename, scriptsDir);
+        }
 
         private static string GetScriptNameFromFile(string filename, string dir_root)
         {
