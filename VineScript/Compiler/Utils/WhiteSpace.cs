@@ -37,22 +37,23 @@ namespace VineScript.Compiler
 #if GRAMMAR_VERBOSE
             Console.WriteLine("--- WS removed: ---");
 #endif
-            string wsRemoved = "";
-            string tmp = text.Replace("\r", "");
-            string[] lines = tmp.Split(new char[] { '\n'});
+            StringBuilder wsRemoved = new StringBuilder();
+            string[] lines = text.Replace("\r", "").Split(new char[] { '\n'});
             for (int i = 0; i < lines.Length; i++) {
                 // removes starting & ending whitespaces
-                wsRemoved += lines[i].Trim(new char[] { '\t', ' ' });
+                // doesn't use the default empty Trim() because Vine is using
+                // some unusual whitespace characters as markups for formatting
+                wsRemoved.Append(lines[i].Trim(new char[] { '\t', ' ' }));
                 if (i < lines.Length - 1) {
                     // add new line if it's not the last one
-                    wsRemoved += Environment.NewLine;
+                    wsRemoved.Append(Environment.NewLine);
                 }
             }
 #if GRAMMAR_VERBOSE
             Console.WriteLine(wsRemoved);
             Console.WriteLine("--- ---");
 #endif
-            return wsRemoved;
+            return wsRemoved.ToString();
         }
 
         public static string CollapseWordsSpacing(string input)
