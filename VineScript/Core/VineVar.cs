@@ -87,6 +87,16 @@ namespace VineScript.Core
                 return new VineVar(null);
             }
         }
+
+        public static VineVar Undefined {
+            get {
+                var undef = new VineVar("{undefined}");
+                undef.name = "{undefined}";
+                undef.type = Type.Undefined;
+                return undef;
+            }
+        }
+
         //public static VineVar newInt {
         //    get {
         //        return new VineVar(0);
@@ -128,7 +138,8 @@ namespace VineScript.Core
             Number,     // double
             String,     // string
             Array,      // List<VineVar>
-            Dict,       // Dictionnary<string, VineVar>
+            Dict,       // Dictionary<string, VineVar>
+            Undefined
             //Dataset     // should be an Hashset<VineVar>
         }
         
@@ -151,6 +162,7 @@ namespace VineScript.Core
         public bool IsNull      { get { return type == Type.Null;   } }
         public bool IsArray     { get { return type == Type.Array;  } }
         public bool IsDict      { get { return type == Type.Dict;   } }
+        public bool IsUndefined { get { return type == Type.Undefined; } }
 
         public int AsInt {
             get {
@@ -177,6 +189,8 @@ namespace VineScript.Core
                         } else {
                             throw new VineConversionException(type, Type.Int);
                         }
+                    case Type.Undefined:
+                        throw new VineConversionException("Undefined VineVar");
                     default:
                         throw new VineConversionException(type, Type.Int);
                 }
@@ -208,6 +222,8 @@ namespace VineScript.Core
                         } else {
                             throw new VineConversionException(type, Type.Number);
                         }
+                    case Type.Undefined:
+                        throw new VineConversionException("Undefined VineVar");
                     default:
                         throw new VineConversionException(type, Type.Number);
                 }
@@ -243,6 +259,8 @@ namespace VineScript.Core
                         } else {
                             throw new VineConversionException(type, Type.Bool);
                         }
+                    case Type.Undefined:
+                        throw new VineConversionException("Undefined VineVar");
                     default:
                         throw new VineConversionException(type, Type.Bool);
                 }
@@ -275,6 +293,8 @@ namespace VineScript.Core
                         return VineVarUtils.Stringify(arrayValue);
                     case Type.Dict:
                         return VineVarUtils.Stringify(dictValue);
+                    case Type.Undefined:
+                        throw new VineConversionException("Undefined VineVar");
                     default:
                         throw new VineConversionException(type, Type.String);
                 }
@@ -298,6 +318,8 @@ namespace VineScript.Core
                         return arrayValue;
                     case Type.Dict:
                         return dictValue;
+                    case Type.Undefined:
+                        throw new VineConversionException("Undefined VineVar");
                     default:
                         throw new VineConversionException();
                 }
@@ -395,6 +417,8 @@ namespace VineScript.Core
                         boolValue = otherValue.boolValue;
                         break;
                     case Type.Null:
+                        break;
+                    case Type.Undefined:
                         break;
                     case Type.Array:
                         // deep copy / shallow copy
@@ -516,6 +540,8 @@ namespace VineScript.Core
                         return stringValue.CompareTo(other.stringValue);
                     case Type.Null:
                         return 0;
+                    case Type.Undefined:
+                        throw new VineComparisonException("Undefined VineVar");
                 }
             }
 
@@ -866,6 +892,11 @@ namespace VineScript.Core
         // Define the is greater than operator.
         public static bool operator > (VineVar a, VineVar b)
         {
+            if (    (!object.ReferenceEquals(a, null) && a.IsUndefined)
+                ||  (!object.ReferenceEquals(b, null) && b.IsUndefined)
+                ) {
+                throw new VineComparisonException("Undefined VineVar");
+            }
             if (!object.ReferenceEquals(a, null) && !object.ReferenceEquals(b, null)) { 
                 if (    (a.type == Type.Int || a.type == Type.Number)
                     &&  (b.type == Type.Int || b.type == Type.Number)
@@ -884,6 +915,11 @@ namespace VineScript.Core
         // Define the is less than operator.
         public static bool operator < (VineVar a, VineVar b)
         {
+            if (    (!object.ReferenceEquals(a, null) && a.IsUndefined)
+                ||  (!object.ReferenceEquals(b, null) && b.IsUndefined)
+                ) {
+                throw new VineComparisonException("Undefined VineVar");
+            }
             if (!object.ReferenceEquals(a, null) && !object.ReferenceEquals(b, null)) { 
                 if (    (a.type == Type.Int || a.type == Type.Number)
                     &&  (b.type == Type.Int || b.type == Type.Number)
@@ -902,6 +938,11 @@ namespace VineScript.Core
         // Define the is greater than or equal to operator.
         public static bool operator >= (VineVar a, VineVar b)
         {
+            if (    (!object.ReferenceEquals(a, null) && a.IsUndefined)
+                ||  (!object.ReferenceEquals(b, null) && b.IsUndefined)
+                ) {
+                throw new VineComparisonException("Undefined VineVar");
+            }
             if (!object.ReferenceEquals(a, null) && !object.ReferenceEquals(b, null)) { 
                 if (    (a.type == Type.Int || a.type == Type.Number)
                     &&  (b.type == Type.Int || b.type == Type.Number)
@@ -920,6 +961,11 @@ namespace VineScript.Core
         // Define the is less than or equal to operator.
         public static bool operator <= (VineVar a, VineVar b)
         {
+            if (    (!object.ReferenceEquals(a, null) && a.IsUndefined)
+                ||  (!object.ReferenceEquals(b, null) && b.IsUndefined)
+                ) {
+                throw new VineComparisonException("Undefined VineVar");
+            }
             if (!object.ReferenceEquals(a, null) && !object.ReferenceEquals(b, null)) { 
                 if (    (a.type == Type.Int || a.type == Type.Number)
                     &&  (b.type == Type.Int || b.type == Type.Number)
