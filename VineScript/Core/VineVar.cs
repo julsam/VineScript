@@ -356,10 +356,27 @@ namespace VineScript.Core
         // Create a null value
         public VineVar() : this(null) { }
 
-        // Create a value with a C# object
-        public VineVar(object value, bool clone=false)
+        /// <summary>
+        /// Create a VineVar from a C# object.
+        /// </summary>
+        /// <param name="value">
+        /// Accepted values are of type: 
+        ///     * Value types: bool, int, double, float, string
+        ///     * Reference types: VineVar, object, List<> of one of the value
+        ///     types, Dictionary<> of one of value types, or array of one of
+        ///     the value types
+        /// </param>
+        /// <param name="deepcopy">
+        /// If the value is of type VineVar, it indicates whether if the new
+        /// VineVar will be created from this value using a deep copy or a 
+        /// shallow copy.</param>
+        public VineVar(object value, bool deepcopy=false)
         {
             // Copy an existing value
+            // If clone is false, it will be a shallow copy (if a field is a reference type,
+            //      the reference is copied but the referred object is not; therefore,
+            //      the original object and its clone refer to the same object)
+            // If clone is true, it will be a deep copy.
             if (value is VineVar) {
                 var otherValue = value as VineVar;
                 type = otherValue.type;
@@ -380,16 +397,16 @@ namespace VineScript.Core
                     case Type.Null:
                         break;
                     case Type.Array:
-                        // deep copy
+                        // deep copy / shallow copy
                         arrayValue = otherValue.arrayValue.ConvertAll(
-                            val => clone ? val.Clone() : val
+                            val => deepcopy ? val.Clone() : val
                         );
                         break;
                     case Type.Dict:
-                        // deep copy
+                        // deep copy / shallow copy
                         dictValue = otherValue.AsDict.ToDictionary(
                             entry => entry.Key,
-                            entry => clone ? entry.Value.Clone() : entry.Value
+                            entry => deepcopy ? entry.Value.Clone() : entry.Value
                         );
                         break;
                     default:
