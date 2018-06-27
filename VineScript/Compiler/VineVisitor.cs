@@ -81,18 +81,42 @@ namespace VineScript.Compiler
                 ExceptionDispatchInfo.Capture(e).Throw();
                 throw;
             }
-            catch (Exception e) {
+            catch (VineException e)
+            {
                 // Reformat the error message
-                string formatted = RuntimeErrorFormatter.Format(
-                    e.GetType(),
-                    e.Message,
-                    lastEnteredContext
-                );
+                string underline = RuntimeErrorFormatter.Format(lastEnteredContext);
+                string formatted = e.GetType().Name + ": " + e.Title 
+                    + Environment.NewLine + underline;
+                // StackTrace
+                if (e.Data.Contains("VineStackTrace")) {
+                    // Add the stack trace to the error message.
+                    // This only happens for exceptions thrown inside invoked methods
+                    var stackTrace = e.Data["VineStackTrace"] as Binding.VineBindingStackTrace;
+                    formatted += Environment.NewLine + stackTrace.GetErrorMessage();
+                }
+                // Add details
+                if (!string.IsNullOrWhiteSpace(e.Details)) {
+                    formatted += Environment.NewLine + e.Details;
+                }
                 // Rethrow the same exception type with the formatted message
                 throw (Exception)Activator.CreateInstance(e.GetType(), formatted);
             }
-            // TODO: shouldn't reformat message whith underline when the error
-            // is happening in a called c# function?
+            catch (Exception e)
+            {
+                // Reformat the error message
+                string formatted = RuntimeErrorFormatter.Format(
+                    e.GetType(), e.Message, lastEnteredContext
+                );
+                // StackTrace
+                if (e.Data.Contains("VineStackTrace")) {
+                    // Add the stack trace to the error message.
+                    // This only happens for exceptions thrown inside invoked methods
+                    var stackTrace = e.Data["VineStackTrace"] as Binding.VineBindingStackTrace;
+                    formatted += Environment.NewLine + stackTrace.GetErrorMessage();
+                }
+                // Rethrow the same exception type with the formatted message
+                throw (Exception)Activator.CreateInstance(e.GetType(), formatted);
+            }
         }
 
         public override VineVar VisitDirectOutput(VineParser.DirectOutputContext context)

@@ -65,6 +65,7 @@
     <Compile Include="Compiler\VineVisitor.cs" />
     <Compile Include="Core\Binding\VineBinding.cs" />
     <Compile Include="Core\Binding\VineBindingException.cs" />
+    <Compile Include="Core\Binding\VineBindingStackTrace.cs" />
     <Compile Include="Core\Binding\VineFunctionException.cs" />
     <Compile Include="Core\Binding\VineMethodInfo.cs" />
     <Compile Include="Core\Binding\VineMethodParameter.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Core\PassageResult.cs" />
     <Compile Include="Core\RuntimeVars.cs" />
     <Compile Include="Core\StdLibrary.cs" />
+    <Compile Include="Core\VineException.cs" />
     <Compile Include="Core\VineStory.cs" />
     <Compile Include="Core\Converter.cs" />
     <Compile Include="Core\VineValue\VineDictionary.cs" />

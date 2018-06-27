@@ -241,29 +241,13 @@ namespace VineScript.Binding
                     } else {
                         returnValue = method.MethodRef.Invoke(null, refCombinedArgs);
                     }
-                } catch (TargetInvocationException e) {
-                    // Can we give the file, line, char and function name(with args) ?
-                    // Should add this message + stack trace to the InnerException.message
-                    Console.WriteLine("Exception when calling function '" + name + "'");
-                    Console.WriteLine(e?.InnerException.StackTrace ?? e.StackTrace);
-                    // This lets you capture an exception and re-throw it without losing the stack trace:
-                    ExceptionDispatchInfo.Capture(e?.InnerException ?? e).Throw();
-                    throw;
-                } catch (TargetParameterCountException e) {
-                    // Can we give the file, line, char and function name(with args) ?
-                    // Should add this message + stack trace to the InnerException.message
-                    Console.WriteLine("Exception when calling function '" + name + "'");
-                    Console.WriteLine(e.StackTrace);
-                    // This lets you capture an exception and re-throw it without losing the stack trace:
-                    ExceptionDispatchInfo.Capture(e).Throw();
-                    throw;
                 } catch (Exception e) {
-                    // Can we give the file, line, char and function name(with args) ?
-                    // Should add this message + stack trace to the InnerException.message
-                    Console.WriteLine("Exception when calling function '" + name + "'");
-                    Console.WriteLine(e?.InnerException?.StackTrace ?? e.StackTrace);
-                    // This lets you capture an exception and re-throw it without losing the stack trace:
-                    ExceptionDispatchInfo.Capture(e?.InnerException ?? e).Throw();
+                    Exception actualException = e.InnerException ?? e;
+                    var vineStack = new VineBindingStackTrace(
+                        method.MethodRef, actualException.StackTrace, method.ToString()
+                    );
+                    actualException.Data.Add("VineStackTrace", vineStack);
+                    ExceptionDispatchInfo.Capture(actualException).Throw();
                     throw;
                 }
 

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace VineScript.Core
 {
-    public class VineArithmeticException : Exception
+    public class VineArithmeticException : VineException
     {
         public VineArithmeticException() : base("Not supported operation") { }
 
@@ -32,7 +32,7 @@ namespace VineScript.Core
                 op, a)) { }
     }
 
-    public class VineComparisonException : Exception
+    public class VineComparisonException : VineException
     {
         public VineComparisonException() : base("Not supported comparison") { }
 
@@ -49,7 +49,7 @@ namespace VineScript.Core
                 op, a.type, b.type)) { }
     }
 
-    public class VineConversionException : Exception
+    public class VineConversionException : VineException
     {
         public VineConversionException() : base("Not supported cast") { }
 

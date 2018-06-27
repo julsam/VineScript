@@ -49,33 +49,70 @@ namespace VineScript.Compiler
         }
     }
 
+    internal class UnderlineErrorData
+    {
+        public int Line { get; private set; }
+        public int Column { get; private set; }
+        public string SrcName { get; private set; }
+        public string Underline { get; private set; }
+        public string Offending { get; private set; }
+
+        public UnderlineErrorData(ParserRuleContext ctx)
+        {
+            Line = ctx.Start.Line;
+            Column = ctx.Start.Column;
+            SrcName = ctx.Start.InputStream.SourceName;
+
+            string input = ctx.Start.InputStream.ToString();
+            int start = ctx.Start.StartIndex;
+            int stop = ctx.Stop.StopIndex;
+
+            Underline = UnderlineErrorFormatter.Underline(
+                input, Line, Column, start, stop
+            );
+
+            Offending = "";
+            if (start >= 0 && stop >= 0) {
+                for (int i = start; i <= stop; i++) {
+                    Offending += input[i];
+                }
+            }
+        }
+    }
+
     internal class RuntimeErrorFormatter : UnderlineErrorFormatter
     {
         public static string Format(Type cls, string msg,
             ParserRuleContext ctx)
         {
-            int line = ctx.Start.Line;
-            int column = ctx.Start.Column;
-            string input = ctx.Start.InputStream.ToString();
-            int start = ctx.Start.StartIndex;
-            int stop = ctx.Stop.StopIndex;
-            string srcName = ctx.start.InputStream.SourceName;
-
-            string underline = Underline(
-                input, line, column, start, stop
-            );
-
-            string offending = "";
-            if (start >= 0 && stop >= 0) {
-                for (int i = start; i <= stop; i++) {
-                    offending += input[i];
-                }
-            }
+            var data = new UnderlineErrorData(ctx);
 
             return string.Format(
-                "{0}: {1}\n  File \"{2}\", in line {3}:{4} at '{5}':\n{6}", 
-                cls.Name, msg, srcName, line, column,
-                Escape.EscapeWhiteSpace(offending), underline
+                "{0}: {1}{2}   File \"{3}\", in line {4}:{5} at '{6}':\n{7}",
+                cls.Name, msg, Environment.NewLine, data.SrcName, data.Line,
+                data.Column, Escape.EscapeWhiteSpace(data.Offending), data.Underline
+            );
+        }
+
+        public static string Format(string msg, ParserRuleContext ctx)
+        {
+            var data = new UnderlineErrorData(ctx);
+
+            return string.Format(
+                "{0}{1}   File \"{2}\", in line {3}:{4} at '{5}':\n{6}",
+                msg, Environment.NewLine, data.SrcName, data.Line, data.Column,
+                Escape.EscapeWhiteSpace(data.Offending), data.Underline
+            );
+        }
+
+        public static string Format(ParserRuleContext ctx)
+        {
+            var data = new UnderlineErrorData(ctx);
+
+            return string.Format(
+                "   File \"{0}\", in line {1}:{2} at '{3}':\n{4}",
+                data.SrcName, data.Line, data.Column,
+                Escape.EscapeWhiteSpace(data.Offending), data.Underline
             );
         }
     }
