@@ -185,7 +185,8 @@ namespace VineScript.Test
         public void FileIf01()
         {
             story.vars.Clear();
-
+            
+            story.vars["var"] = VineVar.NULL;
             story.RunPassage("scripts/basic/if01");
             Assert.AreEqual("var is null", story.vars["result"]);
 

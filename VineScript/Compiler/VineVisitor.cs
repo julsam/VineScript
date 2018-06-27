@@ -277,6 +277,12 @@ namespace VineScript.Compiler
             string id = variable.name;
             VineVar value = Visit(context.expr());
 
+            if (value.IsUndefined) {
+                throw new VineUndefinedVarException(
+                    value.name, "Can't assign an undefined variable."
+                );
+            }
+
 #if DEBUG
             if (story.vars.ContainsKey(id)) {
                 Console.WriteLine(string.Format(
@@ -288,14 +294,31 @@ namespace VineScript.Compiler
 
             if (context.sequenceAccess() != null && context.sequenceAccess().Count() > 0)
             {
+                // trying to access a sequence element of an undefined var
+                if (variable.IsUndefined) {
+                    throw new VineUndefinedVarException(
+                        variable.name,
+                        "Can't access a sequence element of an undefined variable."
+                    );
+                }
                 SetValueInSequence(story.vars[id], context.sequenceAccess(), 
                     value, context.op.Type);
             }
             else
             {
-                if (context.op.Type == VineLexer.ASSIGN || context.op.Type == VineLexer.TO) {
+                if (context.op.Type == VineLexer.ASSIGN || context.op.Type == VineLexer.TO)
+                {
+                    // Assigning a value to an Undefined VineVar
                     story.vars[id] = AssignOp(context.op.Type, null, value);
-                } else {
+                }
+                else
+                {
+                    // trying to modify an undefined var
+                    if (variable.IsUndefined) {
+                        throw new VineUndefinedVarException(
+                            variable.name, "Can't modify an undefined variable."
+                        );
+                    }
                     story.vars[id] = AssignOp(context.op.Type, story.vars[id], value);
                 }
             }
@@ -635,17 +658,65 @@ namespace VineScript.Compiler
             return value;
         }
 
+        private bool HasParentsOfRule(RuleContext ruleContext, int ruleIndexMatch)
+        {
+            if (ruleContext == null) {
+                return false;
+            }
+            string ruleName = GetRuleName(ruleContext);
+            int ruleContextDepth = ruleContext.Depth();
+            if (ruleContext.RuleIndex == ruleIndexMatch) {
+                return true;
+            }
+            return HasParentsOfRule(ruleContext.parent, ruleIndexMatch);
+        }
+
+        // Utils
+        public static string GetRuleName(RuleContext ruleContext)
+        {
+            return VineParser.ruleNames[ruleContext.RuleIndex];
+        }
+
         public override VineVar VisitVarExpr(VineParser.VarExprContext context)
         {
             lastEnteredContext = context;
 
             VineVar variable = Visit(context.variable());
             string name = variable.name;
+            
+            
             VineVar value = null;
-
-            if (context.sequenceAccess() != null && context.sequenceAccess().Count() > 0) {
+            if (context.sequenceAccess() != null && context.sequenceAccess().Count() > 0)
+            {
+                if (variable.IsUndefined) {
+                    throw new VineUndefinedVarException(
+                        variable.name,
+                        "Can't use an undefined variable."
+                        + " Please declare your variables with the command"
+                        + " '<< set >>' before using them."
+                    );
+                }
                 value = GetValueInSequence(variable, context.sequenceAccess());
-            } else {
+            }
+            else
+            {
+                // If the variable is undefined but it's used as a function
+                // argument, then it's ok: VineMethodResolver will check if
+                // the argument type is 'out'. If it's not 'out',
+                // VineMethodResolver will throw VineUndefinedVarException
+                // Here the parents are checked to see if one of them is a
+                // 'function call' rule.
+                string ruleName = GetRuleName(context);
+                var parentIsFuncCall = HasParentsOfRule(context.parent, VineParser.RULE_funcCall);
+                if (variable.IsUndefined && !parentIsFuncCall)
+                {
+                    throw new VineUndefinedVarException(
+                        variable.name,
+                        "Can't use an undefined variable."
+                        + " Please declare your variables with the command"
+                        + " '<< set >>' before using them."
+                    );
+                }
                 value = variable;
             }
 
@@ -708,7 +779,14 @@ namespace VineScript.Compiler
             if (context.GetToken(VineLexer.VAR_PREFIX, 0) != null) {
                 id = id.Remove(0, 1);
             }
-            VineVar value = story.vars.ContainsKey(id) ? story.vars[id] : VineVar.NULL;
+#if DEBUG
+            //if (!story.vars.ContainsKey(id)) {
+            //    Console.WriteLine(string.Format(
+            //        "[!!] Warning, the variable '{0}' is not defined!", id
+            //    ));
+            //}
+#endif
+            VineVar value = story.vars.ContainsKey(id) ? story.vars[id] : VineVar.Undefined;
             value.name = id;
             return value;
         }
@@ -784,7 +862,17 @@ namespace VineScript.Compiler
             // we can access n using the last index
 
             // Get the last index
-            var lastIndex = Visit(sequences[sequences.Count() - 1].expr());
+            VineVar lastIndex = Visit(sequences[sequences.Count() - 1].expr());
+
+            // the index can't be an undefined var
+            if (lastIndex.IsUndefined) {
+                throw new VineUndefinedVarException(
+                    lastIndex.name,
+                    "Can't use an undefined variable as a sequence access."
+                    + " Please declare your variables with the command"
+                    + " '<< set >>' before using them."
+                );
+            }
 
             // Finally get the content of [n], the value
             VineVar value = null;

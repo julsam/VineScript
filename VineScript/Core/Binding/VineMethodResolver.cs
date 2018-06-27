@@ -192,15 +192,19 @@ namespace VineScript.Binding
             return Find(name, args) != null;
         }
 
-        private bool HasUninitializedArgs(object[] args, List<VineMethodParameter> parameters)
+        private bool FindUndefinedArg(object[] args, List<VineMethodParameter> parameters,
+            out VineVar foundArg)
         {
             for (int i = 0; i < args.Length; i++)
             {
-                // only out parameters can be uninitialized
-                if ((args[i] as VineVar).IsUndefined && !parameters[i].IsOut) {
+                // only out parameters can be undefined
+                VineVar vinevar = (args[i] as VineVar);
+                if (vinevar.IsUndefined && !parameters[i].IsOut) {
+                    foundArg = vinevar;
                     return true;
                 }
             }
+            foundArg = null;
             return false;
         }
 
@@ -209,11 +213,17 @@ namespace VineScript.Binding
             var method = Find(name, args);
             if (method != null)
             {
-                //if (args.Where(a => (a as VineVar).IsUninitialized).ToList().Count > 0) {
-                //}
-                if (HasUninitializedArgs(args, method.Parameters)) {
-                    // only out parameters can be uninitialized
-                    throw new VineBindingException(method.Name, "Uninitialized Argument");
+                VineVar undefArg;
+                if (FindUndefinedArg(args, method.Parameters, out undefArg)) {
+                    // only out parameters can be undefined
+                    throw new VineUndefinedVarException(
+                        undefArg.name,
+                        "Please declare your variables with the command"
+                        + " '<< set >>' before passing them through a"
+                        + " function. Only functions with parameters"
+                        + " of type 'out' are"
+                        + " allowed to be called with undefined variables."
+                    );
                 }
 
                 object[] unfoldedArgs = args;
@@ -291,7 +301,7 @@ namespace VineScript.Binding
                     + " Make sure that the name is correct,"
                     + " the method and class are visibles, the attribute"
                     + " '[VineBinding]' is not missing, and that the"
-                    + " method is bound correctly to VineScript."
+                    + " method is correctly bound to VineScript."
                 );
             }
         }

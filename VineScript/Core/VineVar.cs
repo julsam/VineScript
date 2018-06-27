@@ -74,6 +74,23 @@ namespace VineScript.Core
             : base(string.Format("Cannot convert type 'VineVar.{0}' to '{1}'", from, to)) { }
     }
 
+    public class VineUndefinedVarException : VineException
+    {
+        public VineUndefinedVarException(string msg) : base(msg) { }
+
+        public VineUndefinedVarException(string variableName, string msg)
+            : base(string.Format(
+                "VineUndefinedVarException: '{0}' is undefined.{1}{2}",
+                variableName, Environment.NewLine, msg
+            )) {
+            this.Title = string.Format(
+                "'{0}' is undefined",
+                variableName
+            );
+            this.Details = msg;
+        }
+    }
+
     /// <summary>
     /// VineScript's main variable. Can be an int, a double, a bool, a string,
     /// an array or a dictionnary.
