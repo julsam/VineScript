@@ -78,7 +78,7 @@ namespace VineScript.Core
     /// VineScript's main variable. Can be an int, a double, a bool, a string,
     /// an array or a dictionnary.
     /// </summary>
-    public class VineVar : IComparable, IComparable<VineVar>
+    public class VineVar : IComparable, IComparable<VineVar>, IEquatable<VineVar>
     {
         public static bool strictMode = false;
 
@@ -528,7 +528,14 @@ namespace VineScript.Core
                 return false;
             }
 
-            var other = (VineVar)obj;
+            return Equals((VineVar)obj);
+        }
+
+        public bool Equals(VineVar other)
+        {
+            if (other == null) {
+                return false;
+            }
             
             // the order is important here:
             // 1. string == string
