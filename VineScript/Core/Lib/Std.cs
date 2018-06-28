@@ -30,41 +30,6 @@ namespace VineScript.Lib
         }
         
         [VineBinding]
-        public static void TestRef(out VineVar myRef)
-        {
-            // can't copy to dest yet, need to implement 'out' args
-            //((RuntimeVars) context)[dest.name] = src;
-            //VineStory.__vars[dest.name] = src;
-            //dest = VineStory.__vars[dest.name];
-
-            //myRef = myRef.AsString.ToUpper();
-            myRef = 0;
-        }
-        
-        [VineBinding]
-        public static void TestRefArray(out VineVar b)
-        {
-            // can't copy to dest yet, need to implement 'out' args
-            //((RuntimeVars) context)[dest.name] = src;
-            //VineStory.__vars[dest.name] = src;
-            //dest = VineStory.__vars[dest.name];
-            b = VineVar.newArray;
-            b.AsArray.Add(1);
-            b.AsArray.Add(2);
-        }
-        
-        //[VineBinding]
-        //public static VineVar Copy(VineVar src, ref VineVar dest)
-        //{
-        //    // can't copy to dest yet, need to implement 'out' args
-        //    //((RuntimeVars) context)[dest.name] = src;
-        //    //VineStory.__vars[dest.name] = src;
-        //    //dest = VineStory.__vars[dest.name];
-        //    dest = src;
-        //    return null;
-        //}
-        
-        [VineBinding]
         public static VineVar Clone(VineVar value)
         {
             return value.Clone();
