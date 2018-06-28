@@ -511,17 +511,20 @@ namespace VineScript.Binding
         {
             if (!cls.IsClass) {
                 throw new VineBindingException(cls.Name,
-                    "The given type is not a class."
+                    "The given type is not a class.",
+                    VineBindingErrorType.Class
                 );
             }
             else if (cls.IsAbstract) {
                 throw new VineBindingException(cls.Name,
-                    "Can't register an abstract class."
+                    "Can't register an abstract class.",
+                    VineBindingErrorType.Class
                 );
             }
             else if (!cls.IsPublic && !cls.IsNestedPublic) {
                 throw new VineBindingException(cls.Name,
-                    "Can't register a non-public class."
+                    "Can't register a non-public class.",
+                    VineBindingErrorType.Class
                 );
             }
         }
