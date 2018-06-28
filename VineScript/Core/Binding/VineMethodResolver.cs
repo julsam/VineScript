@@ -254,7 +254,9 @@ namespace VineScript.Binding
                 } catch (Exception e) {
                     Exception actualException = e.InnerException ?? e;
                     var vineStack = new VineBindingStackTrace(
-                        method.MethodRef, actualException.StackTrace, method.ToString()
+                        method.MethodRef,
+                        actualException.StackTrace,
+                        method.GetSignature(true, true)
                     );
                     actualException.Data.Add("VineStackTrace", vineStack);
                     ExceptionDispatchInfo.Capture(actualException).Throw();

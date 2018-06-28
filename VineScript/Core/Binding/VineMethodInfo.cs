@@ -47,9 +47,6 @@ namespace VineScript.Binding
         /// </summary>
         public bool CallByInstance { get { return Instance != null; } }
 
-        /// <summary>Signature of the method.</summary>
-        public string Signature { get { return MethodRef.ToString(); } }
-
         public VineMethodInfo(MethodInfo methodRef, List<VineMethodParameter> parameters,
             string module="", object instance=null)
         {
@@ -90,10 +87,37 @@ namespace VineScript.Binding
 
         public override string ToString()
         {
-            string @params = String.Join(", ", Parameters.Select(p => p.ParameterType));
+            return GetSignature(true, true);
+        }
+        
+        /// <summary>
+        /// Signature of the method.
+        /// </summary>
+        /// <param name="useShortName">
+        /// Indicates if the types should be displayed with their
+        /// full namespace or not.
+        /// </param>
+        /// <param name="showReturnType">
+        /// Indicates whether the return type should be displayed.
+        /// </param>
+        /// <returns>The formatted signature.</returns>
+        public string GetSignature(bool useShortName=false, bool showReturnType=false)
+        {
+            string @params = Parameters.Count == 0
+                ? "void"
+                : String.Join(", ",
+                    Parameters.Select(p => p.GetSignature(useShortName))
+                );
+
+            string returnType = showReturnType 
+                ? useShortName 
+                    ? ReturnType.Name + " "
+                    : ReturnType.ToString() + " "
+                : "";
+
             return string.Format(
-                "{0} {1}{2}({3})",
-                ReturnType,
+                "{0}{1}{2}({3})",
+                returnType,
                 string.IsNullOrWhiteSpace(Module) ? "" : Module + "::",
                 Name,
                 @params

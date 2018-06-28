@@ -65,5 +65,37 @@ namespace VineScript.Binding
                 return ParameterType;
             }
         }
+
+        public override string ToString()
+        {
+            return GetSignature();
+        }
+
+        /// <summary>
+        /// Signature of the parameter.
+        /// </summary>
+        /// <param name="useShortName">
+        /// Indicates if the types should be displayed with their
+        /// full namespace or not.
+        /// </param>
+        /// <returns>The formatted signature.</returns>
+        public string GetSignature(bool useShortName=true)
+        {
+            string refOrOut = IsByRef
+                ? IsOut ? "out " : "ref "
+                : "" ;
+
+            string type = IsByRef 
+                ? useShortName ? ReferredType.Name : ReferredType.ToString()
+                : useShortName ? ParameterType.Name : ParameterType.ToString();
+
+            string str = string.Format(
+                "{0}{1}{2}",
+                IsParams ? "params " : "",  // 'params'
+                refOrOut,                   // 'ref' or 'out'
+                type                        // type
+            );
+            return str;
+        }
     }
 }
