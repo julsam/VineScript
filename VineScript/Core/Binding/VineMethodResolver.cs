@@ -296,12 +296,14 @@ namespace VineScript.Binding
             }
             else
             {
-                throw new VineBindingException(name, 
+                throw new VineBindingException(name,
                     "The method cannot be called because it wasn't found."
                     + " Make sure that the name is correct,"
                     + " the method and class are visibles, the attribute"
                     + " '[VineBinding]' is not missing, and that the"
                     + " method is correctly bound to VineScript."
+                    + " Also make sure the passed arguments"
+                    + " are what the function is expecting."
                 );
             }
         }
