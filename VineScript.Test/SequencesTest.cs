@@ -193,7 +193,7 @@ namespace VineScript.Test
             string input = "{{ ReturnsArray()[0] }}";
 
             UserLib lib = new UserLib();
-            lib.Bind(typeof(AnonymSequenceTestLib));
+            lib.Register(typeof(AnonymSequenceTestLib));
             Loader loader = new Loader();
             loader.LoadCode(input, "test");
             VineStory newstory = new VineStory(loader, lib);
@@ -210,7 +210,7 @@ namespace VineScript.Test
                 + "{{ ReturnsDict()[ReturnsDict()[c]][0] }}";
 
             UserLib lib = new UserLib();
-            lib.Bind(typeof(AnonymSequenceTestLib));
+            lib.Register(typeof(AnonymSequenceTestLib));
             Loader loader = new Loader();
             loader.LoadCode(input, "test");
             VineStory newstory = new VineStory(loader, lib);

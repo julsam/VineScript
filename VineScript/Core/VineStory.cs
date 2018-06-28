@@ -13,7 +13,7 @@ namespace VineScript.Core
         private Interpreter interpreter;
 
         // Std Lib
-        private StdLibrary std;
+        private StdLibrary stdLib;
 
         // User Lib
         private VineLibrary userlib;
@@ -42,8 +42,8 @@ namespace VineScript.Core
         private void Init(Loader loader, VineLibrary userlib)
         {
             // std
-            std = new StdLibrary(this);
-            std.RegisterLib();
+            stdLib = new StdLibrary(this);
+            stdLib.BindLibrary();
             
             // vars
             vars = new RuntimeVars();
@@ -99,7 +99,7 @@ namespace VineScript.Core
         public void RegisterUserLib(VineLibrary lib)
         {
             userlib = lib;
-            userlib.RegisterLib();
+            userlib.BindLibrary();
         }
 
         public VineVar GetVar(string name)
@@ -126,8 +126,8 @@ namespace VineScript.Core
                 } else {
                     throw new Exception(string.Format("Error calling function '{0}' in user lib", name));
                 }
-            } else if (std.resolver.Exists(name, args)) {
-                if (std.resolver.Call(name, out output, vars, args)) {
+            } else if (stdLib.resolver.Exists(name, args)) {
+                if (stdLib.resolver.Call(name, out output, vars, args)) {
                     return output;
                 } else { 
                     throw new Exception(string.Format("Error calling function '{0}' in std lib", name));

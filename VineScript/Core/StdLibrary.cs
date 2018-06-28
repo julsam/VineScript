@@ -9,10 +9,10 @@ namespace VineScript.Core
 {
     public interface IVineLibrary
     {
-        void RegisterLib();
-        void Bind(object instance, string methodName, params Type[] paramsType);
-        //bool Bind(Type cls, object instance, string module);
-        void Bind(Type cls, string module);
+        void BindLibrary();
+        void Register(object instance, string methodName, params Type[] paramsType);
+        //bool Register(Type cls, object instance, string module);
+        void Register(Type cls, string module);
     }
 
     public abstract class VineLibrary : IVineLibrary
@@ -30,12 +30,12 @@ namespace VineScript.Core
             resolver = new VineMethodResolver();
         }
 
-        public void Bind(Type cls, string module="")
+        public void Register(Type cls, string module="")
         {
             staticsList.Add(new Tuple<Type, string>(cls, module));
         }
 
-        public void Bind(object instance, string methodName, params Type[] paramsType)
+        public void Register(object instance, string methodName, params Type[] paramsType)
         {
             instancesList.Add(new Tuple<object, string, Type[]>(
                 instance, methodName, paramsType
@@ -45,7 +45,7 @@ namespace VineScript.Core
         /// <summary>
         /// Starts the registration.
         /// </summary>
-        public void RegisterLib()
+        public void BindLibrary()
         {
             foreach (var def in staticsList) {
                 //                class,     module

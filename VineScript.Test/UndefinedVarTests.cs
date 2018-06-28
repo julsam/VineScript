@@ -33,7 +33,7 @@ namespace VineScript.Test
         public void TestUndefinedRefArg()
         {
             UserLib userlib = new UserLib();
-            userlib.Bind(typeof(TestRefOutUserLib));
+            userlib.Register(typeof(TestRefOutUserLib));
 
             // the parameter of MyRefFunc is 'ref',
             // undefined args are not allowed (unlike for 'out')
@@ -54,7 +54,7 @@ namespace VineScript.Test
         public void TestUndefinedOutArg()
         {
             UserLib userlib = new UserLib();
-            userlib.Bind(typeof(TestRefOutUserLib));
+            userlib.Register(typeof(TestRefOutUserLib));
 
             // the parameter of MyOutFunc is 'out', so in this case only,
             // the argument is allowed to be undefined
@@ -163,7 +163,7 @@ namespace VineScript.Test
         public void TestUndefined06()
         {
             UserLib userlib = new UserLib();
-            userlib.Bind(typeof(TestRefOutUserLib));
+            userlib.Register(typeof(TestRefOutUserLib));
 
             // trying to access the sequence element of an undefined
             // variable inside a function call (that allows undefined)
@@ -184,7 +184,7 @@ namespace VineScript.Test
         public void TestUndefined07()
         {
             UserLib userlib = new UserLib();
-            userlib.Bind(typeof(TestRefOutUserLib));
+            userlib.Register(typeof(TestRefOutUserLib));
 
             // undefined variable used as an index for accessing an array
             string input = "<<set myvar = [1,2]>>"
