@@ -55,6 +55,11 @@ namespace VineScript.Core
                 //                instance,  methodname, paramsType
                 resolver.Register(def.Item1, def.Item2, def.Item3);
             }
+            // Remove them so the methods won't be registered again
+            // if BindLibrary() is called again.
+            staticsList.Clear();
+            instancesList.Clear();
+        }
         }
     }
 
