@@ -11,7 +11,8 @@ namespace VineScript.Binding
 {
     public class VineMethodResolver
     {
-        private List<VineMethodInfo> bindings = new List<VineMethodInfo>();
+        private Dictionary<string, VineMethodInfo> bindings
+            = new Dictionary<string, VineMethodInfo>();
             
         static readonly BindingFlags allMethodsFlags =  BindingFlags.NonPublic
                                                     |   BindingFlags.Public
@@ -129,7 +130,17 @@ namespace VineScript.Binding
                 method, pInfo, module, instance
             );
 
-            bindings.Add(binding);
+            string signature = binding.GetSignature();
+            if (bindings.ContainsKey(signature)) {
+                Console.WriteLine(
+                    "A function with the same signature is already registered:"
+                    + Environment.NewLine + signature + Environment.NewLine
+                    + "The previously registered function will be replaced by the new one."
+                );
+                bindings[signature] = binding;
+            } else {
+                bindings.Add(signature, binding);
+            }
             return binding;
         }
 
@@ -399,7 +410,7 @@ namespace VineScript.Binding
             }
 
             VineMethodInfo match = null;
-            foreach (VineMethodInfo bind in bindings)
+            foreach (VineMethodInfo bind in bindings.Values)
             {
                 if (bind.Module == fullname[0] && bind.Name == fullname[1])
                 {
