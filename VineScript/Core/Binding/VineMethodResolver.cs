@@ -537,6 +537,7 @@ namespace VineScript.Binding
                 );
             }
             else if (!cls.IsPublic && !cls.IsNestedPublic) {
+                // private / internal classes could probably be allowed if needed
                 throw new VineBindingException(cls.Name,
                     "Can't register a non-public class.",
                     VineBindingErrorType.Class
@@ -552,6 +553,7 @@ namespace VineScript.Binding
                 );
             }
             else if (!method.IsPublic) {
+                // private / internal methods could probably be allowed if needed
                 throw new VineBindingException(module, method.Name,
                     "Can't register a non-public method."
                 );

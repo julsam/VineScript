@@ -23,7 +23,7 @@ namespace VineScript.Binding
         public VineBindingException(string methodName, string message,
             VineBindingErrorType errorType=VineBindingErrorType.Method)
             : base(string.Format(
-                "VineBinding: error with the {0} '{1}':{2}   {3}",
+                "VineBinding: error with the {0} '{1}':{2}{3}",
                 StringifyError(errorType), methodName, Environment.NewLine, message
             ))
         {
@@ -37,7 +37,7 @@ namespace VineScript.Binding
         public VineBindingException(string module, string methodName, string message,
             VineBindingErrorType errorType=VineBindingErrorType.Method)
             : base(string.Format(
-                "VineBinding: error with the {0} '{1}' in '{2}':{3}   {4}",
+                "VineBinding: error with the {0} '{1}' in '{2}':{3}{4}",
                 StringifyError(errorType), methodName, module, Environment.NewLine, message
             ))
         {

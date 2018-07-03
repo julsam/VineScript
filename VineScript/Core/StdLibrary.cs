@@ -15,10 +15,8 @@ namespace VineScript.Core
         void Register(Type cls, string module);
     }
 
-    public abstract class VineLibrary : IVineLibrary
+    public abstract class VineLibrary
     {
-        public VineMethodResolver resolver { get; protected set; }
-         
         protected List<Tuple<Type, string>> staticsList
             = new List<Tuple<Type, string>>();
 
@@ -27,7 +25,6 @@ namespace VineScript.Core
 
         public VineLibrary()
         {
-            resolver = new VineMethodResolver();
         }
 
         public void Register(Type cls, string module="")
@@ -43,9 +40,9 @@ namespace VineScript.Core
         }
 
         /// <summary>
-        /// Starts the registration.
+        /// Starts the registration process.
         /// </summary>
-        public void BindLibrary()
+        internal void BindLibrary(VineMethodResolver resolver)
         {
             foreach (var def in staticsList) {
                 //                class,     module
@@ -60,7 +57,6 @@ namespace VineScript.Core
             staticsList.Clear();
             instancesList.Clear();
         }
-        }
     }
 
     public sealed class StdLibrary : VineLibrary
@@ -71,16 +67,16 @@ namespace VineScript.Core
         {
             storyStateLib = new Lib.StoryState(story);
             
-            resolver.Register(typeof(Lib.Rand));
-            resolver.Register(typeof(Lib.Std));
-            resolver.Register(typeof(Lib.Date));
-            resolver.Register(typeof(Lib.Math));
-            resolver.Register(typeof(Lib.Sequence));
-            resolver.Register(typeof(Lib.Array));
-            resolver.Register(typeof(Lib.Dictionary));
-            resolver.Register(typeof(Lib.String));
-            resolver.Register(storyStateLib, "History");
-            resolver.Register(storyStateLib, "CurrentPassage");
+            Register(typeof(Lib.Rand));
+            Register(typeof(Lib.Std));
+            Register(typeof(Lib.Date));
+            Register(typeof(Lib.Math));
+            Register(typeof(Lib.Sequence));
+            Register(typeof(Lib.Array));
+            Register(typeof(Lib.Dictionary));
+            Register(typeof(Lib.String));
+            Register(storyStateLib, "History");
+            Register(storyStateLib, "CurrentPassage");
         }
     }
 
