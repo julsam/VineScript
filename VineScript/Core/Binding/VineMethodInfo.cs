@@ -33,6 +33,8 @@ namespace VineScript.Binding
         /// <summary>Indicates if one of the parameters is of type 'params'.</summary>
         public bool HasParams { get; private set; }
 
+        public bool IsBindingOverride { get; private set; }
+
         /// <summary>
         /// Instance of a class on which to invoke the method. The object
         /// was instanciated by the user before registration. Can be null
@@ -58,6 +60,9 @@ namespace VineScript.Binding
             IsStatic    = methodRef.IsStatic;
             Instance    = instance;
             HasParams   = Parameters.Any(p => p.IsParams);
+            
+            var attr = methodRef.GetCustomAttribute(typeof(VineBinding), false);
+            IsBindingOverride = (attr as VineBinding).Override;
         }
 
         /// <summary>

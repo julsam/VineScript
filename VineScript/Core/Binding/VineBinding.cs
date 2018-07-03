@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace VineScript.Binding
 {
@@ -10,6 +8,12 @@ namespace VineScript.Binding
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public class VineBinding : Attribute
     {
+        /// <summary>
+        /// Indicates that this method will override a registered method
+        /// with the same signature.
+        /// </summary>
+        public bool Override { get; set; } = false;
+
         /// <summary>
         /// Method attribute that allows to bind a method to VineScript.
         /// </summary>

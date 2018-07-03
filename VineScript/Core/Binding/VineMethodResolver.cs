@@ -131,14 +131,38 @@ namespace VineScript.Binding
             );
 
             string signature = binding.GetSignature();
-            if (bindings.ContainsKey(signature)) {
-                Console.WriteLine(
-                    "A function with the same signature is already registered:"
-                    + Environment.NewLine + signature + Environment.NewLine
-                    + "The previously registered function will be replaced by the new one."
-                );
-                bindings[signature] = binding;
+            if (bindings.ContainsKey(signature))
+            {
+                if (!binding.IsBindingOverride) {
+                    throw new VineBindingException(
+                        method.Name,
+                        "A function with the same signature is already registered:"
+                        + Environment.NewLine + signature + Environment.NewLine
+                        + "Please use the attribute " + typeof(VineBinding).Name
+                        + " with the 'Override' argument set to true"
+                        + " if you want to override a method with your own: "
+                        + "'[" + typeof(VineBinding).Name + "(Override = true)]'"
+                    );
+                } else {
+#if DEBUG
+                    // VERBOSE
+                    Console.WriteLine(
+                        "A function with the same signature is already registered:"
+                        + Environment.NewLine + signature + Environment.NewLine
+                        + "The previously registered function will be replaced by the new one."
+                    );
+#endif
+                    bindings[signature] = binding;
+                }
             } else {
+                if (binding.IsBindingOverride) {
+                    Console.WriteLine(
+                        "Warning: the method you are trying to override can't be found:"
+                        + Environment.NewLine + signature + Environment.NewLine
+                        + "Please remove the 'Override' argument from the attribute "
+                        + typeof(VineBinding).Name + " if you're not using it."
+                    );
+                }
                 bindings.Add(signature, binding);
             }
             return binding;
