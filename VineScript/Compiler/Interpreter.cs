@@ -49,7 +49,7 @@ namespace VineScript.Compiler
 #if TIME_STATS
             // Stop timer
             watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
+            var elapsedMs = watch.Elapsed.TotalMilliseconds;
 #endif
 #if GRAMMAR_VERBOSE
             // Final output
@@ -96,7 +96,7 @@ namespace VineScript.Compiler
 #if TIME_STATS
             // Stop timer
             watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
+            var elapsedMs = watch.Elapsed.TotalMilliseconds;
             Console.WriteLine(string.Format("Time elapsed: {0} ms", elapsedMs.ToString("0.00")));
 #endif
 

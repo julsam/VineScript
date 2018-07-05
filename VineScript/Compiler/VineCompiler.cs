@@ -52,7 +52,7 @@ namespace VineScript.Compiler
 #if TIME_STATS
             initTimer.Stop();
             Console.WriteLine(string.Format(
-                "Init in: {0} ms", initTimer.ElapsedMilliseconds.ToString("0.00")
+                "Init in: {0} ms", initTimer.Elapsed.TotalMilliseconds.ToString("0.00")
             ));
 #endif
         }
@@ -140,7 +140,7 @@ namespace VineScript.Compiler
 #if TIME_STATS
             parseTimer.Stop();
             Console.WriteLine(string.Format(
-                "Parsed in: {0} ms", parseTimer.ElapsedMilliseconds.ToString("0.00")
+                "Parsed in: {0} ms", parseTimer.Elapsed.TotalMilliseconds.ToString("0.00")
             ));
 #endif
             
@@ -173,7 +173,7 @@ namespace VineScript.Compiler
 #if TIME_STATS
             evalTimer.Stop();
             Console.WriteLine(string.Format(
-                "Evaluated in: {0} ms", evalTimer.ElapsedMilliseconds.ToString("0.00")
+                "Evaluated in: {0} ms", evalTimer.Elapsed.TotalMilliseconds.ToString("0.00")
             ));
 #endif
 
